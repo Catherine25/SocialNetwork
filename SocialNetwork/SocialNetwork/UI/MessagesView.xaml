@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SocialNetwork.UI.MessagesView">
+    <ContentView.Content>
+        <Grid x:Name="messagesGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="buttonRow0" Grid.Row="0"/>
+            <Button x:Name="buttonRow1" Grid.Row="1"/>
+            <Button x:Name="buttonRow2" Grid.Row="2"/>
+            <Button x:Name="buttonRow3" Grid.Row="3"/>
+            <Button x:Name="buttonRow4" Grid.Row="4"/>
+            <Button x:Name="buttonRow5" Grid.Row="5"/>
+            <Button x:Name="buttonRow6" Grid.Row="6"/>
+            <Button x:Name="buttonRow7" Grid.Row="7"/>
+            <Button x:Name="buttonRow8" Grid.Row="8"/>
+            <Button x:Name="buttonRow9" Grid.Row="9"/>
+        </Grid>
+    </ContentView.Content>
+</ContentView>

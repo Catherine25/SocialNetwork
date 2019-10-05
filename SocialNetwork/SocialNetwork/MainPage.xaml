@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:SocialNetwork.UI"
+             mc:Ignorable="d"
+             x:Class="SocialNetwork.MainPage">
+
+    <Grid x:Name="mainPageGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <ui:MenuView x:Name="menu"
+                     Grid.Row="1">
+        </ui:MenuView>
+    </Grid>
+</ContentPage>
