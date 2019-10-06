@@ -6,8 +6,8 @@ namespace SocialNetwork.Data
 {
     public class Message
     {
-        public User Sender;
-        public User Reciever;
         public string Text;
+        public DateTime DateTime;
+        public bool isFromMember1;
     }
 }
