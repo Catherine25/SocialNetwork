@@ -10,9 +10,9 @@ namespace SocialNetwork.Services
         public static void SetSingleChild(this Grid grid, View view)
         {
             int count = grid.Children.Count;
-            
-            for(int i =1; i<count; i++)
-                grid.Children.RemoveAt(i);
+
+            for (int i = 1; i < count; i++)
+                grid.Children.RemoveAt(count - i);
             
             grid.Children.Add(view);
         }
