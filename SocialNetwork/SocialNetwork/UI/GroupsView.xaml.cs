@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+//TODO: Open selected group page
+
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
