@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+//TODO: Open selected friend user page
+
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -16,9 +18,12 @@ namespace SocialNetwork.UI
         public List<User> Friends;
         public List<string> FriendNames;
 
+        public event Action<User> OpenUserViewRequest;
+
         public FriendsView(User user)
         {
             InitializeComponent();
+            listView.ItemSelected += ItemSelected;
 
             if (user.Friends.Count == 0)
             {
@@ -36,6 +41,13 @@ namespace SocialNetwork.UI
 
                 BindingContext = this;
             }
+        }
+
+        private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            string friend = e.SelectedItem as string;
+            User user = Friends.Find(X=>X .Name == friend);
+            OpenUserViewRequest(user);
         }
     }
 }
