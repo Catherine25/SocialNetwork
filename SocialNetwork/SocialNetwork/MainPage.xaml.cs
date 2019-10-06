@@ -1,6 +1,7 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
+using System;
 using System.ComponentModel;
 using Xamarin.Forms;
 
@@ -18,25 +19,29 @@ namespace SocialNetwork
             InitializeComponent();
 
             user = Test.GenerateUser();
-            Messages.AddMessages(Test.GenerateMessages(user));
+            Conversations.AddConversations(Test.GenerateConversations(user));
             user.Friends = Test.GenerateUsers();
             user.Groups = Test.GenerateGroups();
 
-            menu.ButtonClicked += Menu_ButtonClicked;
+            menu.ButtonClicked += OpenViewRequest;
         }
 
-        private void Menu_ButtonClicked(MenuView.ButtonName bn)
+        private void OpenViewRequest(MenuView.ButtonName bn)
         {
             switch (bn)
             {
                 case MenuView.ButtonName.userView:
-                    mainPageGrid.SetSingleChild(new UserView(user));
+                    mainPageGrid.SetSingleChild(new UserView(user, user));
                     break;
                 case MenuView.ButtonName.messagesView:
                     mainPageGrid.SetSingleChild(new MessagesView(user));
                     break;
                 case MenuView.ButtonName.friendsView:
-                    mainPageGrid.SetSingleChild(new FriendsView(user));
+                {
+                    FriendsView view = new FriendsView(user);
+                    mainPageGrid.SetSingleChild(view);
+                    view.OpenUserViewRequest += OpenUserViewRequest;
+                }
                     break;
                 case MenuView.ButtonName.groupsView:
                     mainPageGrid.SetSingleChild(new GroupsView(user));
@@ -45,9 +50,11 @@ namespace SocialNetwork
                     mainPageGrid.SetSingleChild(new SettingsView(user));
                     break;
                 default:
-                    throw new System.Exception();
+                    throw new Exception();
             }
-            //throw new System.NotImplementedException();
         }
+
+        private void OpenUserViewRequest(User obj) =>
+            mainPageGrid.SetSingleChild(new UserView(obj, user));
     }
 }
