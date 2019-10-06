@@ -11,16 +11,16 @@ namespace SocialNetwork.Data
         {
         }
 
-        public static void AddMessages(IEnumerable<Message> newMessages) => messages.AddRange(newMessages);
+        public static void AddMessages(IEnumerable<Conversation> newConversations) => conversations.AddRange(newConversations);
 
-        private static List<Message> messages = new List<Message>();
+        private static List<Conversation> conversations = new List<Conversation>();
 
-        public static IEnumerable<Message> GetMessagesByUser(User user)
+        public static IEnumerable<Conversation> GetConversationsByUser(User user)
         {
-            IEnumerable<Message> message = from Message m in messages
-                                           where m.Reciever == user || m.Sender == user
-                                           select m;
-            return message;
+            IEnumerable<Conversation> conversation = from Conversation c in conversations
+                                           where c.member1 == user || c.member2 == user
+                                           select c;
+            return conversation;
         }
     }
 }
