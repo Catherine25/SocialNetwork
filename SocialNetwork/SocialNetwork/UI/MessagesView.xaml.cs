@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
+//TODO: Open selected conversation dialog
 
 namespace SocialNetwork.UI
 {
@@ -41,39 +44,47 @@ namespace SocialNetwork.UI
         private void Reload()
         {
             //USE ONLY MESSAGES WHERE CURRENT USER IS AUTHOR OR RECIEVER
-            List<Message> messages = Messages.GetMessagesByUser(user).ToList();
-            
-            int length = messages.Count;
-            if (length > 10)
-                length = 10;
+            List<Conversation> conversations = Conversations.GetConversationsByUser(user).ToList();
 
-            for (int i = 0; i < length; i++)
-                SetTextOnButton(i, messages[i]);
-
-            for (int i = 0; i < 10; i++)
+            int length = conversations.Count;
+            if(length == 0)
             {
-                View a = messagesGrid.Children.First(x => x.Id == guids[i]);
-                Button b = a as Button;
-                if (b.Text == "" || b.Text == null)
-                    b.IsVisible = false;
-                else b.IsVisible = true;
+                Label label = new Label
+                {
+                    Text = "No Conversations"
+                };
+                messagesGrid.SetSingleChild(label);
+            }
+            else
+            {
+                if (length > 10)
+                    length = 10;
+
+                for (int i = 0; i < length; i++)
+                    SetTextOnButton(i, conversations[i]);
+
+                for (int i = 0; i < 10; i++)
+                {
+                    View a = messagesGrid.Children.First(x => x.Id == guids[i]);
+                    Button b = a as Button;
+                    if (b.Text == "" || b.Text == null)
+                        b.IsVisible = false;
+                    else b.IsVisible = true;
+                }
             }
         }
 
-        private void SetTextOnButton(int index, Message message)
+        private void SetTextOnButton(int index, Conversation conversation)
         {
-            string text = message.Sender.Name + ":" + "\n" + message.Text;
-
+            Message message = conversation.messages[conversation.messages.Count - 1];
+            string text = (message.isFromMember1 ? conversation.member1.Name : conversation.member2.Name) + ": " + message.Text;
             Guid id = guids[index];
 
             View view = messagesGrid.Children.First(x => x.Id == id);
 
             Button button = view as Button;
-
-            if (text == "" || text == null)
-                button.IsVisible = false;
-            else
-                button.Text = text;
+            
+            button.Text = text;
         }
     }
 }
