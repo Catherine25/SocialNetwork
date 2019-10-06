@@ -20,7 +20,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions> <!-- 8 rows -->
+            <Grid.ColumnDefinitions> <!-- 8 columns -->
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -45,6 +45,10 @@
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     Grid.ColumnSpan="5"/>
+            <Button x:Name="removeBt"
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="8"/>
         </Grid>
   </ContentView.Content>
 </ContentView>
