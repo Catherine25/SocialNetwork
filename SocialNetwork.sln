@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Android", "SocialNetwork\SocialNetwork.Android\SocialNetwork.Android.csproj", "{B67955EE-B301-4B07-A191-E91E0E129BCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork", "SocialNetwork\SocialNetwork\SocialNetwork.csproj", "{880BE042-468E-4FC8-8C60-82B0AF4C0DBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork", "SocialNetwork\SocialNetwork\SocialNetwork.csproj", "{880BE042-468E-4FC8-8C60-82B0AF4C0DBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE13B3BB-7D34-48F2-94B2-992BDABA0C85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
