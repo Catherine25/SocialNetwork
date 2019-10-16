@@ -14,10 +14,12 @@ using Xamarin.Forms.Xaml;
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MessagesView : ContentView
+    public partial class MessagesView : ContentView, IColorable
     {
         private User user;
-        private Guid[] guids;
+        private List<string> conversationsHeaders = new List<string>();
+        List<Conversation> conversations;
+        public event Action<User, Conversation> OpenDialodRequest;
 
         public MessagesView(User _user)
         {
@@ -25,18 +27,7 @@ namespace SocialNetwork.UI
 
             user = _user;
 
-            guids = new Guid[10];
-
-            guids[0] = buttonRow0.Id;
-            guids[1] = buttonRow1.Id;
-            guids[2] = buttonRow2.Id;
-            guids[3] = buttonRow3.Id;
-            guids[4] = buttonRow4.Id;
-            guids[5] = buttonRow5.Id;
-            guids[6] = buttonRow6.Id;
-            guids[7] = buttonRow7.Id;
-            guids[8] = buttonRow8.Id;
-            guids[9] = buttonRow9.Id;
+            SetTheme(user.Theme);
 
             Reload();
         }
@@ -44,47 +35,46 @@ namespace SocialNetwork.UI
         private void Reload()
         {
             //USE ONLY MESSAGES WHERE CURRENT USER IS AUTHOR OR RECIEVER
-            List<Conversation> conversations = Conversations.GetConversationsByUser(user).ToList();
+            conversations = Conversations.GetConversationsByUser(user).ToList();
 
             int length = conversations.Count;
             if(length == 0)
             {
                 Label label = new Label
                 {
-                    Text = "No Conversations"
+                    Text = "No Conversations",
+                    FontSize = 90,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center
                 };
                 messagesGrid.SetSingleChild(label);
             }
             else
             {
-                if (length > 10)
-                    length = 10;
-
                 for (int i = 0; i < length; i++)
-                    SetTextOnButton(i, conversations[i]);
+                    conversationsHeaders.Add(GetHeader(conversations[i]));
 
-                for (int i = 0; i < 10; i++)
-                {
-                    View a = messagesGrid.Children.First(x => x.Id == guids[i]);
-                    Button b = a as Button;
-                    if (b.Text == "" || b.Text == null)
-                        b.IsVisible = false;
-                    else b.IsVisible = true;
-                }
+                listView.ItemsSource = conversationsHeaders;
             }
+
+            listView.ItemSelected += ItemSelected;
+
+            BindingContext = this;
         }
 
-        private void SetTextOnButton(int index, Conversation conversation)
+        private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            int i = e.SelectedItemIndex;
+            OpenDialodRequest(user, conversations[i]);
+        }
+
+        private string GetHeader(Conversation conversation)
         {
             Message message = conversation.messages[conversation.messages.Count - 1];
-            string text = (message.isFromMember1 ? conversation.member1.Name : conversation.member2.Name) + ": " + message.Text;
-            Guid id = guids[index];
-
-            View view = messagesGrid.Children.First(x => x.Id == id);
-
-            Button button = view as Button;
-            
-            button.Text = text;
+            string text = (message.IsFromMember1 ? conversation.member1.Name : conversation.member2.Name) + ": " + message.Text;
+            return text;
         }
+
+        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
     }
 }
