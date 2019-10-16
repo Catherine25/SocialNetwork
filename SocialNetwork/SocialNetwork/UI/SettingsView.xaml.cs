@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,35 +13,40 @@ using Xamarin.Forms.Xaml;
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsView : ContentView
+    public partial class SettingsView : ContentView, IColorable
     {
-        User user;
-        Dictionary<string, Theme> themes = new Dictionary<string, Theme>
-        {
-            {
-                "Theme1", new Theme("default", new Color[] {
-                Color.FromRgb(26,24,24),
-                Color.Black,
-                Color.Black,
-                Color.Black })
-            }
-        };
+        User CurrentUser;
+        List<Theme> themes = new List<Theme>();
         
         public SettingsView(User user)
         {
             InitializeComponent();
+            ImportThemes();
 
-            this.user = user;
+            this.CurrentUser = user;
 
             themePicker.SelectedIndexChanged += ThemePicker_SelectedIndexChanged;
         }
 
+        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+
         private void ThemePicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             string item = (string)themePicker.SelectedItem;
-            Theme theme = themes[item];
-            color1.BackgroundColor = theme.colors[0];
-            user.Theme = theme;
+            Theme theme = themes.Find(X=>X.Name == item);
+            color1.BackgroundColor = theme.TextColor;
+            color2.BackgroundColor = theme.BackgroundColor;
+            color3.BackgroundColor = theme.SeparatorColor;
+
+            CurrentUser.Theme = theme;
+        }
+
+        private void ImportThemes() {
+            foreach(var theme in Themes.ThemesList)
+            {
+                themes.Add(theme);
+                themePicker.Items.Add(theme.Name);
+            }
         }
     }
 }
