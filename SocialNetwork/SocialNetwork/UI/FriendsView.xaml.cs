@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,10 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-//TODO: Open selected friend user page
-
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FriendsView : ContentView
+    public partial class FriendsView : ContentView, IColorable
     {
         public List<User> Friends;
         public List<string> FriendNames;
@@ -29,7 +28,10 @@ namespace SocialNetwork.UI
             {
                 Label label = new Label
                 {
-                    Text = "No Friends"
+                    Text = "No Friends",
+                    FontSize = 90,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center
                 };
                 Content = label;
             }
@@ -41,6 +43,7 @@ namespace SocialNetwork.UI
 
                 BindingContext = this;
             }
+            SetTheme(user.Theme);
         }
 
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -49,5 +52,7 @@ namespace SocialNetwork.UI
             User user = Friends.Find(X=>X .Name == friend);
             OpenUserViewRequest(user);
         }
+
+        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
     }
 }
