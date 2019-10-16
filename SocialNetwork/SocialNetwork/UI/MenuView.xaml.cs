@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using SocialNetwork.Data;
+using SocialNetwork.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MenuView : ContentView
+    public partial class MenuView : ContentView, IColorable
     {
         public enum ButtonName { userView, messagesView, friendsView, groupsView, settingsView }
         public event Action<ButtonName> ButtonClicked;
@@ -24,7 +25,11 @@ namespace SocialNetwork.UI
             friendsViewBt.Clicked += FriendsViewBt_Clicked;
             groupsViewBt.Clicked += GroupsViewBt_Clicked;
             settingsViewBt.Clicked += SettingsViewBt_Clicked;
+
+            //UserViewBt_Clicked(null, null);
         }
+
+        public void SubscribeForTheme(User user) => user.ThemeChanged += ThemeChanged;
 
         private void SettingsViewBt_Clicked(object sender, EventArgs e) =>
             ButtonClicked(ButtonName.settingsView);
@@ -40,5 +45,9 @@ namespace SocialNetwork.UI
 
         private void UserViewBt_Clicked(object sender, EventArgs e) =>
             ButtonClicked(ButtonName.userView);
+
+        private void ThemeChanged(Theme theme) => SetTheme(theme);
+
+        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
     }
 }
