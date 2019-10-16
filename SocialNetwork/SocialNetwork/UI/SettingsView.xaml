@@ -6,32 +6,17 @@
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.SettingsView">
     <ContentView.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            
-            <Picker x:Name="themePicker"
-                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"> 
-                <Picker.Items>
-                    <x:String>Theme1</x:String>
-                </Picker.Items>
-            </Picker>
+        <StackLayout>
+            <Label x:Name="themeLabel"
+                   Text="Choose your theme"/>
+            <Picker x:Name="themePicker"/> 
 
-            <BoxView x:Name="color1" Grid.Row="1" Grid.Column="0"/>
-            <BoxView x:Name="color2" Grid.Row="1" Grid.Column="1"/>
-            <BoxView x:Name="color3" Grid.Row="1" Grid.Column="2"/>
-            <BoxView x:Name="color4" Grid.Row="1" Grid.Column="3"/>
-            <BoxView x:Name="color5" Grid.Row="1" Grid.Column="4"/>
-        </Grid>
+            <BoxView x:Name="color1"/>
+            <BoxView x:Name="color2"/>
+            <BoxView x:Name="color3"/>
+            <BoxView x:Name="color4"/>
+            <BoxView x:Name="color5"/>
+            
+        </StackLayout>
     </ContentView.Content>
 </ContentView>
