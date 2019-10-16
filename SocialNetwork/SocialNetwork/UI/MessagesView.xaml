@@ -7,28 +7,7 @@
              x:Class="SocialNetwork.UI.MessagesView">
     <ContentView.Content>
         <Grid x:Name="messagesGrid">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Button x:Name="buttonRow0" Grid.Row="0"/>
-            <Button x:Name="buttonRow1" Grid.Row="1"/>
-            <Button x:Name="buttonRow2" Grid.Row="2"/>
-            <Button x:Name="buttonRow3" Grid.Row="3"/>
-            <Button x:Name="buttonRow4" Grid.Row="4"/>
-            <Button x:Name="buttonRow5" Grid.Row="5"/>
-            <Button x:Name="buttonRow6" Grid.Row="6"/>
-            <Button x:Name="buttonRow7" Grid.Row="7"/>
-            <Button x:Name="buttonRow8" Grid.Row="8"/>
-            <Button x:Name="buttonRow9" Grid.Row="9"/>
+            <ListView x:Name="listView"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
