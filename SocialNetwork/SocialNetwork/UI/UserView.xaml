@@ -31,11 +31,11 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Image x:Name="image"
-                   Grid.Row="0"
-                   Grid.Column="0"
-                   Grid.RowSpan="3"
-                   Grid.ColumnSpan="3"/>
+            <ImageButton x:Name="image"
+                         Grid.Row="0"
+                         Grid.Column="0"
+                         Grid.RowSpan="3"
+                         Grid.ColumnSpan="3"/>
             <Button x:Name="name"
                     Grid.Row="0"
                     Grid.Column="3"
