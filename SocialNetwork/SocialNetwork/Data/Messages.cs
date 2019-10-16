@@ -7,10 +7,6 @@ namespace SocialNetwork.Data
 {
     static class Messages
     {
-        static Messages()
-        {
-        }
-
         public static void AddMessages(IEnumerable<Conversation> newConversations) => conversations.AddRange(newConversations);
 
         private static List<Conversation> conversations = new List<Conversation>();
