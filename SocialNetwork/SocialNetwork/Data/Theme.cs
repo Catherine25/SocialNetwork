@@ -8,13 +8,28 @@ namespace SocialNetwork.Data
 {
     public class Theme
     {
-        public Theme(string name, Color[] colors)
+        public Theme(string name,
+                     Color textColor,
+                     Color backgroundColor,
+                     Color separatorColor,
+                     Color titleColor, 
+                     Color placeholderColor)
         {
             Name = name;
-            this.colors = colors;
+
+            TextColor = textColor;
+            BackgroundColor = backgroundColor;
+            SeparatorColor = separatorColor;
+            TitleColor = titleColor;
+            PlaceholderColor = placeholderColor;
         }
 
         public string Name;
-        public Color[] colors;
+        public Color TextColor;
+        public Color BackgroundColor;
+        public Color SeparatorColor;
+        public Color TitleColor;
+        public Color PlaceholderColor;
+
     }
 }
