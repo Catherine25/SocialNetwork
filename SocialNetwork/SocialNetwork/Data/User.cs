@@ -1,37 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SocialNetwork.Services;
 using Xamarin.Forms;
 
 namespace SocialNetwork.Data
 {
     public class User
     {
-        public User(Image image, string name, string bio)
+        public event Action<Theme> ThemeChanged;
+        public User(string image, string name, string bio)
         {
-            Avatar = image;
+            AvatarLink = image;
             Name = name;
             Bio = bio;
 
-            if (Avatar == null)
-                Avatar = new Image();
+            if (AvatarLink == null)
+                AvatarLink = "";
 
             Friends = new List<User>();
 
-            Theme = new Theme(
-                "default", new Color[] {
-                Color.FromRgb(26,24,24),
-                Color.FromRgb(85,89,95),
-                Color.Black,
-                Color.Black });
+            Theme = Themes.ThemesList[0];
         }
 
-        public Image Avatar;
+        public string AvatarLink;
         public string Name;
         public string Bio;
-        public Theme Theme;
+        private Theme theme;
 
         public List<User> Friends;
         public List<Group> Groups;
+
+        public Theme Theme
+        {
+            get => theme;
+            set
+            {
+                // if(theme != value && theme != null) {
+                //     theme = value;
+                //     ThemeChanged(theme);                
+                // }
+                theme = value;
+                if(ThemeChanged != null)
+                    ThemeChanged(theme);
+            }
+        }
     }
 }
