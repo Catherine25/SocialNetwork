@@ -16,6 +16,7 @@ namespace SocialNetwork.UI
     {
         private User User;
         private Conversation Conversation;
+        private Dictionary<Guid, Message> messagesId;
 
         public Dialog(Conversation conversaton, User user)
         {
@@ -23,6 +24,7 @@ namespace SocialNetwork.UI
             
             User = user;
             Conversation = conversaton;
+            messagesId = new Dictionary<Guid, Message>();
 
             IOrderedEnumerable<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime);
 
@@ -30,7 +32,9 @@ namespace SocialNetwork.UI
 
             for (int i = 0; i < length; i++)
             {
-                Button button = CreateButton(orderedEnumerable.ElementAt(i), conversaton.member1 == user);
+                Message message = orderedEnumerable.ElementAt(i);
+                Button button = CreateButton(message, conversaton.member1 == user);
+                messagesId.Add(button.Id, message);
                 button.SetTheme(user.Theme);
                 stack.Children.Add(button);
             }
@@ -67,22 +71,9 @@ namespace SocialNetwork.UI
         private void messageClicked(object sender, EventArgs e)
         {
             Button button = sender as Button;
-            Message message = Conversation.messages.Find(X=>X.Text == button.Text);
+            Message message = messagesId[button.Id];
 
-            if(message == null)
-            {
-                message = Conversation.messages.Find(X => X.DateTime.ToString() == button.Text);
-                button.Text = message.Text;
-            }
-            else
-                button.Text = message.DateTime.ToString();
-        }
-
-        private void messageFocused(object sender, FocusEventArgs e)
-        {
-            Button button = sender as Button;
-            Message message = Conversation.messages.Find(X=>X.DateTime.ToString() == button.Text);
-            button.Text = message.Text;
+            button.Text = (button.Text == message.Text) ? message.DateTime.ToString() : message.Text;
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
