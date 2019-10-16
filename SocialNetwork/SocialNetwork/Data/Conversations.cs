@@ -8,7 +8,8 @@ namespace SocialNetwork.Data
 {
     class Conversations
     {
-        public static void AddConversations(IEnumerable<Conversation> newConversations) => conversations.AddRange(newConversations);
+        public static void AddConversations(IEnumerable<Conversation> newConversations) =>
+            conversations.AddRange(newConversations);
 
         private static List<Conversation> conversations = new List<Conversation>();
 
