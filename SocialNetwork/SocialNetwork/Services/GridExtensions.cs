@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SocialNetwork.Data;
 using Xamarin.Forms;
 
 namespace SocialNetwork.Services
