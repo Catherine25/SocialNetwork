@@ -18,7 +18,7 @@ namespace SocialNetwork.UI
     {
         private User user;
         private List<string> conversationsHeaders;
-        List<Conversation> conversations;
+        private SortedSet<Conversation> conversations;
         public event Action<User, Conversation> OpenDialodRequest;
 
         public MessagesView(User _user, List<Conversation> _conversations)
@@ -26,7 +26,7 @@ namespace SocialNetwork.UI
             InitializeComponent();
 
             user = _user;
-            conversations = _conversations;
+            conversations = new SortedSet<Conversation>(_conversations);
 
             conversationsHeaders = new List<string>();
 
@@ -50,7 +50,13 @@ namespace SocialNetwork.UI
             else
             {
                 for (int i = 0; i < length; i++)
-                    conversationsHeaders.Add(GetHeader(conversations[i]));
+                {
+                    string header = GetHeader(conversations.ElementAt(i));
+                    if (conversationsHeaders.Any(X => X == header))
+                        ;//throw new Exception();
+                    else
+                        conversationsHeaders.Add(header);
+                }
 
                 listView.ItemsSource = conversationsHeaders;
             }
@@ -63,7 +69,7 @@ namespace SocialNetwork.UI
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, conversations[i]);
+            OpenDialodRequest(user, conversations.ElementAt(i));
         }
 
         private string GetHeader(Conversation conversation)
@@ -79,6 +85,9 @@ namespace SocialNetwork.UI
             return text;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            (this as View).SetTheme(theme);
+        }
     }
 }

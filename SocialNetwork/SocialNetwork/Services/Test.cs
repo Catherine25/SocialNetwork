@@ -30,8 +30,18 @@ namespace SocialNetwork.Services
             List<Message> generatedMessages = new List<Message>(GenerateMessages(user));
             List<Message> messages = generatedMessages.OrderBy(X => X.DateTime).ToList();
 
-            Conversation c = new Conversation(user, GenerateUser(), messages);
-            return c;
+            User newUser = GenerateUser();
+            if (newUser == user)
+            {
+                Debug.WriteLine("Failed to generate conversation, created user already exists");
+                return null;
+            }
+            else
+            {
+                Conversation c = new Conversation(user, newUser, messages);
+                Debug.WriteLine("New conversation created. " + "member1 is " + c.member1.Name + "member2 is " + c.member2.Name);
+                return c;
+            }
         }
 
         private static DateTime GenerateDateTime()
@@ -88,7 +98,13 @@ namespace SocialNetwork.Services
             IList<Conversation> conversations = new List<Conversation>();
 
             for (int i = 0; i < length; i++)
-                conversations.Add(GenerateConversation(user));
+            {
+                Conversation conversation = GenerateConversation(user);
+                if (conversations.Contains(conversation))
+                    throw new Exception();
+                else if(conversation != null)
+                    conversations.Add(conversation);
+            }
 
             return conversations;
         }

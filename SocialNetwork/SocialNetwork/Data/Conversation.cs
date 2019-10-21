@@ -25,7 +25,7 @@ namespace SocialNetwork.Data
             else if(object.ReferenceEquals(c2, null))
                 return false;
             
-            return c1.member1 == c2.member1 && c1.member2 == c2.member2 ? true : false;
+            return (c1.member1 == c2.member1 && c1.member2 == c2.member2) || (c1.member1 == c2.member2 && c1.member2 == c2.member1) ? true : false;
         }
 
         public static bool operator !=(Conversation c1, Conversation c2)
@@ -35,13 +35,15 @@ namespace SocialNetwork.Data
             else if(object.ReferenceEquals(c2, null))
                 return true;
 
-            return c1.member1 != c2.member1 || c1.member2 != c2.member2 ? true : false;
+            return (c1.member1 != c2.member1 || c1.member2 != c2.member2) && (c1.member1 != c2.member2 || c1.member2 != c2.member1) ? true : false;
         }
 
         public override bool Equals(object obj) =>
             obj is Conversation conversation &&
-                member1 == conversation.member1 &&
-                member2 == conversation.member2;
+                ((member1 == conversation.member1 &&
+                member2 == conversation.member2) ||
+                (member1 == conversation.member2 &&
+                member2 == conversation.member1));
 
         public override int GetHashCode()
         {
