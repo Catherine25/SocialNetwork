@@ -27,8 +27,6 @@ namespace SocialNetwork.UI
             CurrentUser = user;
             Visitor = visitor;
 
-            SetTheme(user.Theme);
-
             if (visitor == user)
                 removeBt.IsVisible = false;
             else

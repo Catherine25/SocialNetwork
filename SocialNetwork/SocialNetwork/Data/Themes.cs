@@ -8,12 +8,11 @@ using System.Threading;
 using Xamarin.Forms;
 using static Xamarin.Forms.Color;
 
-namespace SocialNetwork.Data
-{
-    public static class Themes
-    {
-        private static Stack<string> ThemeLinks = new Stack<string>();
-        public static List<Theme> ThemesList = new List<Theme>()
+namespace SocialNetwork.Data {
+    public class Themes {
+
+        private Stack<string> ThemeLinks = new Stack<string>();
+        public List<Theme> ThemesList = new List<Theme>()
         {
             new Theme(
                 "Default",
@@ -24,10 +23,10 @@ namespace SocialNetwork.Data
                 Color.DodgerBlue)
         };
 
-        public static bool IsPageLoadCompleted = false;
-        public static bool IsAllDownloaded = false;
+        public bool IsPageLoadCompleted = false;
+        public bool IsAllDownloaded = false;
 
-        private static void LoadTheme(object o)
+        private void LoadTheme(object o)
         {
             Debug.WriteLine("LoadTheme() running");
 
@@ -61,13 +60,7 @@ namespace SocialNetwork.Data
             }
         }
 
-        static Themes()
-        {
-            //Thread thread = new Thread(LoadRomanukeThemes);
-            //thread.Start();
-        }
-
-        static void LoadRomanukeThemes()
+        public void LoadRomanukeThemes(object o)
         {
             Debug.WriteLine("LoadRomanukeThemes() running");
             

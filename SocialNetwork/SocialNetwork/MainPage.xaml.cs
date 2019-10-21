@@ -2,6 +2,7 @@
 using SocialNetwork.Services;
 using SocialNetwork.UI;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
@@ -9,31 +10,36 @@ using Xamarin.Forms;
 
 namespace SocialNetwork
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        User user;
+        private User user;
+        private Theme currentTheme;
+        public List<Theme> themes;
+        public List<Conversation> conversations;
 
         public MainPage()
         {
             Debug.WriteLine("MainPage running");
 
             InitializeComponent();
+        }
 
-            user = Test.GenerateUser();
-            Conversations.AddConversations(Test.GenerateConversations(user));
-            user.Friends = Test.GenerateUsers();
-            user.Groups = Test.GenerateGroups();
+        public MainPage(User newUser, Theme newTheme, List<Data.Conversation> newConversations) {
+
+            Debug.WriteLine("MainPage running");
+
+            InitializeComponent();
+
+            user = newUser;
+            currentTheme = newTheme;
+            conversations = newConversations;
 
             menu.ButtonClicked += OpenViewRequest;
-            menu.SubscribeForTheme(user);
-            (menu as View).SetTheme(user.Theme);
-
+            menu.SetTheme(currentTheme);
             OpenViewRequest(MenuView.ButtonName.userView);
 
-            //SetupActivityImitators();
+            Debug.WriteLine("MainPage end");
         }
 
         private void OpenViewRequest(MenuView.ButtonName bn)
@@ -41,34 +47,44 @@ namespace SocialNetwork
             switch (bn)
             {
                 case MenuView.ButtonName.userView:
-                    mainPageGrid.SetSingleChild(new UserView(user, user));
-                    break;
+                {
+                    UserView view = new UserView(user, user);
+                    mainPageGrid.SetSingleChild(view);
+                    view.SetTheme(currentTheme);
+                }
+                break;
                 case MenuView.ButtonName.messagesView:
                 {
-                    MessagesView view = new MessagesView(user);
+                    MessagesView view = new MessagesView(user, conversations);
                     mainPageGrid.SetSingleChild(view);
+                    view.SetTheme(currentTheme);
                     view.OpenDialodRequest += OpenDialodRequest;
-                    break;
                 }
+                break;
                 case MenuView.ButtonName.friendsView:
                 {
                     FriendsView view = new FriendsView(user);
                     mainPageGrid.SetSingleChild(view);
+                    view.SetTheme(currentTheme);
                     view.OpenUserViewRequest += OpenUserViewRequest;
-                    break;
                 }
+                break;
                 case MenuView.ButtonName.groupsView:
                 {
                     GroupsView view = new GroupsView(user);
                     mainPageGrid.SetSingleChild(view);
+                    view.SetTheme(currentTheme);
                     view.OpenGroupViewRequest += View_OpenGroupViewRequest;
-                    break;
                 }
+                break;
                 case MenuView.ButtonName.settingsView:
-                    mainPageGrid.SetSingleChild(new SettingsView(user));
-                    break;
-                default:
-                    throw new Exception();
+                {
+                    SettingsView view = new SettingsView(user, themes);
+                    mainPageGrid.SetSingleChild(view);
+                    view.SetTheme(currentTheme);
+                }
+                break;
+                default: throw new Exception();
             }
         }
 
@@ -76,18 +92,9 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(new GroupView(user, group));
 
         private void OpenDialodRequest(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user));
+            mainPageGrid.SetSingleChild(new Dialog(conversation, user, currentTheme));
 
         private void OpenUserViewRequest(User obj) =>
             mainPageGrid.SetSingleChild(new UserView(obj, user));
-
-        //private void SetupActivityImitators() {
-        //    IActivityImitator activityImitator = new NewMessagesImitator(user)
-        //    {
-        //        StartTime = DateTime.Now,
-        //        Frequency = TimeSpan.FromSeconds(1)
-        //    };
-        //    ThreadPool.QueueUserWorkItem(new WaitCallback(activityImitator.TryWork));
-        //}
     }
 }

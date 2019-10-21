@@ -32,8 +32,6 @@ namespace SocialNetwork.UI
             description.Text = group.Description;
 
             image.Clicked += Image_Clicked;
-
-            SetTheme(user.Theme);
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);

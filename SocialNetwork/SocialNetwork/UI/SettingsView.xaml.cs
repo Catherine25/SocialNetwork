@@ -16,12 +16,14 @@ namespace SocialNetwork.UI
     public partial class SettingsView : ContentView, IColorable
     {
         User CurrentUser;
-        List<Theme> themes = new List<Theme>();
+        List<Theme> themes;
+
+        public event Action<string> ChangeThemeRequest;
         
-        public SettingsView(User user)
+        public SettingsView(User user, List<Theme> newThemes)
         {
             InitializeComponent();
-            ImportThemes();
+            ImportThemes(newThemes);
 
             this.CurrentUser = user;
 
@@ -38,11 +40,12 @@ namespace SocialNetwork.UI
             color2.BackgroundColor = theme.BackgroundColor;
             color3.BackgroundColor = theme.SeparatorColor;
 
-            CurrentUser.Theme = theme;
+            ChangeThemeRequest(theme.Name);
         }
 
-        private void ImportThemes() {
-            foreach(var theme in Themes.ThemesList)
+        private void ImportThemes(List<Theme> newThemes)
+        {
+            foreach(var theme in newThemes)
             {
                 themes.Add(theme);
                 themePicker.Items.Add(theme.Name);

@@ -32,13 +32,17 @@ namespace SocialNetwork.Services
 
             Debug.WriteLine("GetChildrenFromView running on " + view.Id.ToString());
 
-            if (view is Grid grid) 
-                return grid.Children;
-            else if(view is StackLayout stackLayout)
-                return stackLayout.Children;
-            else if(view is ContentView)
-                return new List<View>() { (view as ContentView).Content };
-            else return new List<View>();
+            switch (view)
+            {
+                case Grid grid:
+                    return grid.Children;
+                case StackLayout stackLayout:
+                    return stackLayout.Children;
+                case ContentView contentView:
+                    return new List<View>() { contentView.Content };
+                default:
+                    return new List<View>();
+            }
         }
 
         private static void ApplyTheme(View view, Theme theme) {

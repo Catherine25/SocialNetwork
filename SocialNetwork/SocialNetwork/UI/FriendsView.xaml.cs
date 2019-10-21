@@ -9,25 +9,22 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI
-{
+namespace SocialNetwork.UI {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FriendsView : ContentView, IColorable
-    {
+    public partial class FriendsView : ContentView, IColorable {
+        
         public List<User> Friends;
         public List<string> FriendNames;
 
         public event Action<User> OpenUserViewRequest;
 
-        public FriendsView(User user)
-        {
+        public FriendsView(User user) {
+
             InitializeComponent();
             listView.ItemSelected += ItemSelected;
 
-            if (user.Friends.Count == 0)
-            {
-                Label label = new Label
-                {
+            if (user.Friends.Count == 0) {
+                Label label = new Label {
                     Text = "No Friends",
                     FontSize = 90,
                     HorizontalTextAlignment = TextAlignment.Center,
@@ -43,10 +40,9 @@ namespace SocialNetwork.UI
 
                 BindingContext = this;
             }
-            SetTheme(user.Theme);
         }
 
-        private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
         {
             string friend = e.SelectedItem as string;
             User user = Friends.Find(X=>X .Name == friend);

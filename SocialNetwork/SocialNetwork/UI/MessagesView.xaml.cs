@@ -17,26 +17,24 @@ namespace SocialNetwork.UI
     public partial class MessagesView : ContentView, IColorable
     {
         private User user;
-        private List<string> conversationsHeaders = new List<string>();
+        private List<string> conversationsHeaders;
         List<Conversation> conversations;
         public event Action<User, Conversation> OpenDialodRequest;
 
-        public MessagesView(User _user)
+        public MessagesView(User _user, List<Conversation> _conversations)
         {
             InitializeComponent();
 
             user = _user;
+            conversations = _conversations;
 
-            SetTheme(user.Theme);
+            conversationsHeaders = new List<string>();
 
             Reload();
         }
 
         private void Reload()
         {
-            //USE ONLY MESSAGES WHERE CURRENT USER IS AUTHOR OR RECIEVER
-            conversations = Conversations.GetConversationsByUser(user).ToList();
-
             int length = conversations.Count;
             if(length == 0)
             {
@@ -70,8 +68,14 @@ namespace SocialNetwork.UI
 
         private string GetHeader(Conversation conversation)
         {
+            //get last message
             Message message = conversation.messages[conversation.messages.Count - 1];
-            string text = (message.IsFromMember1 ? conversation.member1.Name : conversation.member2.Name) + ": " + message.Text;
+
+            //get author name
+            User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
+            string authorName = author == user ? "You" : author.Name;
+
+            string text = authorName + ": " + message.Text;
             return text;
         }
 

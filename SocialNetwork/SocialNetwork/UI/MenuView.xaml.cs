@@ -29,8 +29,6 @@ namespace SocialNetwork.UI
             //UserViewBt_Clicked(null, null);
         }
 
-        public void SubscribeForTheme(User user) => user.ThemeChanged += ThemeChanged;
-
         private void SettingsViewBt_Clicked(object sender, EventArgs e) =>
             ButtonClicked(ButtonName.settingsView);
 

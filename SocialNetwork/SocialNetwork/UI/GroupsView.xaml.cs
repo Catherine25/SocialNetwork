@@ -20,6 +20,7 @@ namespace SocialNetwork.UI
         public List<Group> Groups;
         public List<string> GroupTitles;
         public event Action<User, Group> OpenGroupViewRequest;
+        private Theme theme;
 
         public GroupsView(User user)
         {
@@ -48,7 +49,7 @@ namespace SocialNetwork.UI
                 BindingContext = this;
             }
 
-            SetTheme(user.Theme);
+            SetTheme(theme);
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);

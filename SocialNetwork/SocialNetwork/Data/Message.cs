@@ -17,5 +17,7 @@ namespace SocialNetwork.Data
         public string Text;
         public DateTime DateTime;
         public bool IsFromMember1;
+
+        public override string ToString() => "[" + DateTime + "] " + Text + " isFromMember1: " + IsFromMember1;
     }
 }
