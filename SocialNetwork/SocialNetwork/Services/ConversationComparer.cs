@@ -12,10 +12,16 @@ namespace SocialNetwork.Services
             Message m1 = x.messages[x.messages.Count - 1];
             Message m2 = x.messages[x.messages.Count - 1];
 
-            DateTime dateTime1 = m1.DateTime;
-            DateTime dateTime2 = m2.DateTime;
+            DateTime d1 = m1.DateTime;
+            DateTime d2 = m2.DateTime;
 
-
+            if (d1.Ticks > d2.Ticks)
+                return 1;
+            if (d2.Ticks > d1.Ticks)
+                return -1;
+            else
+                return 0;
+            
         }
     }
 }
