@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SocialNetwork.Data
 {
-    public class Conversation
+    public class Conversation : IComparable<Conversation>, IComparable, IComparer<Conversation>
     {
         public Conversation(User user1, User user2, List<Message> newMessages)
         {
@@ -52,6 +52,32 @@ namespace SocialNetwork.Data
             hashCode = hashCode * -1521134295 + EqualityComparer<User>.Default.GetHashCode(member2);
             hashCode = hashCode * -1521134295 + EqualityComparer<List<Message>>.Default.GetHashCode(messages);
             return hashCode;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return this.member1.Name.CompareTo((obj as Conversation).member1);
+        }
+
+        public int CompareTo(Conversation other)
+        {
+            return this.member1.Name.CompareTo(other.member1);
+        }
+
+        public int Compare(Conversation x, Conversation y)
+        {
+            Message m1 = x.messages[x.messages.Count - 1];
+            Message m2 = x.messages[x.messages.Count - 1];
+
+            DateTime d1 = m1.DateTime;
+            DateTime d2 = m2.DateTime;
+
+            if (d1 > d2)
+                return 1;
+            if (d2 > d1)
+                return -1;
+            else
+                return 0;
         }
     }
 }
