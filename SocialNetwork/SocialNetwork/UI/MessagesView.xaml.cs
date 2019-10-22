@@ -25,8 +25,10 @@ namespace SocialNetwork.UI
         {
             InitializeComponent();
 
+            CopyCheck(_conversations);
+
             user = _user;
-            conversations = new SortedSet<Conversation>(_conversations);
+            conversations = new SortedSet<Conversation>(_conversations, new ConversationComparer());
 
             conversationsHeaders = new List<string>();
 
@@ -88,6 +90,34 @@ namespace SocialNetwork.UI
         public void SetTheme(Theme theme)
         {
             (this as View).SetTheme(theme);
+        }
+
+        private void CopyCheck(List<Conversation> conversations)
+        {
+            int length = conversations.Count;
+            List<string> names1 = new List<string>();
+            List<string> names2 = new List<string>();
+
+            for (int i = 0; i < length; i++)
+            {
+                string name1 = conversations[i].member1.Name;
+                string name2 = conversations[i].member2.Name;
+                
+                if (name1 == name2)
+                    throw new Exception("name duplicates");
+
+                names1.Add(name1);
+                names2.Add(name2);
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < length; j++)
+                {
+                    if (names1[i] == names1[j] && names2[i] == names2[j])
+                        throw new Exception("two pairs!");
+                }
+            }
         }
     }
 }
