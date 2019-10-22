@@ -101,7 +101,10 @@ namespace SocialNetwork.Services
             {
                 Conversation conversation = GenerateConversation(user);
                 if (conversations.Contains(conversation))
-                    throw new Exception();
+                {
+                    Debug.WriteLine("User of generated conversation exists");
+                    continue;
+                }
                 else if(conversation != null)
                     conversations.Add(conversation);
             }
