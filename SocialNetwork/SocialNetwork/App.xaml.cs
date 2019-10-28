@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
 using SocialNetwork.Data;
 using SocialNetwork.Services;
 using Xamarin.Forms;
@@ -17,6 +17,7 @@ namespace SocialNetwork
         NewMessagesImitator _bot;
         Themes _themes;
         User _currentUser;
+		ILoader _loader;
 
         List<Conversation> _conversations = new List<Conversation>();
         #endregion
@@ -26,9 +27,11 @@ namespace SocialNetwork
         {
             InitializeComponent();
 
-            _currentUser = Test.GenerateUser();
-            _currentUser.Friends = Test.GenerateUsers();
-            _currentUser.Groups = Test.GenerateGroups();
+			_loader = new GeneratorLoader();
+
+			_currentUser = _loader.LoadUser();
+			_currentUser.Friends = _loader.LoadFriends().Where(U => U.Name != _currentUser.Name).ToList();
+            _currentUser.Groups = _loader.LoadGroups();
             _themes = new Themes();
             _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
             _bot.MessageGenerated += BotGeneratedMessage;
@@ -38,29 +41,6 @@ namespace SocialNetwork
             List<Conversation> conversations = Test.GenerateConversations(_currentUser).ToList();
             foreach (Conversation c in conversations)
                 TryAddConversation(c);
-            string cs = @"server=35.180.63.12;userid=Admin;password=3555serg;database=Kate";
-
-            MySqlConnection conn = null;
-
-            try
-            {
-                conn = new MySqlConnection(cs);
-                conn.Open();
-                Console.WriteLine("MySQL version : {0}", conn.ServerVersion);
-
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.ToString());
-
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-            }
         }
 
         private void TryAddConversation(Conversation conversation)
