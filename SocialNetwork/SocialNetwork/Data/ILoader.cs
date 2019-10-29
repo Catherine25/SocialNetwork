@@ -6,7 +6,7 @@ namespace SocialNetwork.Data
 {
 	interface ILoader
 	{
-		User LoadUser();
+		User LoadUser(string name);
 		List<User> LoadFriends();
 		List<Group> LoadGroups();
 	}
