@@ -38,7 +38,7 @@ namespace SocialNetwork
                 _loader = new GeneratorLoader();
             }
 
-            _currentUser = _loader.LoadUser();
+            _currentUser = _loader.LoadUser("Kate");
 			_currentUser.Friends = _loader.LoadFriends().Where(U => U.Name != _currentUser.Name).ToList();
             _currentUser.Groups = _loader.LoadGroups();
             _themes = new Themes();
