@@ -27,9 +27,18 @@ namespace SocialNetwork
         {
             InitializeComponent();
 
-			_loader = new GeneratorLoader();
+            try
+            {
+                Debug.WriteLine("Trying to connect to database");
+                _loader = new SQLLoader();
+            }
+            catch
+            {
+                Debug.WriteLine("Failed. Connecting to generator");
+                _loader = new GeneratorLoader();
+            }
 
-			_currentUser = _loader.LoadUser();
+            _currentUser = _loader.LoadUser();
 			_currentUser.Friends = _loader.LoadFriends().Where(U => U.Name != _currentUser.Name).ToList();
             _currentUser.Groups = _loader.LoadGroups();
             _themes = new Themes();
