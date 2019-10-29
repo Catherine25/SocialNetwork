@@ -12,5 +12,10 @@ namespace SocialNetwork.Data
 		public List<Group> LoadGroups() => Test.GenerateGroups();
 
 		public User LoadUser() => Test.GenerateUser();
+
+		public User LoadUser(string name)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
