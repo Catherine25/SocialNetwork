@@ -6,10 +6,23 @@ using SocialNetwork.Data.Database;
 
 namespace SocialNetwork.Data
 {
+	struct UserFields
+	{
+		public string name;
+		public string link;
+		public string bio;
+	}
+
+	struct GroupFields
+	{
+		public string title;
+	}
+
 	class SQLLoader : ILoader
 	{
 		string connectionString;
-		List<string> items = new List<string>();
+		List<User> users = new List<User>();
+		SQLCommands sqlCommands = new SQLCommands();
 
 		public SQLLoader()
 		{
@@ -23,37 +36,55 @@ namespace SocialNetwork.Data
                 "DATABASE=" + database + ";" +
                 "UID=" + uid + ";" +
                 "PASSWORD=" + password + ";";
+
+			LoadUsers(connectionString);
         }
 
-        private void ConnectToDB(string connectionString, string sqlCommand, string field)
+		private string GetDataByReader(MySqlDataReader reader, string fieldName) => reader.GetString(reader.GetOrdinal(fieldName));
+
+        private void LoadUsers(string connectionString)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(sqlCommand, connection))
+            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllUsers, connection))
             {
                 connection.Open();
+
                 using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    // Check is the reader has any rows at all before starting to read.
-                    if (reader.HasRows)
-                    {
-                        // Read advances to the next row.
-                        while (reader.Read())
-                        {
-							if(field == null || field == "")
-							{
-								string whatIsThis = reader.ToString();
-								//string name = reader.().ToString();
-							}
-							else
-							{
-								// To avoid unexpected bugs access columns by name.
-								items.Add(reader.GetString(reader.GetOrdinal(field)));
-							}
-                        }
-                    }
-                }
+                    if (reader.HasRows) // Check is the reader has any rows at all before starting to read.
+						while (reader.Read())
+							users.Add(
+								ConstructUser(
+									new UserFields
+									{
+										name = GetDataByReader(reader, sqlCommands.User_Username),
+										bio = GetDataByReader(reader, sqlCommands.User_Bio),
+										link = GetDataByReader(reader, sqlCommands.User_AvatarLink)
+									}));
             }
         }
+
+		private void LoadGroups(string connectionString)
+		{
+			using (MySqlConnection connection = new MySqlConnection(connectionString))
+			using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllUsers, connection))
+			{
+				connection.Open();
+
+				using (MySqlDataReader reader = cmd.ExecuteReader())
+					if (reader.HasRows) // Check is the reader has any rows at all before starting to read.
+						while (reader.Read())
+							users.Add(
+								ConstructUser(
+									new UserFields
+									{
+										name = GetDataByReader(reader, sqlCommands.User_Username),
+										bio = GetDataByReader(reader, sqlCommands.User_Bio),
+										link = GetDataByReader(reader, sqlCommands.User_AvatarLink)
+									}));
+			}
+		}
+
+		private User ConstructUser(UserFields userFields) => new User(userFields.link, userFields.name, userFields.bio);
 
 		public List<User> LoadFriends()
 		{
@@ -65,13 +96,6 @@ namespace SocialNetwork.Data
 			throw new NotImplementedException();
 		}
 
-		public User LoadUser(string name)
-		{
-			ConnectToDB(connectionString,
-				new SQLCommands().SelectAllUsers,
-				"");
-			items.Find(X => X == name);
-			return new User(null, null, null);
-		}
-    }
+		public User LoadUser(string name) => users.Find(X => X.Name == name);
+	}
 }
