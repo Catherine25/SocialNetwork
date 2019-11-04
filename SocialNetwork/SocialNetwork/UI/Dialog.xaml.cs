@@ -48,7 +48,7 @@ namespace SocialNetwork.UI {
             string text = (sender as Entry).Text;
             (sender as Entry).Text = "";
             
-            Message message = new Message(text, DateTime.Now, Conversation.member1 == User ? true : false);
+            Message message = new Message(0, text, DateTime.Now, Conversation.member1 == User ? true : false);
             Conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));

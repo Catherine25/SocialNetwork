@@ -8,33 +8,35 @@ namespace SocialNetwork.Data
 {
     public class User
     {
-        public User(string image, string name, string bio)
+        public User(int id, string image, string name, string bio)
         {
             AvatarLink = image;
             Name = name;
             Bio = bio;
+            Id = id;
 
             if (AvatarLink == null)
                 AvatarLink = "";
+        }
 
-            Friends = new List<User>();
+        public User(string id, string name, string bio, string image)
+        {
+            AvatarLink = image;
+            Name = name;
+            Bio = bio;
+            Id = int.Parse(id);
+
+            if (AvatarLink == null)
+                AvatarLink = "";
         }
 
         public string AvatarLink;
         public string Name;
         public string Bio;
+        public int Id;
 
         public List<User> Friends;
         public List<Group> Groups;
-
-        public static bool operator ==(User user1, User user2) =>
-            user1.Name == user2.Name;
-        
-        public static bool operator !=(User user1, User user2) =>
-            user1.Name != user2.Name;
-
-        public override bool Equals(object obj) =>
-            obj is User user && Name == user.Name;
 
         public override int GetHashCode() {
             var hashCode = 1434431970;

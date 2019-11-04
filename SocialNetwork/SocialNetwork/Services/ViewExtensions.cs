@@ -9,8 +9,8 @@ namespace SocialNetwork.Services
     {
         public static void SetTheme(this View view, Theme theme)
         {
-            if(theme == null)
-                throw new System.Exception();
+            //if(theme == null)
+                //throw new System.Exception();
 
             Debug.WriteLine("SetTheme running");
 

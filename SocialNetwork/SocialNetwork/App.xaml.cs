@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 //using MySql.Data.MySqlClient;
 using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,6 +19,7 @@ namespace SocialNetwork
         Themes _themes;
         User _currentUser;
 		ILoader _loader;
+        LocalData _localData;
 
         List<Conversation> _conversations = new List<Conversation>();
         #endregion
@@ -26,6 +28,7 @@ namespace SocialNetwork
         public App()
         {
             InitializeComponent();
+            _localData = new LocalData();
 
             try
             {
@@ -38,9 +41,19 @@ namespace SocialNetwork
                 _loader = new GeneratorLoader();
             }
 
-            _currentUser = _loader.LoadUser("Kate");
-			_currentUser.Friends = _loader.LoadFriends().Where(U => U.Name != _currentUser.Name).ToList();
-            _currentUser.Groups = _loader.LoadGroups();
+            _localData.Users = _loader.LoadUsers();
+            _localData.Groups = _loader.LoadGroups();
+            _localData.Friends = _loader.LoadUserFriends();
+            _localData.Users_Groups = _loader.LoadUserGroups();
+            _localData.ConversationsData = _loader.LoadConversationsData();
+            _localData.MessagesData = _loader.LoadMessagesData();
+
+            //TODO: ADD FORM WHERE NAME CAN BE ENTERED FOR AUTENTIFICATION
+            _currentUser = _localData.FindUserByName("Kate");
+
+			_currentUser.Friends = _localData.FindFriendsOfUser(_currentUser);
+            _currentUser.Groups = _localData.FindGroupsOfUser(_currentUser);
+
             _themes = new Themes();
             _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
             _bot.MessageGenerated += BotGeneratedMessage;
@@ -85,8 +98,8 @@ namespace SocialNetwork
         ///<summary> Rises after NewMessagesImitator.MessageGenerated </summary>
         private void BotGeneratedMessage(Message message, User author)
         {
-            message.IsFromMember1 = true;
-            TryAddConversation(new Conversation(author, _currentUser, new List<Message> { message }));
+            //message.IsFromMember1 = true;
+            //TryAddConversation(new Conversation(author, _currentUser), new List<Message> { message }));
         }
 
         #region Overridings
@@ -94,7 +107,7 @@ namespace SocialNetwork
         {
             new Thread(_bot.TryWork).Start();
 
-            new Thread(_themes.LoadRomanukeThemes).Start();
+            //new Thread(_themes.LoadRomanukeThemes).Start();
         }
 
         protected override void OnSleep() => _bot.SuspendRequest();

@@ -15,13 +15,13 @@ namespace SocialNetwork.Services
         private static string GenerateSentence() => Sentences[Random.Next(standartCount)];
 
         public static User GenerateUser() =>
-            new User(GenerateAvatarLink(), GenerateName(), GenerateSentence());
+            new User(Random.Next(), GenerateAvatarLink(), GenerateName(), GenerateSentence());
 
         public static Group GenerateGroup() =>
-            new Group(GenerateSentence(), GenerateSentence(), GenerateAvatarLink());
+            new Group(Random.Next(), GenerateSentence(), GenerateSentence(), GenerateAvatarLink());
 
         public static Message GenerateMessage() =>
-            new Message(GenerateSentence(), GenerateDateTime(), Random.Next(2) == 0 );
+            new Message(Random.Next(), GenerateSentence(), GenerateDateTime(), Random.Next(2) == 0 );
 
         public static Conversation GenerateConversation(User user) 
         {
@@ -38,7 +38,8 @@ namespace SocialNetwork.Services
             }
             else
             {
-                Conversation c = new Conversation(user, newUser, messages);
+                Conversation c = new Conversation(0, user, newUser);
+                c.messages = messages;
                 Debug.WriteLine("New conversation created. " + "member1 is " + c.member1.Name + "member2 is " + c.member2.Name);
                 return c;
             }

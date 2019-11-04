@@ -23,10 +23,14 @@ namespace SocialNetwork.UI
             removeBt.Clicked += RemoveBt_Clicked;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
 
-            if (group.AvatarLink != "")
+            try
+            {
                 image.Source = ImageSource.FromUri(new Uri(group.AvatarLink));
-            else
+            }
+            catch
+            {
                 image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
+            }
 
             title.Text = group.Title;
             description.Text = group.Description;

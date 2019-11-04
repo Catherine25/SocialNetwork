@@ -1,4 +1,6 @@
-﻿namespace SocialNetwork.Data.Database
+﻿using System;
+
+namespace SocialNetwork.Data.Database
 {
 	class SQLCommands
 	{
@@ -22,7 +24,7 @@
 		public int Friends_u_id = 0; //"Users_u_id"
 		public int Friends_f_id = 0; //"f_id"
 
-		public string SelectAllConversations = "SELECT * FROM Converastion;";
+		public string SelectAllConversations = "SELECT * FROM Conversation;";
 		public int Converastion_c_id = 0; //"c_id"
 		public int Converastion_u1_id = 0; //"u1_id"
 		public int Converastion_u2_id = 0; //"u2_id"
@@ -31,7 +33,7 @@
 		public int Message_m_id = 0; //"m_id"
 		public int Message_c_id = 0; //"Conversation_c_id"
 		public string Message_message = "message";
-		public Datetime Message_datetime = null; //"dt"
+		public DateTime Message_datetime = DateTime.MinValue; //"dt"
 		public bool Message_isFormMember = false; //"isFormMember"
 
 		public string AddUser = "INSERT INTO Users (AvatarLink, username, Bio) VALUES (?, ?, ?);";
