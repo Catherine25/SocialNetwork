@@ -20,8 +20,6 @@ namespace SocialNetwork
         User _currentUser;
 		ILoader _loader;
         LocalData _localData;
-
-        List<Conversation> _conversations = new List<Conversation>();
         #endregion
 
         ///<summary> Constructor </summary>
@@ -45,8 +43,11 @@ namespace SocialNetwork
             _localData.Groups = _loader.LoadGroups();
             _localData.Friends = _loader.LoadUserFriends();
             _localData.Users_Groups = _loader.LoadUserGroups();
+
             _localData.ConversationsData = _loader.LoadConversationsData();
             _localData.MessagesData = _loader.LoadMessagesData();
+
+            _localData.ConvertIntoLocalClasses();
 
             //TODO: ADD FORM WHERE NAME CAN BE ENTERED FOR AUTENTIFICATION
             _currentUser = _localData.FindUserByName("Kate");
@@ -55,14 +56,14 @@ namespace SocialNetwork
             _currentUser.Groups = _localData.FindGroupsOfUser(_currentUser);
 
             _themes = new Themes();
-            _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
-            _bot.MessageGenerated += BotGeneratedMessage;
+            // _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
+            // _bot.MessageGenerated += BotGeneratedMessage;
 
-            MainPage = new MainPage(_currentUser, _themes.ThemesList[0], _conversations);
+            MainPage = new MainPage(_currentUser, _themes.ThemesList[0], _localData);
 
-            List<Conversation> conversations = Test.GenerateConversations(_currentUser).ToList();
-            foreach (Conversation c in conversations)
-                TryAddConversation(c);
+            //List<Conversation> conversations = Test.GenerateConversations(_currentUser).ToList();
+            // foreach (Conversation c in conversations)
+                // TryAddConversation(c);
         }
 
         private void TryAddConversation(Conversation conversation)
@@ -75,18 +76,18 @@ namespace SocialNetwork
             Debug.WriteLine("user1 = " + user1 + " user2 = " + user2);
 
             Conversation existing;
-            existing = _conversations.Find(X => X.member1.Name == user1.Name && X.member2.Name == user2.Name);
+            existing = _localData.Conversations.Find(X => X.member1.Name == user1.Name && X.member2.Name == user2.Name);
 
             if (existing == null)
             {
                 Debug.WriteLine("existing conversation not found");
-                existing = _conversations.Find(X => X.member1.Name == user2.Name && X.member2.Name == user1.Name);
+                existing = _localData.Conversations.Find(X => X.member1.Name == user2.Name && X.member2.Name == user1.Name);
             }
 
             if (existing == null)
             {
                 Debug.WriteLine("existing conversation not found again, adding");
-                _conversations.Add(conversation);
+                _localData.Conversations.Add(conversation);
             }
             else
             {
@@ -105,7 +106,7 @@ namespace SocialNetwork
         #region Overridings
         protected override void OnStart()
         {
-            new Thread(_bot.TryWork).Start();
+            //new Thread(_bot.TryWork).Start();
 
             //new Thread(_themes.LoadRomanukeThemes).Start();
         }
