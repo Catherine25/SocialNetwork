@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SocialNetwork.Data.Database
 {   
-    class LocalData
+    public class LocalData
     {
         private List<User> users;
         private List<Group> groups;
@@ -51,6 +51,30 @@ namespace SocialNetwork.Data.Database
 
             return friends;
         }
+
+        public void ConvertIntoLocalClasses()
+        {
+            foreach(ConversationData cd in ConversationsData)
+            {
+                Conversation conversation = new Conversation(
+                    cd.c_id,
+                    Users.Find(c=>c.Id == cd.u1_id),
+                    Users.Find(c=>c.Id == cd.u2_id));
+                Conversations.Add(conversation);
+            }
+
+            foreach (MessageData md in MessagesData)
+            {
+                Message message = new Message(md.m_id, md.text, md.dt, md.isFromMember1);
+                List<Message> existingMessages = Conversations.Find(c=>c.Id == md.c_id).messages;
+                
+                if(existingMessages != null)
+                    existingMessages.Add(message);
+                else
+                    existingMessages = new List<Message> { message };
+            }
+        }
+
         public List<Group> FindGroupsOfUser(User user)
         {
             List<Group> groups = new List<Group>();
