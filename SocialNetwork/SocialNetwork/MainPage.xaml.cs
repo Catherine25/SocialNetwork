@@ -16,7 +16,7 @@ namespace SocialNetwork
         private User user;
         private Theme currentTheme;
         public List<Theme> themes;
-        public List<Conversation> conversations;
+        private Data.Database.LocalData _localData;
 
         public MainPage()
         {
@@ -25,7 +25,7 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(User newUser, Theme newTheme, List<Data.Conversation> newConversations) {
+        public MainPage(User newUser, Theme newTheme, Data.Database.LocalData localData) {
 
             Debug.WriteLine("MainPage running");
 
@@ -33,7 +33,7 @@ namespace SocialNetwork
 
             user = newUser;
             currentTheme = newTheme;
-            conversations = newConversations;
+            _localData = localData;
 
             menu.ButtonClicked += OpenViewRequest;
             menu.SetTheme(currentTheme);
@@ -55,7 +55,7 @@ namespace SocialNetwork
                 break;
                 case MenuView.ButtonName.messagesView:
                 {
-                    MessagesView view = new MessagesView(user, conversations);
+                    MessagesView view = new MessagesView(user, _localData);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(currentTheme);
                     view.OpenDialodRequest += OpenDialodRequest;
