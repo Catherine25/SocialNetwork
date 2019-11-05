@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SocialNetwork.Data.Database
 {
-    class MessageData
+    public class MessageData
     {
         public int m_id;
         public int c_id;
