@@ -30,11 +30,11 @@ namespace SocialNetwork.Data {
 
         public Themes() => CurrentTheme = ThemesList.Find(t => t.Name == "Default");
 
-        private void LoadTheme(object o)
+        private void LoadTheme(string link)
         {
             Debug.WriteLine("LoadTheme() running");
 
-            WebRequest webRequest = WebRequest.Create(ThemeLinks.Pop());
+            WebRequest webRequest = WebRequest.Create(link);
             WebResponse webResponse = webRequest.GetResponse();
 
             Stream data = webResponse.GetResponseStream();
@@ -87,14 +87,12 @@ namespace SocialNetwork.Data {
             {
                 string mstring = m.ToString();
 
-                if(!ThemeLinks.Contains(mstring))
-                    ThemeLinks.Push(mstring);
-            }
-
-            while(ThemeLinks.Count != 0)
-            {
-                new Thread(LoadTheme).Start();
-            }
+				if (!ThemeLinks.Contains(mstring))
+				{
+					ThemeLinks.Push(mstring);
+					LoadTheme(mstring);
+				}
+			}
         }
     }
 }
