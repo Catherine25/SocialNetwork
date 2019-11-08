@@ -18,11 +18,12 @@ namespace SocialNetwork.UI
         User CurrentUser;
         List<Theme> themes;
 
-        public event Action<string> ChangeThemeRequest;
+        public event Action<Theme> ChangeThemeRequest;
         
         public SettingsView(User user, List<Theme> newThemes)
         {
             InitializeComponent();
+			themes = new List<Theme>();
             ImportThemes(newThemes);
 
             CurrentUser = user;
@@ -40,7 +41,7 @@ namespace SocialNetwork.UI
             color2.BackgroundColor = theme.BackgroundColor;
             color3.BackgroundColor = theme.SeparatorColor;
 
-            ChangeThemeRequest(theme.Name);
+            ChangeThemeRequest(theme);
         }
 
         private void ImportThemes(List<Theme> newThemes)
