@@ -14,8 +14,8 @@ namespace SocialNetwork
     public partial class MainPage : ContentPage
     {
         private User user;
-        private Theme currentTheme;
-        public List<Theme> themes;
+        private Themes _themes;
+        public List<Theme> themes = new List<Theme>();
         private Data.Database.LocalData _localData;
 
         public MainPage()
@@ -25,22 +25,25 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(User newUser, Theme newTheme, Data.Database.LocalData localData) {
+        public MainPage(User newUser, Themes themes, Data.Database.LocalData localData) {
 
             Debug.WriteLine("MainPage running");
 
             InitializeComponent();
 
             user = newUser;
-            currentTheme = newTheme;
+            _themes = themes;
             _localData = localData;
+            _themes.ThemeLoaded += _themes_ThemeLoaded;
 
             menu.ButtonClicked += OpenViewRequest;
-            menu.SetTheme(currentTheme);
+            menu.SetTheme(themes.CurrentTheme);
             OpenViewRequest(MenuView.ButtonName.userView);
 
             Debug.WriteLine("MainPage end");
         }
+
+        private void _themes_ThemeLoaded(Theme theme) => themes.Add(theme);
 
         private void OpenViewRequest(MenuView.ButtonName bn)
         {
@@ -50,14 +53,14 @@ namespace SocialNetwork
                 {
                     UserView view = new UserView(user, user);
                     mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(currentTheme);
+                    view.SetTheme(_themes.CurrentTheme);
                 }
                 break;
                 case MenuView.ButtonName.messagesView:
                 {
                     MessagesView view = new MessagesView(user, _localData);
                     mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(currentTheme);
+                    view.SetTheme(_themes.CurrentTheme);
                     view.OpenDialodRequest += OpenDialodRequest;
                 }
                 break;
@@ -65,7 +68,7 @@ namespace SocialNetwork
                 {
                     FriendsView view = new FriendsView(user);
                     mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(currentTheme);
+                    view.SetTheme(_themes.CurrentTheme);
                     view.OpenUserViewRequest += OpenUserViewRequest;
                 }
                 break;
@@ -73,7 +76,7 @@ namespace SocialNetwork
                 {
                     GroupsView view = new GroupsView(user);
                     mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(currentTheme);
+                    view.SetTheme(_themes.CurrentTheme);
                     view.OpenGroupViewRequest += View_OpenGroupViewRequest;
                 }
                 break;
@@ -81,7 +84,7 @@ namespace SocialNetwork
                 {
                     SettingsView view = new SettingsView(user, themes);
                     mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(currentTheme);
+                    view.SetTheme(_themes.CurrentTheme);
                 }
                 break;
                 default: throw new Exception();
@@ -92,7 +95,7 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(new GroupView(user, group));
 
         private void OpenDialodRequest(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user, currentTheme));
+            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme));
 
         private void OpenUserViewRequest(User obj) =>
             mainPageGrid.SetSingleChild(new UserView(obj, user));

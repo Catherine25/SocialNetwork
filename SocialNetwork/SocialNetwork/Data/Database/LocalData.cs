@@ -54,9 +54,10 @@ namespace SocialNetwork.Data.Database
 
         public void ConvertIntoLocalClasses()
         {
-            foreach(ConversationData cd in ConversationsData)
+            Conversations = new List<Conversation>();
+            foreach (ConversationData cd in ConversationsData)
             {
-                Conversation conversation = new Conversation(
+                Conversation conversation = new Conversation (
                     cd.c_id,
                     Users.Find(c=>c.Id == cd.u1_id),
                     Users.Find(c=>c.Id == cd.u2_id));
@@ -66,12 +67,15 @@ namespace SocialNetwork.Data.Database
             foreach (MessageData md in MessagesData)
             {
                 Message message = new Message(md.m_id, md.text, md.dt, md.isFromMember1);
-                List<Message> existingMessages = Conversations.Find(c=>c.Id == md.c_id).messages;
+                Conversation existingConversation = Conversations.Find(c => c.Id == md.c_id);
+                List<Message> existingMessages = existingConversation.messages;
                 
                 if(existingMessages != null)
                     existingMessages.Add(message);
                 else
                     existingMessages = new List<Message> { message };
+
+                existingConversation.messages = existingMessages;
             }
         }
 

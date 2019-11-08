@@ -59,13 +59,10 @@ namespace SocialNetwork
             // _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
             // _bot.MessageGenerated += BotGeneratedMessage;
 
-            MainPage = new MainPage(_currentUser, _themes.ThemesList[0], _localData);
-
-            //List<Conversation> conversations = Test.GenerateConversations(_currentUser).ToList();
-            // foreach (Conversation c in conversations)
-                // TryAddConversation(c);
+            MainPage = new MainPage(_currentUser, _themes, _localData);
         }
 
+        /// <summary>Special method with validation</summary>
         private void TryAddConversation(Conversation conversation)
         {
             Debug.WriteLine("TryAddConversation() running");
@@ -108,7 +105,7 @@ namespace SocialNetwork
         {
             //new Thread(_bot.TryWork).Start();
 
-            //new Thread(_themes.LoadRomanukeThemes).Start();
+            new Thread(_themes.LoadRomanukeThemes).Start();
         }
 
         protected override void OnSleep() => _bot.SuspendRequest();

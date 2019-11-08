@@ -25,7 +25,7 @@ namespace SocialNetwork.UI
             InitializeComponent();
             ImportThemes(newThemes);
 
-            this.CurrentUser = user;
+            CurrentUser = user;
 
             themePicker.SelectedIndexChanged += ThemePicker_SelectedIndexChanged;
         }

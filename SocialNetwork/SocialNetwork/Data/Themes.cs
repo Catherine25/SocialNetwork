@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,19 +13,22 @@ namespace SocialNetwork.Data {
     public class Themes {
 
         private Stack<string> ThemeLinks = new Stack<string>();
-        public List<Theme> ThemesList = new List<Theme>()
+        public List<Theme> ThemesList = new List<Theme>
         {
             new Theme(
                 "Default",
-                Color.AliceBlue,
-                Color.CadetBlue,
-                Color.CornflowerBlue,
-                Color.DeepSkyBlue,
-                Color.DodgerBlue)
+                AliceBlue,
+                CadetBlue,
+                CornflowerBlue,
+                DeepSkyBlue,
+                DodgerBlue)
         };
-
+        public Theme CurrentTheme;
         public bool IsPageLoadCompleted = false;
         public bool IsAllDownloaded = false;
+        public event Action<Theme> ThemeLoaded;
+
+        public Themes() => CurrentTheme = ThemesList.Find(t => t.Name == "Default");
 
         private void LoadTheme(object o)
         {
@@ -57,6 +61,7 @@ namespace SocialNetwork.Data {
 
                 Theme theme = new Theme(ThemesList.Count.ToString(), color0, color1, color2, color3, color4);
                 ThemesList.Add(theme);
+                ThemeLoaded(theme);
             }
         }
 
@@ -84,6 +89,11 @@ namespace SocialNetwork.Data {
 
                 if(!ThemeLinks.Contains(mstring))
                     ThemeLinks.Push(mstring);
+            }
+
+            while(ThemeLinks.Count != 0)
+            {
+                new Thread(LoadTheme).Start();
             }
         }
     }
