@@ -85,13 +85,16 @@ namespace SocialNetwork
                     SettingsView view = new SettingsView(user, themes);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
+					view.ChangeThemeRequest += View_ChangeThemeRequest;
                 }
                 break;
                 default: throw new Exception();
             }
         }
 
-        private void View_OpenGroupViewRequest(User user, Group group) =>
+		private void View_ChangeThemeRequest(Theme theme) => _themes.CurrentTheme = theme;
+
+		private void View_OpenGroupViewRequest(User user, Group group) =>
             mainPageGrid.SetSingleChild(new GroupView(user, group));
 
         private void OpenDialodRequest(User user, Conversation conversation) =>
