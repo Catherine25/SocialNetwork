@@ -19,6 +19,7 @@ namespace SocialNetwork.UI
         private User user;
         private List<string> conversationsHeaders;
         public event Action<User, Conversation> OpenDialodRequest;
+        public event Action OpenFriendsViewRequest;
         private Data.Database.LocalData _localData;
 
         public MessagesView(User _user, Data.Database.LocalData localData)
@@ -30,8 +31,13 @@ namespace SocialNetwork.UI
 
             conversationsHeaders = new List<string>();
 
+            NewConversationBt.Clicked += NewConversationBt_Clicked;
+
             Reload();
         }
+
+        private void NewConversationBt_Clicked(object sender, EventArgs e) =>
+            OpenFriendsViewRequest();
 
         private void Reload()
         {
@@ -72,7 +78,7 @@ namespace SocialNetwork.UI
             OpenDialodRequest(user, _localData.Conversations.ElementAt(i));
         }
 
-        private string GetHeader(Data.Conversation conversation)
+        private string GetHeader(Conversation conversation)
         {
             //get last message
             Message message = conversation.messages[conversation.messages.Count - 1];
