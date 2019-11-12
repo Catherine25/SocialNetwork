@@ -12,8 +12,10 @@ namespace SocialNetwork.Data
         private LocalData _localData;
         private string connectionString;
         private SQLCommands sqlCommands = new SQLCommands();
+		private TimeSpan timer;
+		private bool suspended = true;
 
-		public SQLLoader(LocalData localData)
+		public SQLLoader(LocalData localData, TimeSpan timeSpan)
 		{
 			string server = "35.180.63.12";
 			string database = "Kate";
@@ -27,9 +29,11 @@ namespace SocialNetwork.Data
                 "UID=" + uid + ";" +
                 "PASSWORD=" + password + ";";
 
+			timer = timeSpan;
 			_localData = localData;
 			_localData.NewConversationRequest += PublishToServer;
 
+			SyncWithServerImmediately();
             new Thread(SyncWithServer).Start();
         }
 
@@ -189,32 +193,26 @@ namespace SocialNetwork.Data
 
 		#endregion Collections
 
+		public void SetupTimer(TimeSpan span) => timer = span;
+
 		private void SyncWithServer()
         {
             DateTime initial = DateTime.Now;
-            TimeSpan timer = TimeSpan.FromSeconds(5);
 
-            List<ConversationData> newConversations;
-            List<Group> newGroups;
-            List<MessageData> newMessages;
-            List<Tuple<int, int>> newUserFriends;
-            List<Tuple<int, int>> newUserGroups;
-            List<User> newUsers;
-
-            while (true)
-            {
+            while (!suspended)
                 if (initial + timer <= DateTime.Now)
-                {
-                    newConversations = LoadConversationsData();
-                    newGroups = LoadGroups();
-                    newMessages = LoadMessagesData();
-                    newUserFriends = LoadUserFriends();
-                    newUserGroups = LoadUserGroups();
-                    newUsers = LoadUsers();
-
-                    _localData.SyncWithServer(newConversations, newGroups, newMessages, newUserFriends, newUserGroups, newUsers);
-                }
-            }
+				{
+					SyncWithServerImmediately();
+					initial = DateTime.Now;
+				}
         }
-    }
+
+		private void SyncWithServerImmediately() => _localData.SyncWithServer(
+			LoadConversationsData(),
+			LoadGroups(),
+			LoadMessagesData(),
+			LoadUserFriends(),
+			LoadUserGroups(),
+			LoadUsers());
+	}
 }
