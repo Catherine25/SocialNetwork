@@ -31,23 +31,13 @@ namespace SocialNetwork
             try
             {
                 Debug.WriteLine("Trying to connect to database");
-                _loader = new SQLLoader(_localData);
+                _loader = new SQLLoader(_localData, TimeSpan.FromSeconds(3));
             }
             catch
             {
                 Debug.WriteLine("Failed. Connecting to generator");
                 _loader = new GeneratorLoader();
             }
-
-            _localData.Users = _loader.LoadUsers();
-            _localData.Groups = _loader.LoadGroups();
-            _localData.Friends = _loader.LoadUserFriends();
-            _localData.Users_Groups = _loader.LoadUserGroups();
-
-            _localData.ConversationsData = _loader.LoadConversationsData();
-            _localData.MessagesData = _loader.LoadMessagesData();
-
-            _localData.ConvertIntoLocalClasses();
 
             //TODO: ADD FORM WHERE NAME CAN BE ENTERED FOR AUTENTIFICATION
             _currentUser = _localData.FindUserByName("Kate");
