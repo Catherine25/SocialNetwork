@@ -19,16 +19,6 @@ namespace SocialNetwork.Data.Database
 
 		public Action<Conversation> NewConversationRequest;
 
-		//public void LoadFromMessagesData(List<MessageData> messagesData)
-  //      {
-  //          foreach (var item in messagesData)
-  //              Messages.Add(new Message(
-  //                  item.m_id,
-  //                  item.text,
-  //                  item.dt,
-  //                  item.isFromMember1));
-  //      }
-
         public List<User> FindFriendsOfUser(User user)
         {
             List<User> friends = new List<User>();
