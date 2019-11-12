@@ -2,28 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace SocialNetwork.Data.Database
 {   
     public class LocalData
     {
-        private List<User> users;
-        private List<Group> groups;
-        private List<Tuple<int, int>> friends;
-        private List<Tuple<int, int>> users_groups;
-        private List<Conversation> conversations;
-        private List<ConversationData> conversationsData;
-        private List<Message> messages;
-        private List<MessageData> messagesData;
+        public List<User> Users;
+        public List<Group> Groups;
+        public List<Tuple<int, int>> Friends;
+        public List<Tuple<int, int>> Users_Groups;
+        public List<Conversation> Conversations;
+        public List<ConversationData> ConversationsData;
+        public List<Message> Messages;
+        public List<MessageData> MessagesData;
 
-        public List<User> Users { get => users; set => users = value; }
-        public List<Group> Groups { get => groups; set => groups = value; }
-        public List<Tuple<int, int>> Friends { get => friends; set => friends = value; }
-        public List<Tuple<int, int>> Users_Groups { get => users_groups; set => users_groups = value; }
-        public List<Conversation> Conversations { get => conversations; set => conversations = value; }
-        public List<ConversationData> ConversationsData { get => conversationsData; set => conversationsData = value; }
-        public List<Message> Messages { get => messages; set => messages = value; }
-        public List<MessageData> MessagesData { get => messagesData; set => messagesData = value; }
+        public LocalData()
+        {
+
+        }
 
         public void LoadFromMessagesData(List<MessageData> messagesData)
         {
@@ -94,5 +91,30 @@ namespace SocialNetwork.Data.Database
         }
 
         public User FindUserByName(string name) => Users.Find(X => X.Name == name);
+
+        public void AddEmptyConversation(User u1, User u2)
+        {
+            if (Conversations.Any(c => (c.member1 == u1 && c.member2 == u2) || (c.member1 == u2 && c.member2 == u1)))
+                return;
+
+            int freeId = 0;
+
+            do
+                freeId++;
+            while (Conversations.Any(c => c.Id == freeId));
+            
+            Conversations.Add(new Conversation(freeId, u1, u2));
+        }
+
+        public void SyncWithServer(
+            List<ConversationData> conversations,
+            List<Group> groups,
+            List<MessageData> md,
+            List<Tuple<int, int>> newUserFriends,
+            List<Tuple<int, int>> newUserGroups,
+            List<User> newUsers)
+        {
+            List<Message> messages = _localData.ConvertIntoLocalClasses();
+        }
     }
 }
