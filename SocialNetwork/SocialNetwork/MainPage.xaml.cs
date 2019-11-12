@@ -13,7 +13,7 @@ namespace SocialNetwork
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        private User user;
+        private User _user;
         private Themes _themes;
         public List<Theme> themes = new List<Theme>();
         private Data.Database.LocalData _localData;
@@ -31,7 +31,7 @@ namespace SocialNetwork
 
             InitializeComponent();
 
-            user = newUser;
+            _user = newUser;
             _themes = themes;
             _localData = localData;
             _themes.ThemeLoaded += _themes_ThemeLoaded;
@@ -51,22 +51,23 @@ namespace SocialNetwork
             {
                 case MenuView.ButtonName.userView:
                 {
-                    UserView view = new UserView(user, user);
+                    UserView view = new UserView(_user, _user);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
                 }
                 break;
                 case MenuView.ButtonName.messagesView:
                 {
-                    MessagesView view = new MessagesView(user, _localData);
+                    MessagesView view = new MessagesView(_user, _localData);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
                     view.OpenDialodRequest += OpenDialodRequest;
+                    view.OpenFriendsViewRequest += View_OpenFriendsViewRequest;
                 }
                 break;
                 case MenuView.ButtonName.friendsView:
                 {
-                    FriendsView view = new FriendsView(user);
+                    FriendsView view = new FriendsView(_user, FriendsView.Mode.Default);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
                     view.OpenUserViewRequest += OpenUserViewRequest;
@@ -74,7 +75,7 @@ namespace SocialNetwork
                 break;
                 case MenuView.ButtonName.groupsView:
                 {
-                    GroupsView view = new GroupsView(user);
+                    GroupsView view = new GroupsView(_user);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
                     view.OpenGroupViewRequest += View_OpenGroupViewRequest;
@@ -82,7 +83,7 @@ namespace SocialNetwork
                 break;
                 case MenuView.ButtonName.settingsView:
                 {
-                    SettingsView view = new SettingsView(user, themes);
+                    SettingsView view = new SettingsView(_user, themes);
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
 					view.ChangeThemeRequest += View_ChangeThemeRequest;
@@ -92,15 +93,32 @@ namespace SocialNetwork
             }
         }
 
-		private void View_ChangeThemeRequest(Theme theme) => _themes.CurrentTheme = theme;
+        private void View_ChangeThemeRequest(Theme theme)
+        {
+            _themes.CurrentTheme = theme;
+            menu.SetTheme(theme);
+        }
 
-		private void View_OpenGroupViewRequest(User user, Group group) =>
+        private void View_OpenGroupViewRequest(User user, Group group) =>
             mainPageGrid.SetSingleChild(new GroupView(user, group));
 
         private void OpenDialodRequest(User user, Conversation conversation) =>
             mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme));
 
         private void OpenUserViewRequest(User obj) =>
-            mainPageGrid.SetSingleChild(new UserView(obj, user));
+            mainPageGrid.SetSingleChild(new UserView(obj, _user));
+
+        private void View_OpenFriendsViewRequest()
+        {
+            FriendsView view = new FriendsView(_user, FriendsView.Mode.ChooseNew);
+            view.CreateNewConversationRequest += View_CreateNewConversationRequest;
+            mainPageGrid.SetSingleChild(view);
+        }
+
+        private void View_CreateNewConversationRequest(User user)
+        {
+            _localData.AddEmptyConversation(_user, user);
+            OpenDialodRequest(user, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == user));
+        }
     }
 }
