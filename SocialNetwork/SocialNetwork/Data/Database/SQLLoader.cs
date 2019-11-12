@@ -19,6 +19,7 @@ namespace SocialNetwork.Data
 			string database = "Kate";
 			string uid = "Admin";
 			string password = "3555serg";
+
 			connectionString =
                 "SERVER=" + server +
                 "; PORT = 3306 ;" +
@@ -26,10 +27,32 @@ namespace SocialNetwork.Data
                 "UID=" + uid + ";" +
                 "PASSWORD=" + password + ";";
 
+			_localData = localData;
+			_localData.NewConversationRequest += PublishToServer;
+
             new Thread(SyncWithServer).Start();
         }
 
-        public List<User> LoadUsers()
+		#region Single Update Request
+
+		private void PublishToServer(Conversation conversation)
+		{
+			using (MySqlConnection connection = new MySqlConnection(connectionString))
+			using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddConversation(conversation), connection))
+			{
+				connection.Open();
+
+				int number = cmd.ExecuteNonQuery();
+
+				connection.Close();
+			}
+		}
+
+		#endregion
+
+		#region Collections
+
+		public List<User> LoadUsers()
         {
             List<User> users = new List<User>();
 
@@ -164,7 +187,9 @@ namespace SocialNetwork.Data
             return pairs;
         }
 
-        private void SyncWithServer()
+		#endregion Collections
+
+		private void SyncWithServer()
         {
             DateTime initial = DateTime.Now;
             TimeSpan timer = TimeSpan.FromSeconds(5);
@@ -186,6 +211,7 @@ namespace SocialNetwork.Data
                     newUserFriends = LoadUserFriends();
                     newUserGroups = LoadUserGroups();
                     newUsers = LoadUsers();
+
                     _localData.SyncWithServer(newConversations, newGroups, newMessages, newUserFriends, newUserGroups, newUsers);
                 }
             }
