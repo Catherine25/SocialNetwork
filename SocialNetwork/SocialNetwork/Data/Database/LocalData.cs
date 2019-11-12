@@ -8,29 +8,26 @@ namespace SocialNetwork.Data.Database
 {   
     public class LocalData
     {
-        public List<User> Users;
-        public List<Group> Groups;
-        public List<Tuple<int, int>> Friends;
-        public List<Tuple<int, int>> Users_Groups;
-        public List<Conversation> Conversations;
-        public List<ConversationData> ConversationsData;
-        public List<Message> Messages;
-        public List<MessageData> MessagesData;
+        public List<User> Users { get; private set; }
+        public List<Group> Groups { get; private set; }
+		public List<Tuple<int, int>> Friends { get; private set; }
+		public List<Tuple<int, int>> UGroups { get; private set; }
+		public List<Conversation> Conversations { get; private set; }
+		public List<ConversationData> ConversationsData { get; private set; }
+		public List<Message> Messages { get; private set; }
+		public List<MessageData> MessagesData { get; private set; }
 
-        public LocalData()
-        {
+		public Action<Conversation> NewConversationRequest;
 
-        }
-
-        public void LoadFromMessagesData(List<MessageData> messagesData)
-        {
-            foreach (var item in messagesData)
-                Messages.Add(new Message(
-                    item.m_id,
-                    item.text,
-                    item.dt,
-                    item.isFromMember1));
-        }
+		//public void LoadFromMessagesData(List<MessageData> messagesData)
+  //      {
+  //          foreach (var item in messagesData)
+  //              Messages.Add(new Message(
+  //                  item.m_id,
+  //                  item.text,
+  //                  item.dt,
+  //                  item.isFromMember1));
+  //      }
 
         public List<User> FindFriendsOfUser(User user)
         {
@@ -80,7 +77,7 @@ namespace SocialNetwork.Data.Database
         {
             List<Group> groups = new List<Group>();
 
-            List<Tuple<int, int>> list1 = Users_Groups.FindAll(X => X.Item1 == user.Id);
+            List<Tuple<int, int>> list1 = UGroups.FindAll(X => X.Item1 == user.Id);
             
             List<int> ids = list1.Select(x => x.Item2).ToList();
             
@@ -102,11 +99,11 @@ namespace SocialNetwork.Data.Database
             do
                 freeId++;
             while (Conversations.Any(c => c.Id == freeId));
-            
-            Conversations.Add(new Conversation(freeId, u1, u2));
+
+			NewConversationRequest(new Conversation(freeId, u1, u2));
         }
 
-        public void SyncWithServer(
+        public void SyncWithServer (
             List<ConversationData> conversations,
             List<Group> groups,
             List<MessageData> md,
@@ -114,7 +111,14 @@ namespace SocialNetwork.Data.Database
             List<Tuple<int, int>> newUserGroups,
             List<User> newUsers)
         {
-            List<Message> messages = _localData.ConvertIntoLocalClasses();
+			ConversationsData = conversations;
+			Groups = groups;
+			MessagesData = md;
+			Friends = newUserFriends;
+			UGroups = newUserGroups;
+			Users = newUsers;
+
+			ConvertIntoLocalClasses();
         }
     }
 }
