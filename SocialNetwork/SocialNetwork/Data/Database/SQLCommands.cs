@@ -40,7 +40,8 @@ namespace SocialNetwork.Data.Database
 		public string AddGroup = "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (?, ?, ?);";
 		public string AddUserToGroup = "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (?, ?);";
 		public string AddFriendship = "INSERT INTO Friends (Users_u_id, f_id) VALUES (?, ?);";
-		public string AddConveration = "INSERT INTO Conversation (u1_id, u2_id) VALUES (?, ?);";
+		public string AddConversation(Conversation conversation) =>
+			"INSERT INTO Conversation (u1_id, u2_id) VALUES (" + conversation.member1.Id + ", " + conversation.member2.Id + ");";
 		public string AddMessage = "INSERT INTO Message (Conversation_c_id, message, dt, isFormMember) VALUES (?, ?, ?, ?);";
 
 		public static string UpdateUser = "UPDATE Users SET AvatarLink=?, username=?, Bio=? WHERE u_id=?;";
