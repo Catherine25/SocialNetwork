@@ -11,16 +11,21 @@ using Xamarin.Forms.Xaml;
 
 namespace SocialNetwork.UI {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FriendsView : ContentView, IColorable {
+    public partial class FriendsView : ContentView, IColorable
+    {
+        public enum Mode { Default, ChooseNew }
+        private Mode _mode;
         
         public List<User> Friends;
         public List<string> FriendNames;
 
         public event Action<User> OpenUserViewRequest;
+        public event Action<User> CreateNewConversationRequest;
 
-        public FriendsView(User user) {
-
+        public FriendsView(User user, Mode mode)
+        {
             InitializeComponent();
+            _mode = mode;
             listView.ItemSelected += ItemSelected;
 
             if (user.Friends.Count == 0) {
@@ -46,7 +51,11 @@ namespace SocialNetwork.UI {
         {
             string friend = e.SelectedItem as string;
             User user = Friends.Find(X=>X .Name == friend);
-            OpenUserViewRequest(user);
+
+            if (_mode == Mode.ChooseNew)
+                CreateNewConversationRequest(user);
+            else
+                OpenUserViewRequest(user);
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
