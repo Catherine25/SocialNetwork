@@ -3,15 +3,17 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using SocialNetwork.Data.Database;
+using System.Threading;
 
 namespace SocialNetwork.Data
 {
 	class SQLLoader : ILoader
 	{
-        string connectionString;
-		SQLCommands sqlCommands = new SQLCommands();
+        private LocalData _localData;
+        private string connectionString;
+        private SQLCommands sqlCommands = new SQLCommands();
 
-		public SQLLoader()
+		public SQLLoader(LocalData localData)
 		{
 			string server = "35.180.63.12";
 			string database = "Kate";
@@ -23,6 +25,8 @@ namespace SocialNetwork.Data
                 "DATABASE=" + database + ";" +
                 "UID=" + uid + ";" +
                 "PASSWORD=" + password + ";";
+
+            new Thread(SyncWithServer).Start();
         }
 
         public List<User> LoadUsers()
@@ -158,6 +162,33 @@ namespace SocialNetwork.Data
             }
 
             return pairs;
+        }
+
+        private void SyncWithServer()
+        {
+            DateTime initial = DateTime.Now;
+            TimeSpan timer = TimeSpan.FromSeconds(5);
+
+            List<ConversationData> newConversations;
+            List<Group> newGroups;
+            List<MessageData> newMessages;
+            List<Tuple<int, int>> newUserFriends;
+            List<Tuple<int, int>> newUserGroups;
+            List<User> newUsers;
+
+            while (true)
+            {
+                if (initial + timer <= DateTime.Now)
+                {
+                    newConversations = LoadConversationsData();
+                    newGroups = LoadGroups();
+                    newMessages = LoadMessagesData();
+                    newUserFriends = LoadUserFriends();
+                    newUserGroups = LoadUserGroups();
+                    newUsers = LoadUsers();
+                    _localData.SyncWithServer(newConversations, newGroups, newMessages, newUserFriends, newUserGroups, newUsers);
+                }
+            }
         }
     }
 }
