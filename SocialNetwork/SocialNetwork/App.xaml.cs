@@ -31,7 +31,7 @@ namespace SocialNetwork
             try
             {
                 Debug.WriteLine("Trying to connect to database");
-                _loader = new SQLLoader();
+                _loader = new SQLLoader(_localData);
             }
             catch
             {
