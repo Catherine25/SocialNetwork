@@ -7,7 +7,12 @@
              x:Class="SocialNetwork.UI.FriendsView">
   <ContentView.Content>
         <Grid x:Name="friendsViewGrid">
-            <ListView x:Name="listView"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ListView x:Name="listView" Grid.Row="0"/>
+            <Button x:Name="NewFriendBt" Text="Start new" Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
