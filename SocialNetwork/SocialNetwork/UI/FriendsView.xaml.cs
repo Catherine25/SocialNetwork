@@ -21,12 +21,14 @@ namespace SocialNetwork.UI {
 
         public event Action<User> OpenUserViewRequest;
         public event Action<User> CreateNewConversationRequest;
+		public event Action ShowDialogRequest;
 
         public FriendsView(User user, Mode mode)
         {
             InitializeComponent();
             _mode = mode;
             listView.ItemSelected += ItemSelected;
+			NewFriendBt.Clicked += NewFriendBt_Clicked;
 
             if (user.Friends.Count == 0) {
                 Label label = new Label {
@@ -47,7 +49,9 @@ namespace SocialNetwork.UI {
             }
         }
 
-        private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
+		private void NewFriendBt_Clicked(object sender, EventArgs e) => ShowDialogRequest();
+
+		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
         {
             string friend = e.SelectedItem as string;
             User user = Friends.Find(X=>X .Name == friend);
