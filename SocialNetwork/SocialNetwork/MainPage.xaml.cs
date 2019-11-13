@@ -71,6 +71,7 @@ namespace SocialNetwork
                     mainPageGrid.SetSingleChild(view);
                     view.SetTheme(_themes.CurrentTheme);
                     view.OpenUserViewRequest += OpenUserViewRequest;
+						view.ShowDialogRequest += View_ShowDialogRequest;
                 }
                 break;
                 case MenuView.ButtonName.groupsView:
@@ -93,7 +94,13 @@ namespace SocialNetwork
             }
         }
 
-        private void View_ChangeThemeRequest(Theme theme)
+		private void View_ShowDialogRequest()
+		{
+			RequestDialog dialog = new RequestDialog();
+			mainPageGrid.SetSingleChild(dialog);
+		}
+
+		private void View_ChangeThemeRequest(Theme theme)
         {
             _themes.CurrentTheme = theme;
             menu.SetTheme(theme);
