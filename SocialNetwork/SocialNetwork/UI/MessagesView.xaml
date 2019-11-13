@@ -12,7 +12,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <ListView x:Name="listView" Grid.Row="0"/>
-            <Button x:Name="NewConversationBt" Text="Choose friend to start conversation with" Grid.Row="1"/>
+            <Button x:Name="NewConversationBt" Text="Start new" Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
