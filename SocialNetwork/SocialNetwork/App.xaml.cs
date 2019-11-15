@@ -50,6 +50,12 @@ namespace SocialNetwork
             // _bot.MessageGenerated += BotGeneratedMessage;
 
             MainPage = new MainPage(_currentUser, _themes, _localData);
+            (MainPage as MainPage).UserChangeRequest += UserChangeRequest();
+        }
+
+        private Action<User> UserChangeRequest()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>Special method with validation</summary>
