@@ -25,13 +25,13 @@ namespace SocialNetwork
 
         public MainPage()
         {
-            Debug.WriteLine("MainPage running");
+            Debug.WriteLine("MainPage empty constructor running");
 
             InitializeComponent();
         }
 
-        public MainPage(User newUser, Themes themes, LocalData localData) {
-
+        public MainPage(User newUser, Themes themes, LocalData localData)
+		{
             Debug.WriteLine("MainPage running");
 
             InitializeComponent();
@@ -48,9 +48,10 @@ namespace SocialNetwork
             menu.SetSettingsViewRequest += SetSettingsView;
             menu.SetCurrentUserViewRequest += SetUserView;
 
-            //Task<string> userNameRequestTask = new Task<string>(RequestForText);
-            //userNameRequestTask.Start();
-            RequestForText(RequestDialog.RequestPurpose.currentName);
+			if (_user == null)
+				RequestForText(RequestDialog.RequestPurpose.currentName);
+			else
+				SetUserView();
 
             Debug.WriteLine("MainPage end");
         }
@@ -102,7 +103,7 @@ namespace SocialNetwork
 
         public void RequestForText(RequestDialog.RequestPurpose purpose)
         {
-            RequestDialog dialog = new RequestDialog(purpose);
+            RequestDialog dialog = new RequestDialog(purpose, _localData.Users);
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += Dialog_RequestCompleted;
             mainPageGrid.SetSingleChild(dialog);
