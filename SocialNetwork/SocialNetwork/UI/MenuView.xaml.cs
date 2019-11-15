@@ -13,8 +13,11 @@ namespace SocialNetwork.UI
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MenuView : ContentView, IColorable
     {
-        public enum ButtonName { userView, messagesView, friendsView, groupsView, settingsView }
-        public event Action<ButtonName> ButtonClicked;
+        public event Action<FriendsView.Mode> SetFriendsViewRequest;
+        public event Action SetGroupsViewRequest;
+        public event Action SetMessagesViewRequest;
+        public event Action SetSettingsViewRequest;
+        public event Action SetCurrentUserViewRequest;
         
         public MenuView()
         {
@@ -25,26 +28,22 @@ namespace SocialNetwork.UI
             friendsViewBt.Clicked += FriendsViewBt_Clicked;
             groupsViewBt.Clicked += GroupsViewBt_Clicked;
             settingsViewBt.Clicked += SettingsViewBt_Clicked;
-
-            //UserViewBt_Clicked(null, null);
         }
 
         private void SettingsViewBt_Clicked(object sender, EventArgs e) =>
-            ButtonClicked(ButtonName.settingsView);
+            SetSettingsViewRequest();
 
         private void GroupsViewBt_Clicked(object sender, EventArgs e) =>
-            ButtonClicked(ButtonName.groupsView);
+            SetGroupsViewRequest();
 
         private void FriendsViewBt_Clicked(object sender, EventArgs e) =>
-            ButtonClicked(ButtonName.friendsView);
+            SetFriendsViewRequest(FriendsView.Mode.Default);
 
         private void MessagesViewBt_Clicked(object sender, EventArgs e) =>
-            ButtonClicked(ButtonName.messagesView);
+            SetMessagesViewRequest();
 
         private void UserViewBt_Clicked(object sender, EventArgs e) =>
-            ButtonClicked(ButtonName.userView);
-
-        private void ThemeChanged(Theme theme) => SetTheme(theme);
+            SetCurrentUserViewRequest();
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
     }
