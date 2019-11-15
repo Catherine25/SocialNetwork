@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace SocialNetwork
@@ -15,8 +17,11 @@ namespace SocialNetwork
     {
         private User _user;
         private Themes _themes;
+        private LocalData _localData;
+
         public List<Theme> themes = new List<Theme>();
-        private Data.Database.LocalData _localData;
+
+        public event Action<User> UserChangeRequest;
 
         public MainPage()
         {
@@ -25,7 +30,7 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(User newUser, Themes themes, Data.Database.LocalData localData) {
+        public MainPage(User newUser, Themes themes, LocalData localData) {
 
             Debug.WriteLine("MainPage running");
 
@@ -34,98 +39,131 @@ namespace SocialNetwork
             _user = newUser;
             _themes = themes;
             _localData = localData;
-            _themes.ThemeLoaded += _themes_ThemeLoaded;
+            _themes.ThemeLoaded += ThemeLoaded;
 
-            menu.ButtonClicked += OpenViewRequest;
             menu.SetTheme(themes.CurrentTheme);
-            OpenViewRequest(MenuView.ButtonName.userView);
+            menu.SetFriendsViewRequest += SetFriendsView;
+            menu.SetGroupsViewRequest += SetGroupsView;
+            menu.SetMessagesViewRequest += SetMessagesView;
+            menu.SetSettingsViewRequest += SetSettingsView;
+            menu.SetCurrentUserViewRequest += SetUserView;
+
+            //Task<string> userNameRequestTask = new Task<string>(RequestForText);
+            //userNameRequestTask.Start();
+            RequestForText(RequestDialog.RequestPurpose.currentName);
 
             Debug.WriteLine("MainPage end");
         }
 
-        private void _themes_ThemeLoaded(Theme theme) => themes.Add(theme);
+        #region Requests handling
 
-        private void OpenViewRequest(MenuView.ButtonName bn)
+        #region Set view
+
+        private void SetDialog(User user, Conversation conversation) =>
+            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme));
+
+        private void SetGroupView(User user, Group group) =>
+            mainPageGrid.SetSingleChild(new GroupView(user, group));
+
+        private void SetGroupsView()
         {
-            switch (bn)
-            {
-                case MenuView.ButtonName.userView:
-                {
-                    UserView view = new UserView(_user, _user);
-                    mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(_themes.CurrentTheme);
-                }
-                break;
-                case MenuView.ButtonName.messagesView:
-                {
-                    MessagesView view = new MessagesView(_user, _localData);
-                    mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(_themes.CurrentTheme);
-                    view.OpenDialodRequest += OpenDialodRequest;
-                    view.OpenFriendsViewRequest += View_OpenFriendsViewRequest;
-                }
-                break;
-                case MenuView.ButtonName.friendsView:
-                {
-                    FriendsView view = new FriendsView(_user, FriendsView.Mode.Default);
-                    mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(_themes.CurrentTheme);
-                    view.OpenUserViewRequest += OpenUserViewRequest;
-						view.ShowDialogRequest += View_ShowDialogRequest;
-                }
-                break;
-                case MenuView.ButtonName.groupsView:
-                {
-                    GroupsView view = new GroupsView(_user);
-                    mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(_themes.CurrentTheme);
-                    view.OpenGroupViewRequest += View_OpenGroupViewRequest;
-                }
-                break;
-                case MenuView.ButtonName.settingsView:
-                {
-                    SettingsView view = new SettingsView(_user, themes);
-                    mainPageGrid.SetSingleChild(view);
-                    view.SetTheme(_themes.CurrentTheme);
-					view.ChangeThemeRequest += View_ChangeThemeRequest;
-                }
-                break;
-                default: throw new Exception();
-            }
+            GroupsView view = new GroupsView(_user);
+            view.SetTheme(_themes.CurrentTheme);
+            view.OpenGroupViewRequest += SetGroupView;
+            mainPageGrid.SetSingleChild(view);
         }
 
-		private void View_ShowDialogRequest()
-		{
-			RequestDialog dialog = new RequestDialog();
-			mainPageGrid.SetSingleChild(dialog);
-		}
+        private void SetFriendsView(FriendsView.Mode mode)
+        {
+            FriendsView view = new FriendsView(_user, mode);
+            view.SetTheme(_themes.CurrentTheme);
 
-		private void View_ChangeThemeRequest(Theme theme)
+            if (mode == FriendsView.Mode.ChooseNew)
+                view.CreateNewConversationRequest += CreateNewConversation;
+            else if (mode == FriendsView.Mode.Default)
+            {
+                view.OpenUserViewRequest += SetUserView;
+                //view.ShowDialogRequest += RequestForText;
+            }
+            else
+                throw new NotImplementedException();
+
+            mainPageGrid.SetSingleChild(view);
+        }
+
+        private void SetMessagesView()
+        {
+            MessagesView view = new MessagesView(_user, _localData);
+            mainPageGrid.SetSingleChild(view);
+            view.SetTheme(_themes.CurrentTheme);
+            view.OpenDialodRequest += SetDialog;
+            view.OpenFriendsViewRequest += SetFriendsView;
+        }
+
+        public void RequestForText(RequestDialog.RequestPurpose purpose)
+        {
+            RequestDialog dialog = new RequestDialog(purpose);
+            dialog.SetTheme(_themes.CurrentTheme);
+            dialog.RequestCompleted += Dialog_RequestCompleted;
+            mainPageGrid.SetSingleChild(dialog);
+        }
+
+        private void SetSettingsView()
+        {
+            SettingsView view = new SettingsView(_user, themes);
+            view.SetTheme(_themes.CurrentTheme);
+            view.ChangeThemeRequest += ChangeTheme;
+            mainPageGrid.SetSingleChild(view);
+        }
+
+        private void SetUserView()
+        {
+            UserView view = new UserView(_user, _user);
+            view.SetTheme(_themes.CurrentTheme);
+            mainPageGrid.SetSingleChild(view);
+        }
+        
+        private void SetUserView(User user)
+        {
+            UserView view = new UserView(user, _user);
+            view.SetTheme(_themes.CurrentTheme);
+            mainPageGrid.SetSingleChild(view);
+        }
+
+        #endregion
+
+        private void ThemeLoaded(Theme theme) => themes.Add(theme);
+
+        private void ChangeTheme(Theme theme)
         {
             _themes.CurrentTheme = theme;
             menu.SetTheme(theme);
         }
 
-        private void View_OpenGroupViewRequest(User user, Group group) =>
-            mainPageGrid.SetSingleChild(new GroupView(user, group));
-
-        private void OpenDialodRequest(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme));
-
-        private void OpenUserViewRequest(User obj) =>
-            mainPageGrid.SetSingleChild(new UserView(obj, _user));
-
-        private void View_OpenFriendsViewRequest()
+        private void Dialog_RequestCompleted(User user, RequestDialog.RequestPurpose purpose)
         {
-            FriendsView view = new FriendsView(_user, FriendsView.Mode.ChooseNew);
-            view.CreateNewConversationRequest += View_CreateNewConversationRequest;
-            mainPageGrid.SetSingleChild(view);
+            if (purpose == RequestDialog.RequestPurpose.currentName)
+                UserChangeRequest(user);
+            else if (purpose == RequestDialog.RequestPurpose.newFriendName)
+            {
+                AddNewFriend();
+                //TODO: _localData.SyncWithServer();
+                SetFriendsView(FriendsView.Mode.Default);
+            }
         }
 
-        private void View_CreateNewConversationRequest(User user)
+        #region Change database
+
+        private void CreateNewConversation(User user)
         {
             _localData.AddEmptyConversation(_user, user);
-            OpenDialodRequest(user, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == user));
+            SetDialog(user, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == user));
         }
+
+        private void AddNewFriend() => throw new NotImplementedException();
+
+        #endregion
+
+        #endregion
     }
 }
