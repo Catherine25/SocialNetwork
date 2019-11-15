@@ -69,7 +69,7 @@ namespace SocialNetwork.Data {
         {
             Debug.WriteLine("LoadRomanukeThemes() running");
             
-            WebRequest webRequest = WebRequest.Create("https://colorpalettes.net");
+            WebRequest webRequest = WebRequest.Create("https://color.romanuke.com");
             WebResponse webResponse = webRequest.GetResponse();
             
             Stream data = webResponse.GetResponseStream();
@@ -80,7 +80,7 @@ namespace SocialNetwork.Data {
                html = streamReader.ReadToEnd();
             }
 
-            Regex regex = new Regex(@"https://colorpalettes.net/color-palette-\d{4}/");
+            Regex regex = new Regex(@"https://color.romanuke.com/tsvetovaya-palitra-\d{4}/");
             MatchCollection matchCollection = regex.Matches(html);
             
             foreach (var m in matchCollection)
