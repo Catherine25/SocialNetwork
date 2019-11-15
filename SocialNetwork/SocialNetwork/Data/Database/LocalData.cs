@@ -8,6 +8,8 @@ namespace SocialNetwork.Data.Database
 {   
     public class LocalData
     {
+		private User CurrentUser;
+
         public List<User> Users { get; private set; }
         public List<Group> Groups { get; private set; }
 		public List<Tuple<int, int>> Friends { get; private set; }
@@ -19,7 +21,15 @@ namespace SocialNetwork.Data.Database
 
 		public Action<Conversation> NewConversationRequest;
 
-        public List<User> FindFriendsOfUser(User user)
+		public void ChangeUser(User user)
+		{
+			CurrentUser = user;
+
+			if (CurrentUser != null)
+				Conversations = Conversations.Where(c => c.member1.Id == CurrentUser.Id || c.member2.Id == CurrentUser.Id).ToList();
+		}
+
+		public List<User> FindFriendsOfUser(User user)
         {
             List<User> friends = new List<User>();
 
