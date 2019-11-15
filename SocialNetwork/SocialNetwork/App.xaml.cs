@@ -35,31 +35,29 @@ namespace SocialNetwork
             }
             catch
             {
-                Debug.WriteLine("Failed. Connecting to generator");
-                _loader = new GeneratorLoader();
+                //Debug.WriteLine("Failed. Connecting to generator");
+                //_loader = new GeneratorLoader();
             }
-
-            //TODO: ADD FORM WHERE NAME CAN BE ENTERED FOR AUTENTIFICATION
-            _currentUser = _localData.FindUserByName("Kate");
-
-			_currentUser.Friends = _localData.FindFriendsOfUser(_currentUser);
-            _currentUser.Groups = _localData.FindGroupsOfUser(_currentUser);
-
+			
             _themes = new Themes();
             // _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
             // _bot.MessageGenerated += BotGeneratedMessage;
 
-            MainPage = new MainPage(_currentUser, _themes, _localData);
-            (MainPage as MainPage).UserChangeRequest += UserChangeRequest();
+            MainPage = new MainPage(null, _themes, _localData);
+            (MainPage as MainPage).UserChangeRequest += UserChangeRequest;
         }
 
-        private Action<User> UserChangeRequest()
-        {
-            throw new NotImplementedException();
-        }
+		private void UserChangeRequest(User user)
+		{
+			_currentUser = user;
+			_localData.ChangeUser(user);
+			MainPage = new MainPage(_currentUser, _themes, _localData);
+			_currentUser.Friends = _localData.FindFriendsOfUser(_currentUser);
+			_currentUser.Groups = _localData.FindGroupsOfUser(_currentUser);
+		}
 
-        /// <summary>Special method with validation</summary>
-        private void TryAddConversation(Conversation conversation)
+		/// <summary>Special method with validation</summary>
+		private void TryAddConversation(Conversation conversation)
         {
             Debug.WriteLine("TryAddConversation() running");
 
