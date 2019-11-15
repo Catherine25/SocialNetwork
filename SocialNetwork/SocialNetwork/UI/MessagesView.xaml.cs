@@ -19,7 +19,7 @@ namespace SocialNetwork.UI
         private User user;
         private List<string> conversationsHeaders;
         public event Action<User, Conversation> OpenDialodRequest;
-        public event Action OpenFriendsViewRequest;
+        public event Action<FriendsView.Mode> OpenFriendsViewRequest;
         private Data.Database.LocalData _localData;
 
         public MessagesView(User _user, Data.Database.LocalData localData)
@@ -37,7 +37,7 @@ namespace SocialNetwork.UI
         }
 
         private void NewConversationBt_Clicked(object sender, EventArgs e) =>
-            OpenFriendsViewRequest();
+            OpenFriendsViewRequest(FriendsView.Mode.ChooseNew);
 
         private void Reload()
         {
