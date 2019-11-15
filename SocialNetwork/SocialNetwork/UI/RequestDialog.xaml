@@ -5,10 +5,10 @@
   <ContentView.Content>
       <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -16,10 +16,23 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-          
-            <Entry x:Name="textEntry" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-            <Button x:Name="ConfirmBt" Grid.Row="2" Grid.Column="1"/>
-            <Button x:Name="CancelBt" Grid.Row="2" Grid.Column="2"/>
+
+            <Label Text="Enter new friend name"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"/>
+            <Entry x:Name="textEntry"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"/>
+            <Button x:Name="ConfirmBt"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="Ok"/>
+            <Button x:Name="CancelBt"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Text="Cancel"/>
         </Grid>
   </ContentView.Content>
 </ContentView>
