@@ -12,13 +12,15 @@ namespace SocialNetwork.UI
     {
         User CurrentUser;
         Group Group;
+        SQLLoader _loader;
 
-        public GroupView(User user, Group group)
+        public GroupView(User user, Group group, SQLLoader loader)
         {
             InitializeComponent();
 
             CurrentUser = user;
             Group = group;
+            _loader = loader;
 
             removeBt.Clicked += RemoveBt_Clicked;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
@@ -62,11 +64,13 @@ namespace SocialNetwork.UI
             {
                 button.Text = "Add to groups list";
                 CurrentUser.Groups.Remove(Group);
+                _loader.DeleteUserFromGroup(CurrentUser, Group);
             }
             else
             {
-                CurrentUser.Groups.Add(Group);
                 button.Text = "Remove from groups list";
+                CurrentUser.Groups.Add(Group);
+                _loader.AddUserToGroup(CurrentUser, Group);
             }
         }
     }
