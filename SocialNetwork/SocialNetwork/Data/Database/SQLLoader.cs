@@ -56,6 +56,9 @@ namespace SocialNetwork.Data
         public void AddNewFriend(User u1, User u2) =>
             _publisher.PublishFriendship(u1, u2);
 
+        public void DeleteFriend(User u1, User u2) =>
+            _publisher.DeleteFriendship(u1, u2);
+
         public void AddNewMessage(Message message, Conversation conversation) =>
             _publisher.PublishMessage(conversation, message);
 
