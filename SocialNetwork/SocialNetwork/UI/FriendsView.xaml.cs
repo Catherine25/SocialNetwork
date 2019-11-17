@@ -15,32 +15,36 @@ namespace SocialNetwork.UI {
     {
         public enum Mode { Default, ChooseNew }
         private Mode _mode;
+        private SQLLoader _loader;
+        private User _user;
         
         public List<User> Friends;
         public List<string> FriendNames;
 
         public event Action<User> OpenUserViewRequest;
-        public event Action<User> CreateNewConversationRequest;
-		public event Action ShowDialogRequest;
+        public event Action<User, Conversation> SetNewConversationRequest;
+		public event Action<RequestDialog.RequestPurpose> ShowDialogRequest;
 
-        public FriendsView(User user, Mode mode)
+        public FriendsView(User user, Mode mode, SQLLoader loader)
         {
             InitializeComponent();
             _mode = mode;
+            _loader = loader;
+            _user = user;
+
             listView.ItemSelected += ItemSelected;
 			NewFriendBt.Clicked += NewFriendBt_Clicked;
 
-            if (user.Friends.Count == 0) {
-                Label label = new Label {
-                    Text = "No Friends",
-                    FontSize = 90,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center
-                };
-                Content = label;
+            if (_user.Friends.Count == 0)
+            {
+                NoFriendsLabel.IsVisible = true;
+                listView.IsVisible = false;
             }
             else
             {
+                NoFriendsLabel.IsVisible = false;
+                listView.IsVisible = true;
+
                 Friends = user.Friends;
                 FriendNames = Friends.Select(x => x.Name).ToList();
                 listView.ItemsSource = FriendNames;
@@ -49,17 +53,22 @@ namespace SocialNetwork.UI {
             }
         }
 
-		private void NewFriendBt_Clicked(object sender, EventArgs e) => ShowDialogRequest();
+		private void NewFriendBt_Clicked(object sender, EventArgs e) =>
+            ShowDialogRequest(RequestDialog.RequestPurpose.newFriendName);
 
 		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
         {
-            string friend = e.SelectedItem as string;
-            User user = Friends.Find(X=>X .Name == friend);
+            string friendName = e.SelectedItem as string;
+            User friend = Friends.Find(X=>X .Name == friendName);
 
             if (_mode == Mode.ChooseNew)
-                CreateNewConversationRequest(user);
+            {
+                Conversation c = new Conversation(0, _user, friend);
+                _loader.AddEmptyConversation(c);
+                SetNewConversationRequest(friend, c);
+            }
             else
-                OpenUserViewRequest(user);
+                OpenUserViewRequest(friend);
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
