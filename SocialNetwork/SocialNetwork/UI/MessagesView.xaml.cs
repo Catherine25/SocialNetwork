@@ -58,10 +58,10 @@ namespace SocialNetwork.UI
                 for (int i = 0; i < length; i++)
                 {
                     string header = GetHeader(_localData.Conversations.ElementAt(i));
-                    if (conversationsHeaders.Any(X => X == header))
-                        ;//throw new Exception();
-                    else
-                        conversationsHeaders.Add(header);
+                    //if (conversationsHeaders.Any(X => X == header))
+                    //    ;//throw new Exception();
+                    //else
+                    conversationsHeaders.Add(header);
                 }
 
                 listView.ItemsSource = conversationsHeaders;
