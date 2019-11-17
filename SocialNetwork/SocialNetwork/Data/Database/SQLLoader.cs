@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using SocialNetwork.Data.Database;
 using System.Threading;
+using System.Linq;
 
 namespace SocialNetwork.Data
 {
-	class SQLLoader : ILoader
+	public class SQLLoader
 	{
+        private Publisher _publisher;
         private LocalData _localData;
         private string connectionString;
         private SQLCommands sqlCommands = new SQLCommands();
@@ -31,32 +33,37 @@ namespace SocialNetwork.Data
 
 			timer = timeSpan;
 			_localData = localData;
-			_localData.NewConversationRequest += PublishToServer;
+            _publisher = new Publisher(connectionString);
 
 			SyncWithServerImmediately();
             new Thread(SyncWithServer).Start();
         }
 
-		#region Single Update Request
+        #region Single Update Request
 
-		private void PublishToServer(Conversation conversation)
-		{
-			using (MySqlConnection connection = new MySqlConnection(connectionString))
-			using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddConversation(conversation), connection))
-			{
-				connection.Open();
+        public void AddEmptyConversation(Conversation newC)
+        {
+            if (_localData.Conversations.Any(c =>
+                (c.member1 == newC.member1 && c.member2 == newC.member2) ||
+                (c.member1 == newC.member2 && c.member2 == newC.member1)))
+                return;
 
-				int number = cmd.ExecuteNonQuery();
+            _publisher.PublishConversation(newC);
+        }
 
-				connection.Close();
-			}
-		}
+        public void DeleteConversation(Conversation conversation) => _publisher.DeleteConversation(conversation);
 
-		#endregion
+        public void AddNewFriend(User u1, User u2) =>
+            _publisher.PublishFriendship(u1, u2);
 
-		#region Collections
+        public void AddNewMessage(Message message, Conversation conversation) =>
+            _publisher.PublishMessage(conversation, message);
 
-		public List<User> LoadUsers()
+        #endregion
+
+        #region Collections
+
+        public List<User> LoadUsers()
         {
             List<User> users = new List<User>();
 
