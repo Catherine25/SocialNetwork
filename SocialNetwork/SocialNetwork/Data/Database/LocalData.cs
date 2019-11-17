@@ -19,14 +19,14 @@ namespace SocialNetwork.Data.Database
 		public List<Message> Messages { get; private set; }
 		public List<MessageData> MessagesData { get; private set; }
 
-		public Action<Conversation> NewConversationRequest;
-
 		public void ChangeUser(User user)
 		{
 			CurrentUser = user;
 
 			if (CurrentUser != null)
 				Conversations = Conversations.Where(c => c.member1.Id == CurrentUser.Id || c.member2.Id == CurrentUser.Id).ToList();
+
+            ConvertIntoLocalClasses();
 		}
 
 		public List<User> FindFriendsOfUser(User user)
@@ -88,20 +88,6 @@ namespace SocialNetwork.Data.Database
         }
 
         public User FindUserByName(string name) => Users.Find(X => X.Name == name);
-
-        public void AddEmptyConversation(User u1, User u2)
-        {
-            if (Conversations.Any(c => (c.member1 == u1 && c.member2 == u2) || (c.member1 == u2 && c.member2 == u1)))
-                return;
-
-            int freeId = 0;
-
-            do
-                freeId++;
-            while (Conversations.Any(c => c.Id == freeId));
-
-			NewConversationRequest(new Conversation(freeId, u1, u2));
-        }
 
         public void SyncWithServer (
             List<ConversationData> conversations,
