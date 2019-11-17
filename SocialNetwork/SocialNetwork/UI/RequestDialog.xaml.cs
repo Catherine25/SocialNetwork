@@ -31,6 +31,11 @@ namespace SocialNetwork.UI
             CancelBt.Clicked += CancelBt_Clicked;
             textEntry.Unfocused += TextEntry_Unfocused;
             textEntry.Completed += TextEntry_Completed;
+
+            if (purpose == RequestPurpose.currentName)
+                infoLabel.Text = "Enter your name";
+            else if (purpose == RequestPurpose.newFriendName)
+                infoLabel.Text = "Enter new friend name";
 		}
 
         private void TextEntry_Completed(object sender, EventArgs e)
