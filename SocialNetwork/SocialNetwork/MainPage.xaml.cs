@@ -18,6 +18,7 @@ namespace SocialNetwork
         private User _user;
         private Themes _themes;
         private LocalData _localData;
+        private SQLLoader _loader;
 
         public List<Theme> themes = new List<Theme>();
 
@@ -30,15 +31,15 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(User newUser, Themes themes, LocalData localData)
+        public MainPage(Themes themes, LocalData localData, SQLLoader loader)
 		{
             Debug.WriteLine("MainPage running");
 
             InitializeComponent();
 
-            _user = newUser;
             _themes = themes;
             _localData = localData;
+            _loader = loader;
             _themes.ThemeLoaded += ThemeLoaded;
 
             menu.SetTheme(themes.CurrentTheme);
@@ -61,7 +62,7 @@ namespace SocialNetwork
         #region Set view
 
         private void SetDialog(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme));
+            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme, _loader));
 
         private void SetGroupView(User user, Group group) =>
             mainPageGrid.SetSingleChild(new GroupView(user, group));
@@ -76,15 +77,15 @@ namespace SocialNetwork
 
         private void SetFriendsView(FriendsView.Mode mode)
         {
-            FriendsView view = new FriendsView(_user, mode);
+            FriendsView view = new FriendsView(_user, mode, _loader);
             view.SetTheme(_themes.CurrentTheme);
 
             if (mode == FriendsView.Mode.ChooseNew)
-                view.CreateNewConversationRequest += CreateNewConversation;
+                view.SetNewConversationRequest += SetDialog;
             else if (mode == FriendsView.Mode.Default)
             {
                 view.OpenUserViewRequest += SetUserView;
-                //view.ShowDialogRequest += RequestForText;
+                view.ShowDialogRequest += RequestForText;
             }
             else
                 throw new NotImplementedException();
@@ -144,24 +145,26 @@ namespace SocialNetwork
         private void Dialog_RequestCompleted(User user, RequestDialog.RequestPurpose purpose)
         {
             if (purpose == RequestDialog.RequestPurpose.currentName)
-                UserChangeRequest(user);
+            {
+                _user = user;
+                _localData.ChangeUser(user);
+                user.Friends = _localData.FindFriendsOfUser(user);
+                user.Groups = _localData.FindGroupsOfUser(user);
+                SetUserView();
+            }
             else if (purpose == RequestDialog.RequestPurpose.newFriendName)
             {
-                AddNewFriend();
-                //TODO: _localData.SyncWithServer();
+                _loader.AddNewFriend(_user, user);
                 SetFriendsView(FriendsView.Mode.Default);
             }
         }
 
         #region Change database
 
-        private void CreateNewConversation(User user)
+        private void CreateNewConversation(User friend)
         {
-            _localData.AddEmptyConversation(_user, user);
-            SetDialog(user, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == user));
+            SetDialog(friend, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == friend));
         }
-
-        private void AddNewFriend() => throw new NotImplementedException();
 
         #endregion
 
