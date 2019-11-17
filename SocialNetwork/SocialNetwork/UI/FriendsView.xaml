@@ -6,8 +6,22 @@
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.FriendsView">
   <ContentView.Content>
-        <Grid x:Name="friendsViewGrid">
-            <ListView x:Name="listView"/>
+        <Grid x:Name="friendsViewGrid"
+              HorizontalOptions="Center"
+              VerticalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <ListView x:Name="listView"
+                      Grid.Row="0"/>
+            <Label x:Name="NoFriendsLabel"
+                   Text="No Friends"
+                   Grid.Row="0"/>
+            <Button x:Name="NewFriendBt"
+                    Text="Add new"
+                    Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>

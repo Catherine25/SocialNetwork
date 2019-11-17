@@ -5,65 +5,61 @@ using System.Linq;
 
 namespace SocialNetwork.Services
 {
-    class NewMessagesImitator : IActivityImitator
+    class NewMessagesImitator
     {
         DateTime startTime;
         TimeSpan frequency;
         DateTime nextActionTime = DateTime.Now;
         Data.User user;
-        bool suspend = false;
+        bool suspend;
 
-        public NewMessagesImitator(Data.User _user) => user = _user;
+        public event Action<Data.Message, Data.User> MessageGenerated;
 
-        public DateTime StartTime
+        ///<summary> Constructor </summary>
+        public NewMessagesImitator(Data.User _user, DateTime _startTime, TimeSpan _frequency)
         {
-            get => startTime;
-            set => startTime = value;
+            user = _user;
+            startTime = _startTime;
+            frequency = _frequency;
+            nextActionTime = startTime + frequency;
         }
 
-        public TimeSpan Frequency
-        {
-            get => frequency;
-            set => frequency = value;
-        }
-
+        ///<summary> Stops TryWork() </summary>
         public void SuspendRequest() => suspend = true;
 
         public void TryWork(object o)
         {
-            Debug.WriteLine("TryWork() running");
             while(!suspend)
                 if(DateTime.Now >= nextActionTime)
                 {
                     Work();
                     startTime = DateTime.Now;
+                    nextActionTime = startTime + frequency;
                 }
-            Debug.WriteLine("TryWork() stopped");
         }
 
         private void Work()
         {
-            Debug.WriteLine("Work() running");
-
             //generate message
-            Data.Message message = Services.Test.GenerateMessage();
+            Data.Message message = Test.GenerateMessage();
+            Debug.WriteLine("Bot generated new message");
+
+            //setting new DateTime
             message.DateTime = DateTime.Now;
 
             //generate user to speak with
-            Data.User newUser = Services.Test.GenerateUser();
+            Data.User newUser = Test.GenerateUser();
 
-            //get user's conversations and count
-            List<Data.Conversation> conversations = Data.Messages.GetConversationsByUser(user).ToList();
-            
-            //get conversation with the generated user
-            Data.Conversation conversation = conversations.Find(X => X.member1 == newUser || X.member2 == newUser);
-
-            if(conversation != null)
-                conversation.messages.Add(message);
+            //check if generated user == current
+            if(newUser == user)
+                Debug.WriteLine("Generated user already exists");
             else
-                conversations.Add(new Data.Conversation(user, newUser, new List<Data.Message>() { message }));
-            
-            Debug.WriteLine("Work() stopped");
+            {
+                Debug.WriteLine("Bot generated new message from " + newUser.Name);
+
+                //generate event
+                MessageGenerated(message, newUser);
+            }
         }
     }
 }

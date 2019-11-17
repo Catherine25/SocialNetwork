@@ -47,8 +47,6 @@ namespace SocialNetwork.UI
 
                 BindingContext = this;
             }
-
-            SetTheme(user.Theme);
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);

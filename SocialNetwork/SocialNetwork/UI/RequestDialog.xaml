@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SocialNetwork.UI.RequestDialog">
+  <ContentView.Content>
+      <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Enter new friend name"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"/>
+            <Entry x:Name="textEntry"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"/>
+            <Button x:Name="ConfirmBt"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="Ok"/>
+            <Button x:Name="CancelBt"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Text="Cancel"/>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

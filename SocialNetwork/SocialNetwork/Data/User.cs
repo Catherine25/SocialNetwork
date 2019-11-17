@@ -8,42 +8,44 @@ namespace SocialNetwork.Data
 {
     public class User
     {
-        public event Action<Theme> ThemeChanged;
-        public User(string image, string name, string bio)
+        public User(int id, string image, string name, string bio)
         {
             AvatarLink = image;
             Name = name;
             Bio = bio;
+            Id = id;
 
             if (AvatarLink == null)
                 AvatarLink = "";
+        }
 
-            Friends = new List<User>();
+        public User(string id, string name, string bio, string image)
+        {
+            AvatarLink = image;
+            Name = name;
+            Bio = bio;
+            Id = int.Parse(id);
 
-            Theme = Themes.ThemesList[0];
+            if (AvatarLink == null)
+                AvatarLink = "";
         }
 
         public string AvatarLink;
         public string Name;
         public string Bio;
-        private Theme theme;
+        public int Id;
 
         public List<User> Friends;
         public List<Group> Groups;
 
-        public Theme Theme
-        {
-            get => theme;
-            set
-            {
-                // if(theme != value && theme != null) {
-                //     theme = value;
-                //     ThemeChanged(theme);                
-                // }
-                theme = value;
-                if(ThemeChanged != null)
-                    ThemeChanged(theme);
-            }
+        public override int GetHashCode() {
+            var hashCode = 1434431970;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AvatarLink);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Bio);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<User>>.Default.GetHashCode(Friends);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Group>>.Default.GetHashCode(Groups);
+            return hashCode;
         }
     }
 }

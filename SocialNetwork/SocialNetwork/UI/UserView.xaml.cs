@@ -27,8 +27,6 @@ namespace SocialNetwork.UI
             CurrentUser = user;
             Visitor = visitor;
 
-            SetTheme(user.Theme);
-
             if (visitor == user)
                 removeBt.IsVisible = false;
             else
@@ -37,10 +35,14 @@ namespace SocialNetwork.UI
                 removeBt.Text = visitor.Friends.Contains(CurrentUser) ? "Remove from friends list" : "Add to friends list";
             }
 
-            if (user.AvatarLink != "")
+            try
+            {
                 image.Source = ImageSource.FromUri(new Uri(user.AvatarLink));
-            else
+            }
+            catch
+            {
                 image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
+            }
 
             name.Text = user.Name;
             bio.Text = user.Bio;

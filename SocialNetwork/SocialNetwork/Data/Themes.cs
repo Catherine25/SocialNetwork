@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,30 +9,32 @@ using System.Threading;
 using Xamarin.Forms;
 using static Xamarin.Forms.Color;
 
-namespace SocialNetwork.Data
-{
-    public static class Themes
-    {
-        private static Stack<string> ThemeLinks = new Stack<string>();
-        public static List<Theme> ThemesList = new List<Theme>()
+namespace SocialNetwork.Data {
+    public class Themes {
+
+        private Stack<string> ThemeLinks = new Stack<string>();
+        public List<Theme> ThemesList = new List<Theme>
         {
             new Theme(
                 "Default",
-                Color.AliceBlue,
-                Color.CadetBlue,
-                Color.CornflowerBlue,
-                Color.DeepSkyBlue,
-                Color.DodgerBlue)
+                AliceBlue,
+                CadetBlue,
+                CornflowerBlue,
+                DeepSkyBlue,
+                DodgerBlue)
         };
+        public Theme CurrentTheme;
+        public bool IsPageLoadCompleted = false;
+        public bool IsAllDownloaded = false;
+        public event Action<Theme> ThemeLoaded;
 
-        public static bool IsPageLoadCompleted = false;
-        public static bool IsAllDownloaded = false;
+        public Themes() => CurrentTheme = ThemesList.Find(t => t.Name == "Default");
 
-        private static void LoadTheme(object o)
+        private void LoadTheme(string link)
         {
             Debug.WriteLine("LoadTheme() running");
 
-            WebRequest webRequest = WebRequest.Create(ThemeLinks.Pop());
+            WebRequest webRequest = WebRequest.Create(link);
             WebResponse webResponse = webRequest.GetResponse();
 
             Stream data = webResponse.GetResponseStream();
@@ -58,20 +61,15 @@ namespace SocialNetwork.Data
 
                 Theme theme = new Theme(ThemesList.Count.ToString(), color0, color1, color2, color3, color4);
                 ThemesList.Add(theme);
+                ThemeLoaded(theme);
             }
         }
 
-        static Themes()
-        {
-            //Thread thread = new Thread(LoadRomanukeThemes);
-            //thread.Start();
-        }
-
-        static void LoadRomanukeThemes()
+        public void LoadRomanukeThemes(object o)
         {
             Debug.WriteLine("LoadRomanukeThemes() running");
             
-            WebRequest webRequest = WebRequest.Create("https://colorpalettes.net");
+            WebRequest webRequest = WebRequest.Create("https://color.romanuke.com");
             WebResponse webResponse = webRequest.GetResponse();
             
             Stream data = webResponse.GetResponseStream();
@@ -82,16 +80,19 @@ namespace SocialNetwork.Data
                html = streamReader.ReadToEnd();
             }
 
-            Regex regex = new Regex(@"https://colorpalettes.net/color-palette-\d{4}/");
+            Regex regex = new Regex(@"https://color.romanuke.com/tsvetovaya-palitra-\d{4}/");
             MatchCollection matchCollection = regex.Matches(html);
             
             foreach (var m in matchCollection)
             {
                 string mstring = m.ToString();
 
-                if(!ThemeLinks.Contains(mstring))
-                    ThemeLinks.Push(mstring);
-            }
+				if (!ThemeLinks.Contains(mstring))
+				{
+					ThemeLinks.Push(mstring);
+					LoadTheme(mstring);
+				}
+			}
         }
     }
 }

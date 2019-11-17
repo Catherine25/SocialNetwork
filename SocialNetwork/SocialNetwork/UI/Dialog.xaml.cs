@@ -9,24 +9,27 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI
-{
+namespace SocialNetwork.UI {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Dialog : ContentView, IColorable
-    {
+    public partial class Dialog : ContentView, IColorable {
+
         private User User;
         private Conversation Conversation;
         private Dictionary<Guid, Message> messagesId;
+        private Theme theme;
+        private SQLLoader _loader;
 
-        public Dialog(Conversation conversaton, User user)
+        public Dialog(Conversation conversaton, User user, Theme newTheme, SQLLoader loader)
         {
             InitializeComponent();
             
             User = user;
             Conversation = conversaton;
             messagesId = new Dictionary<Guid, Message>();
+            theme = newTheme;
+            _loader = loader;
 
-            IOrderedEnumerable<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime);
+            List<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime).ToList();
 
             int length = orderedEnumerable.Count();
 
@@ -35,7 +38,7 @@ namespace SocialNetwork.UI
                 Message message = orderedEnumerable.ElementAt(i);
                 Button button = CreateButton(message, conversaton.member1 == user);
                 messagesId.Add(button.Id, message);
-                button.SetTheme(user.Theme);
+                button.SetTheme(theme);
                 stack.Children.Add(button);
             }
 
@@ -47,17 +50,19 @@ namespace SocialNetwork.UI
             string text = (sender as Entry).Text;
             (sender as Entry).Text = "";
             
-            Message message = new Message(text, DateTime.Now, Conversation.member1 == User ? true : false);
+            Message message = new Message(0, text, DateTime.Now, Conversation.member1 == User ? true : false);
             Conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
+
+            _loader.AddNewMessage(message, Conversation);
         }
 
         public Button CreateButton(Message message, bool currentUserIsMember1)
         {
             Button button = new Button
             {
-                TextColor = User.Theme.TextColor,
+                TextColor = theme.TextColor,
                 Text = message.Text
             };
             if ((currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1))

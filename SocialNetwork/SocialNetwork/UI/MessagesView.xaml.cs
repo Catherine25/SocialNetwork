@@ -17,27 +17,31 @@ namespace SocialNetwork.UI
     public partial class MessagesView : ContentView, IColorable
     {
         private User user;
-        private List<string> conversationsHeaders = new List<string>();
-        List<Conversation> conversations;
+        private List<string> conversationsHeaders;
         public event Action<User, Conversation> OpenDialodRequest;
+        public event Action<FriendsView.Mode> OpenFriendsViewRequest;
+        private Data.Database.LocalData _localData;
 
-        public MessagesView(User _user)
+        public MessagesView(User _user, Data.Database.LocalData localData)
         {
             InitializeComponent();
 
             user = _user;
+            _localData = localData;
 
-            SetTheme(user.Theme);
+            conversationsHeaders = new List<string>();
+
+            NewConversationBt.Clicked += NewConversationBt_Clicked;
 
             Reload();
         }
 
+        private void NewConversationBt_Clicked(object sender, EventArgs e) =>
+            OpenFriendsViewRequest(FriendsView.Mode.ChooseNew);
+
         private void Reload()
         {
-            //USE ONLY MESSAGES WHERE CURRENT USER IS AUTHOR OR RECIEVER
-            conversations = Conversations.GetConversationsByUser(user).ToList();
-
-            int length = conversations.Count;
+            int length = _localData.Conversations.Count;
             if(length == 0)
             {
                 Label label = new Label
@@ -52,7 +56,13 @@ namespace SocialNetwork.UI
             else
             {
                 for (int i = 0; i < length; i++)
-                    conversationsHeaders.Add(GetHeader(conversations[i]));
+                {
+                    string header = GetHeader(_localData.Conversations.ElementAt(i));
+                    //if (conversationsHeaders.Any(X => X == header))
+                    //    ;//throw new Exception();
+                    //else
+                    conversationsHeaders.Add(header);
+                }
 
                 listView.ItemsSource = conversationsHeaders;
             }
@@ -65,13 +75,19 @@ namespace SocialNetwork.UI
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, conversations[i]);
+            OpenDialodRequest(user, _localData.Conversations.ElementAt(i));
         }
 
         private string GetHeader(Conversation conversation)
         {
+            //get last message
             Message message = conversation.messages[conversation.messages.Count - 1];
-            string text = (message.IsFromMember1 ? conversation.member1.Name : conversation.member2.Name) + ": " + message.Text;
+
+            //get author name
+            User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
+            string authorName = author == user ? "You" : author.Name;
+
+            string text = authorName + ": " + message.Text;
             return text;
         }
 

@@ -6,16 +6,16 @@ namespace SocialNetwork.Data
 {
     public class Conversation
     {
-        public Conversation(User user1, User user2, List<Message> newMessages)
+        public Conversation(int id, User user1, User user2)
         {
+            Id = id;
             member1 = user1;
             member2 = user2;
-
-            messages = newMessages ?? throw new Exception();
         }
 
+        public readonly int Id;
         public readonly User member1;
         public readonly User member2;
-        public readonly List<Message> messages;
+        public List<Message> messages;
     }
 }

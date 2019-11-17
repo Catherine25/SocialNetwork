@@ -15,13 +15,13 @@ namespace SocialNetwork.Services
         private static string GenerateSentence() => Sentences[Random.Next(standartCount)];
 
         public static User GenerateUser() =>
-            new User(GenerateAvatarLink(), GenerateName(), GenerateSentence());
+            new User(Random.Next(), GenerateAvatarLink(), GenerateName(), GenerateSentence());
 
         public static Group GenerateGroup() =>
-            new Group(GenerateSentence(), GenerateSentence(), GenerateAvatarLink());
+            new Group(Random.Next(), GenerateSentence(), GenerateSentence(), GenerateAvatarLink());
 
         public static Message GenerateMessage() =>
-            new Message(GenerateSentence(), GenerateDateTime(), Random.Next(2) == 0 );
+            new Message(Random.Next(), GenerateSentence(), GenerateDateTime(), Random.Next(2) == 0 );
 
         public static Conversation GenerateConversation(User user) 
         {
@@ -30,8 +30,19 @@ namespace SocialNetwork.Services
             List<Message> generatedMessages = new List<Message>(GenerateMessages(user));
             List<Message> messages = generatedMessages.OrderBy(X => X.DateTime).ToList();
 
-            Conversation c = new Conversation(user, GenerateUser(), messages);
-            return c;
+            User newUser = GenerateUser();
+            if (newUser == user)
+            {
+                Debug.WriteLine("Failed to generate conversation, created user already exists");
+                return null;
+            }
+            else
+            {
+                Conversation c = new Conversation(0, user, newUser);
+                c.messages = messages;
+                Debug.WriteLine("New conversation created. " + "member1 is " + c.member1.Name + "member2 is " + c.member2.Name);
+                return c;
+            }
         }
 
         private static DateTime GenerateDateTime()
@@ -88,7 +99,16 @@ namespace SocialNetwork.Services
             IList<Conversation> conversations = new List<Conversation>();
 
             for (int i = 0; i < length; i++)
-                conversations.Add(GenerateConversation(user));
+            {
+                Conversation conversation = GenerateConversation(user);
+                if (conversations.Contains(conversation))
+                {
+                    Debug.WriteLine("User of generated conversation exists");
+                    continue;
+                }
+                else if(conversation != null)
+                    conversations.Add(conversation);
+            }
 
             return conversations;
         }
