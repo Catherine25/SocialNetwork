@@ -2,6 +2,7 @@
 using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
+using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,7 +51,7 @@ namespace SocialNetwork
             menu.SetCurrentUserViewRequest += SetUserView;
 
 			if (_user == null)
-				RequestForText(RequestDialog.RequestPurpose.currentName);
+				RequestForText(UserRequestDialog.RequestPurpose.currentName);
 			else
 				SetUserView();
 
@@ -65,7 +66,7 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme, _loader));
 
         private void SetGroupView(User user, Group group) =>
-            mainPageGrid.SetSingleChild(new GroupView(user, group));
+            mainPageGrid.SetSingleChild(new GroupView(user, group, _loader));
 
         private void SetGroupsView()
         {
@@ -102,9 +103,9 @@ namespace SocialNetwork
             view.OpenFriendsViewRequest += SetFriendsView;
         }
 
-        public void RequestForText(RequestDialog.RequestPurpose purpose)
+        public void RequestForText(UserRequestDialog.RequestPurpose purpose)
         {
-            RequestDialog dialog = new RequestDialog(purpose, _localData.Users);
+            UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.Users);
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += Dialog_RequestCompleted;
             mainPageGrid.SetSingleChild(dialog);
@@ -142,9 +143,9 @@ namespace SocialNetwork
             menu.SetTheme(theme);
         }
 
-        private void Dialog_RequestCompleted(User user, RequestDialog.RequestPurpose purpose)
+        private void Dialog_RequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
         {
-            if (purpose == RequestDialog.RequestPurpose.currentName)
+            if (purpose == UserRequestDialog.RequestPurpose.currentName)
             {
                 _user = user;
                 _localData.ChangeUser(user);
@@ -152,7 +153,7 @@ namespace SocialNetwork
                 user.Groups = _localData.FindGroupsOfUser(user);
                 SetUserView();
             }
-            else if (purpose == RequestDialog.RequestPurpose.newFriendName)
+            else if (purpose == UserRequestDialog.RequestPurpose.newFriendName)
             {
                 _loader.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
