@@ -63,6 +63,32 @@ namespace SocialNetwork.Data.Database
             }
         }
 
+        public void PublishUserToGroup(User user, Group group)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddUserToGroup(user, group), connection))
+            {
+                connection.Open();
+
+                int number = cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
+        public void DeleteUserFromGroup(User user, Group group)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().UnsubscribeUserFromGroup(user, group), connection))
+            {
+                connection.Open();
+
+                int number = cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
         public void PublishMessage(Conversation conversation, Message message)
         {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
