@@ -17,8 +17,9 @@ namespace SocialNetwork.UI {
         private Conversation Conversation;
         private Dictionary<Guid, Message> messagesId;
         private Theme theme;
+        private SQLLoader _loader;
 
-        public Dialog(Conversation conversaton, User user, Theme newTheme)
+        public Dialog(Conversation conversaton, User user, Theme newTheme, SQLLoader loader)
         {
             InitializeComponent();
             
@@ -26,6 +27,7 @@ namespace SocialNetwork.UI {
             Conversation = conversaton;
             messagesId = new Dictionary<Guid, Message>();
             theme = newTheme;
+            _loader = loader;
 
             List<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime).ToList();
 
@@ -52,6 +54,8 @@ namespace SocialNetwork.UI {
             Conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
+
+            _loader.AddNewMessage(message, Conversation);
         }
 
         public Button CreateButton(Message message, bool currentUserIsMember1)
