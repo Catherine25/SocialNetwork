@@ -8,7 +8,10 @@
     <ContentView.Content>
         <StackLayout>
             <Label x:Name="themeLabel"
-                   Text="Choose your theme"/>
+                   Text="Choose your theme"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="Medium"/>
             <Picker x:Name="themePicker"/> 
 
             <BoxView x:Name="color1"/>

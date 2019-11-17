@@ -9,30 +9,29 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-//TODO: Add more fields to the view
-//TODO: Add images
-
 namespace SocialNetwork.UI
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserView : ContentView, IColorable
     {
-        User CurrentUser;
+        User Visitee;
         User Visitor;
+        SQLLoader _loader;
 
-        public UserView(User user, User visitor)
+        public UserView(User user, User visitor, SQLLoader loader)
         {
             InitializeComponent();
 
-            CurrentUser = user;
+            Visitee = user;
             Visitor = visitor;
+            _loader = loader;
 
             if (visitor == user)
                 removeBt.IsVisible = false;
             else
             {
                 removeBt.Clicked += RemoveBt_Clicked;
-                removeBt.Text = visitor.Friends.Contains(CurrentUser) ? "Remove from friends list" : "Add to friends list";
+                removeBt.Text = visitor.Friends.Contains(Visitee) ? "Remove from friends list" : "Add to friends list";
             }
 
             try
@@ -70,14 +69,16 @@ namespace SocialNetwork.UI
         {
             Button button = sender as Button;
 
-            if(Visitor.Friends.Contains(CurrentUser))
+            if(Visitor.Friends.Contains(Visitee))
             {
+                Visitor.Friends.Remove(Visitee);
+                _loader.DeleteFriend(Visitor, Visitee);
                 button.Text = "Add to friends list";
-                Visitor.Friends.Remove(CurrentUser);
             }
             else
             {
-                Visitor.Friends.Add(CurrentUser);
+                Visitor.Friends.Add(Visitee);
+                _loader.AddNewFriend(Visitor, Visitee);
                 button.Text = "Remove from friends list";
             }
         }

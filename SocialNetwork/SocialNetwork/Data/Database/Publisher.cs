@@ -50,6 +50,19 @@ namespace SocialNetwork.Data.Database
             }
         }
 
+        public void DeleteFriendship(User u1, User u2)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().DeleteFriendOfUser(u1, u2), connection))
+            {
+                connection.Open();
+
+                int number = cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
         public void PublishMessage(Conversation conversation, Message message)
         {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))

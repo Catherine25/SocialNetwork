@@ -52,7 +52,8 @@ namespace SocialNetwork.Data.Database
 
 		public static string DeleteUser = "DELETE FROM Users where u_id=?;";
 		public static string DeleteGroup = "DELETE FROM Groups where g_id=?;";
-		public static string DeleteFriendOfUser = "DELETE FROM Friends where Users_u_id=? and f_id=?;";
+        public string DeleteFriendOfUser(User u1, User u2) =>
+            "DELETE FROM Friends where Users_u_id=" + u1.Id + " and f_id=" + u2.Id + ";";
 		public static string UnsubscribeUserFromGroup = "DELETE FROM users_groups where Groups_g_id=? and Users_u_id=?;";
         public string DeleteConversation(Conversation conversation) =>
             "DELETE FROM Conversation where c_id=" + conversation.Id + ";";
