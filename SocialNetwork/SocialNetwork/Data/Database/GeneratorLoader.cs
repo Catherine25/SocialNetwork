@@ -6,42 +6,47 @@ using System.Text;
 
 namespace SocialNetwork.Data.Database
 {
-	class GeneratorLoader : ILoader
-	{
-        public List<ConversationData> LoadConversationsData()
-        {
-            throw new NotImplementedException();
-        }
+	//class GeneratorLoader : ILoader
+	//{
+ //       public void AddEmptyConversation(User u1, User u2)
+ //       {
+ //           throw new NotImplementedException();
+ //       }
 
-        public List<User> LoadFriends() => Test.GenerateUsers();
+ //       public List<ConversationData> LoadConversationsData()
+ //       {
+ //           throw new NotImplementedException();
+ //       }
 
-		public List<Group> LoadGroups() => Test.GenerateGroups();
+ //       public List<User> LoadFriends() => Test.GenerateUsers();
 
-        public List<MessageData> LoadMessagesData()
-        {
-            throw new NotImplementedException();
-        }
+	//	public List<Group> LoadGroups() => Test.GenerateGroups();
 
-        public User LoadUser() => Test.GenerateUser();
+ //       public List<MessageData> LoadMessagesData()
+ //       {
+ //           throw new NotImplementedException();
+ //       }
 
-		public User LoadUser(string name)
-		{
-			throw new NotImplementedException();
-		}
+ //       public User LoadUser() => Test.GenerateUser();
 
-        public List<Tuple<int, int>> LoadUserFriends()
-        {
-            throw new NotImplementedException();
-        }
+	//	public User LoadUser(string name)
+	//	{
+	//		throw new NotImplementedException();
+	//	}
 
-        public List<Tuple<int, int>> LoadUserGroups()
-        {
-            throw new NotImplementedException();
-        }
+ //       public List<Tuple<int, int>> LoadUserFriends()
+ //       {
+ //           throw new NotImplementedException();
+ //       }
 
-        public List<User> LoadUsers()
-        {
-            throw new NotImplementedException();
-        }
-    }
+ //       public List<Tuple<int, int>> LoadUserGroups()
+ //       {
+ //           throw new NotImplementedException();
+ //       }
+
+ //       public List<User> LoadUsers()
+ //       {
+ //           throw new NotImplementedException();
+ //       }
+ //   }
 }
