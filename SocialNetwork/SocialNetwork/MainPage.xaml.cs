@@ -120,14 +120,14 @@ namespace SocialNetwork
 
         private void SetUserView()
         {
-            UserView view = new UserView(_user, _user);
+            UserView view = new UserView(_user, _user, _loader);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
         
         private void SetUserView(User user)
         {
-            UserView view = new UserView(user, _user);
+            UserView view = new UserView(user, _user, _loader);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
@@ -155,18 +155,10 @@ namespace SocialNetwork
             else if (purpose == RequestDialog.RequestPurpose.newFriendName)
             {
                 _loader.AddNewFriend(_user, user);
+                _user.Friends.Add(user);
                 SetFriendsView(FriendsView.Mode.Default);
             }
         }
-
-        #region Change database
-
-        private void CreateNewConversation(User friend)
-        {
-            SetDialog(friend, _localData.Conversations.Find(c => c.member1 == _user && c.member2 == friend));
-        }
-
-        #endregion
 
         #endregion
     }
