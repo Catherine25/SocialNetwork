@@ -18,6 +18,7 @@
                       Grid.Row="0"/>
             <Label x:Name="NoFriendsLabel"
                    Text="No Friends"
+                   FontSize="Medium"
                    Grid.Row="0"/>
             <Button x:Name="NewFriendBt"
                     Text="Add new"
