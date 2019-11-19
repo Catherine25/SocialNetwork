@@ -51,7 +51,7 @@ namespace SocialNetwork
             menu.SetCurrentUserViewRequest += SetUserView;
 
 			if (_user == null)
-				RequestForText(UserRequestDialog.RequestPurpose.currentName);
+				RequestForUser(UserRequestDialog.RequestPurpose.currentName);
 			else
 				SetUserView();
 
@@ -73,8 +73,11 @@ namespace SocialNetwork
             GroupsView view = new GroupsView(_user);
             view.SetTheme(_themes.CurrentTheme);
             view.OpenGroupViewRequest += SetGroupView;
+            view.ShowDialogRequest += RequestForGroup;
             mainPageGrid.SetSingleChild(view);
         }
+
+        
 
         private void SetFriendsView(FriendsView.Mode mode)
         {
@@ -86,7 +89,7 @@ namespace SocialNetwork
             else if (mode == FriendsView.Mode.Default)
             {
                 view.OpenUserViewRequest += SetUserView;
-                view.ShowDialogRequest += RequestForText;
+                view.ShowDialogRequest += RequestForUser;
             }
             else
                 throw new NotImplementedException();
@@ -103,11 +106,19 @@ namespace SocialNetwork
             view.OpenFriendsViewRequest += SetFriendsView;
         }
 
-        public void RequestForText(UserRequestDialog.RequestPurpose purpose)
+        public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
         {
             UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.Users);
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += Dialog_RequestCompleted;
+            mainPageGrid.SetSingleChild(dialog);
+        }
+
+        private void RequestForGroup(GroupRequestDialog.RequestPurpose obj)
+        {
+            GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.Groups);
+            dialog.SetTheme(_themes.CurrentTheme);
+            dialog.RequestCompleted += Dialog_RequestCompleted1;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -160,6 +171,17 @@ namespace SocialNetwork
                 SetFriendsView(FriendsView.Mode.Default);
             }
         }
+
+        private void Dialog_RequestCompleted1(Group group, GroupRequestDialog.RequestPurpose purpose)
+        {
+            if (purpose == GroupRequestDialog.RequestPurpose.newGroupName)
+            {
+                _loader.AddNewGroup(group);
+                _user.Groups.Add(group);
+                SetGroupsView();
+            }
+        }
+
 
         #endregion
     }
