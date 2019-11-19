@@ -3,6 +3,7 @@ using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
 using SocialNetwork.UI.DataRequests;
+using SocialNetwork.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -63,7 +64,7 @@ namespace SocialNetwork
         #region Set view
 
         private void SetDialog(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme, _loader));
+            mainPageGrid.SetSingleChild(new DialogView(conversation, user, _themes.CurrentTheme, _loader));
 
         private void SetGroupView(User user, Group group) =>
             mainPageGrid.SetSingleChild(new GroupView(user, group, _loader));
