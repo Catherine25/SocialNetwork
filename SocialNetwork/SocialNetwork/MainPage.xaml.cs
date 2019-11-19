@@ -75,9 +75,7 @@ namespace SocialNetwork
             view.OpenGroupViewRequest += SetGroupView;
             view.ShowDialogRequest += RequestForGroup;
             mainPageGrid.SetSingleChild(view);
-        }
-
-        
+        }        
 
         private void SetFriendsView(FriendsView.Mode mode)
         {
@@ -110,7 +108,7 @@ namespace SocialNetwork
         {
             UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.Users);
             dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += Dialog_RequestCompleted;
+            dialog.RequestCompleted += UserRequestCompleted;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -118,7 +116,7 @@ namespace SocialNetwork
         {
             GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.Groups);
             dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += Dialog_RequestCompleted1;
+            dialog.RequestCompleted += GroupRequestCompleted;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -127,6 +125,7 @@ namespace SocialNetwork
             SettingsView view = new SettingsView(_user, themes);
             view.SetTheme(_themes.CurrentTheme);
             view.ChangeThemeRequest += ChangeTheme;
+            view.ReloginRequest += RequestForUser;
             mainPageGrid.SetSingleChild(view);
         }
 
@@ -154,7 +153,7 @@ namespace SocialNetwork
             menu.SetTheme(theme);
         }
 
-        private void Dialog_RequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
+        private void UserRequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
         {
             if (purpose == UserRequestDialog.RequestPurpose.currentName)
             {
@@ -172,16 +171,15 @@ namespace SocialNetwork
             }
         }
 
-        private void Dialog_RequestCompleted1(Group group, GroupRequestDialog.RequestPurpose purpose)
+        private void GroupRequestCompleted(Group group, GroupRequestDialog.RequestPurpose purpose)
         {
             if (purpose == GroupRequestDialog.RequestPurpose.newGroupName)
             {
-                _loader.AddNewGroup(group);
+                _loader.AddUserToGroup(_user, group);
                 _user.Groups.Add(group);
                 SetGroupsView();
             }
         }
-
 
         #endregion
     }
