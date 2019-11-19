@@ -18,6 +18,7 @@
                       Grid.Row="0"/>
             <Label x:Name="NoGroupsLabel"
                    Text="No Groups"
+                   FontSize="Medium"
                    Grid.Row="0"/>
             <Button x:Name="NewGroupBt"
                     Text="Add new"
