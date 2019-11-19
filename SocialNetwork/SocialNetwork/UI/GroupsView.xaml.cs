@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Services;
+using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace SocialNetwork.UI
         public List<Group> Groups;
         public List<string> GroupTitles;
         public event Action<User, Group> OpenGroupViewRequest;
+        public event Action<GroupRequestDialog.RequestPurpose> ShowDialogRequest;
 
         public GroupsView(User user)
         {
@@ -27,19 +29,18 @@ namespace SocialNetwork.UI
 
             User = user;
 
+            NewGroupBt.Clicked += NewGroupBt_Clicked;
+
             if (user.Groups.Count == 0)
             {
-                Label label = new Label
-                {
-                    Text = "No Groups",
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 90
-                };
-                Content = label;
+                NoGroupsLabel.IsVisible = true;
+                listView.IsVisible = false;
             }
             else
             {
+                NoGroupsLabel.IsVisible = false;
+                listView.IsVisible = true;
+
                 Groups = user.Groups;
                 GroupTitles = Groups.Select(x => x.Title).ToList();
                 listView.ItemsSource = GroupTitles;
@@ -48,6 +49,9 @@ namespace SocialNetwork.UI
                 BindingContext = this;
             }
         }
+
+        private void NewGroupBt_Clicked(object sender, EventArgs e) =>
+            ShowDialogRequest(GroupRequestDialog.RequestPurpose.newGroupName);
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
 
