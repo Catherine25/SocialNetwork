@@ -33,7 +33,6 @@ namespace SocialNetwork.UI {
             _loader = loader;
             _user = user;
 
-            listView.ItemSelected += ItemSelected;
 			NewFriendBt.Clicked += NewFriendBt_Clicked;
 
             if (_user.Friends.Count == 0)
@@ -49,6 +48,7 @@ namespace SocialNetwork.UI {
                 Friends = user.Friends;
                 FriendNames = Friends.Select(x => x.Name).ToList();
                 listView.ItemsSource = FriendNames;
+                listView.ItemSelected += ItemSelected;
 
                 BindingContext = this;
             }
