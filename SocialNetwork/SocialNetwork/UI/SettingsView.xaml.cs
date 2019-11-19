@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Services;
+using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,10 @@ namespace SocialNetwork.UI
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsView : ContentView, IColorable
     {
-        User CurrentUser;
         List<Theme> themes;
 
         public event Action<Theme> ChangeThemeRequest;
+        public event Action<UserRequestDialog.RequestPurpose> ReloginRequest;
         
         public SettingsView(User user, List<Theme> newThemes)
         {
@@ -26,10 +27,12 @@ namespace SocialNetwork.UI
 			themes = new List<Theme>();
             ImportThemes(newThemes);
 
-            CurrentUser = user;
-
             themePicker.SelectedIndexChanged += ThemePicker_SelectedIndexChanged;
+            ReloginBt.Clicked += ReloginBt_Clicked;
         }
+
+        private void ReloginBt_Clicked(object sender, EventArgs e) =>
+            ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
 
