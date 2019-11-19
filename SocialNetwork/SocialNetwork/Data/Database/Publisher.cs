@@ -7,14 +7,19 @@ namespace SocialNetwork.Data.Database
 {
     class Publisher
     {
-        private string _connectionString;
+        private readonly string _connectionString;
+        private readonly SQLCommands _commands;
 
-        public Publisher(string connectionString) => _connectionString = connectionString;
+        public Publisher(string connectionString)
+        {
+            _connectionString = connectionString;
+            _commands = new SQLCommands();
+        }
 
-        public void PublishConversation(Conversation conversation)
+        private void ExecuteNonQuery(string command)
         {
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddConversation(conversation), connection))
+            using (MySqlCommand cmd = new MySqlCommand(command, connection))
             {
                 connection.Open();
 
@@ -24,56 +29,28 @@ namespace SocialNetwork.Data.Database
             }
         }
 
-        public void DeleteConversation(Conversation conversation)
-        {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().DeleteConversation(conversation), connection))
-            {
-                connection.Open();
+        public void PublishConversation(Conversation conversation) =>
+            ExecuteNonQuery(_commands.AddConversation(conversation));
 
-                int number = cmd.ExecuteNonQuery();
+        public void DeleteConversation(Conversation conversation) =>
+            ExecuteNonQuery(_commands.DeleteConversation(conversation));
 
-                connection.Close();
-            }
-        }
+        public void PublishGroup(Group group) =>
+            ExecuteNonQuery(_commands.AddGroup(group));
 
-        public void PublishFriendship(User u1, User u2)
-        {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddFriendship(u1, u2), connection))
-            {
-                connection.Open();
+        public void PublishFriendship(User u1, User u2) =>
+            ExecuteNonQuery(_commands.AddFriendship(u1, u2));
 
-                int number = cmd.ExecuteNonQuery();
+        public void DeleteFriendship(User u1, User u2) =>
+            ExecuteNonQuery(_commands.DeleteFriendOfUser(u1, u2));
 
-                connection.Close();
-            }
-        }
+        public void PublishUserToGroup(User user, Group group) =>
+            ExecuteNonQuery(_commands.AddUserToGroup(user, group));
 
-        public void DeleteFriendship(User u1, User u2)
-        {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().DeleteFriendOfUser(u1, u2), connection))
-            {
-                connection.Open();
+        public void DeleteUserFromGroup(User user, Group group) =>
+            ExecuteNonQuery(_commands.UnsubscribeUserFromGroup(user, group));
 
-                int number = cmd.ExecuteNonQuery();
-
-                connection.Close();
-            }
-        }
-
-        public void PublishMessage(Conversation conversation, Message message)
-        {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().AddMessage(message, conversation), connection))
-            {
-                connection.Open();
-
-                int number = cmd.ExecuteNonQuery();
-
-                connection.Close();
-            }
-        }
+        public void PublishMessage(Conversation conversation, Message message) =>
+            ExecuteNonQuery(_commands.AddMessage(message, conversation));
     }
 }

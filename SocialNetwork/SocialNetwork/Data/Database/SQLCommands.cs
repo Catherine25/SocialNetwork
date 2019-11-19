@@ -37,24 +37,26 @@ namespace SocialNetwork.Data.Database
 		public bool Message_isFormMember = false; //"isFormMember"
 
 		public string AddUser = "INSERT INTO Users (AvatarLink, username, Bio) VALUES (?, ?, ?);";
-		public string AddGroup = "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (?, ?, ?);";
-		public string AddUserToGroup = "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (?, ?);";
+        public string AddGroup(Group group) =>
+            "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (" + group.AvatarLink + ", " + group.Title + ", " + group.Description + ");";
+        public string AddUserToGroup(User user, Group group) =>
+            "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (" + user.Id + ", " + group.Id + ");";
         public string AddFriendship(User u1, User u2) =>
             "INSERT INTO Friends (Users_u_id, f_id) VALUES (" + u1.Id + ", " + u2.Id + ");";
 		public string AddConversation(Conversation conversation) =>
 			"INSERT INTO Conversation (u1_id, u2_id) VALUES (" + conversation.member1.Id + ", " + conversation.member2.Id + ");";
         public string AddMessage(Message m, Conversation c) =>
-            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('"
-            + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
+            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('" + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
 
-		public static string UpdateUser = "UPDATE Users SET AvatarLink=?, username=?, Bio=? WHERE u_id=?;";
-		public static string UpdateGroup = "UPDATE Groups SET AvatarLink=?, Title=?, Description=? WHERE g_id=?;";
+		public string UpdateUser = "UPDATE Users SET AvatarLink=?, username=?, Bio=? WHERE u_id=?;";
+		public string UpdateGroup = "UPDATE Groups SET AvatarLink=?, Title=?, Description=? WHERE g_id=?;";
 
-		public static string DeleteUser = "DELETE FROM Users where u_id=?;";
-		public static string DeleteGroup = "DELETE FROM Groups where g_id=?;";
+		public string DeleteUser = "DELETE FROM Users where u_id=?;";
+		public string DeleteGroup = "DELETE FROM Groups where g_id=?;";
         public string DeleteFriendOfUser(User u1, User u2) =>
             "DELETE FROM Friends where Users_u_id=" + u1.Id + " and f_id=" + u2.Id + ";";
-		public static string UnsubscribeUserFromGroup = "DELETE FROM users_groups where Groups_g_id=? and Users_u_id=?;";
+        public string UnsubscribeUserFromGroup(User user, Group group) =>
+            "DELETE FROM users_groups where Groups_g_id=" + group.Id + " and Users_u_id=" + user.Id + ";";
         public string DeleteConversation(Conversation conversation) =>
             "DELETE FROM Conversation where c_id=" + conversation.Id + ";";
 	}

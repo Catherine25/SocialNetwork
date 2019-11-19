@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Services;
+using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace SocialNetwork.UI {
 
         public event Action<User> OpenUserViewRequest;
         public event Action<User, Conversation> SetNewConversationRequest;
-		public event Action<RequestDialog.RequestPurpose> ShowDialogRequest;
+		public event Action<UserRequestDialog.RequestPurpose> ShowDialogRequest;
 
         public FriendsView(User user, Mode mode, SQLLoader loader)
         {
@@ -32,7 +33,6 @@ namespace SocialNetwork.UI {
             _loader = loader;
             _user = user;
 
-            listView.ItemSelected += ItemSelected;
 			NewFriendBt.Clicked += NewFriendBt_Clicked;
 
             if (_user.Friends.Count == 0)
@@ -48,13 +48,14 @@ namespace SocialNetwork.UI {
                 Friends = user.Friends;
                 FriendNames = Friends.Select(x => x.Name).ToList();
                 listView.ItemsSource = FriendNames;
+                listView.ItemSelected += ItemSelected;
 
                 BindingContext = this;
             }
         }
 
 		private void NewFriendBt_Clicked(object sender, EventArgs e) =>
-            ShowDialogRequest(RequestDialog.RequestPurpose.newFriendName);
+            ShowDialogRequest(UserRequestDialog.RequestPurpose.newFriendName);
 
 		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
         {

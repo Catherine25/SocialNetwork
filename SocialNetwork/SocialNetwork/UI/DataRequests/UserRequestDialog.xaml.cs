@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.DataRequests
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class RequestDialog : ContentView
+	public partial class UserRequestDialog : ContentView
 	{
         private string text;
         private RequestPurpose _purpose;
@@ -20,7 +20,7 @@ namespace SocialNetwork.UI
         public enum RequestPurpose { currentName, newFriendName }
         public event Action<User, RequestPurpose> RequestCompleted;
 
-		public RequestDialog(RequestPurpose purpose, List<User> users)
+		public UserRequestDialog(RequestPurpose purpose, List<User> users)
 		{
 			InitializeComponent();
 

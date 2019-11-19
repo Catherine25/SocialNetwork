@@ -6,20 +6,41 @@
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.SettingsView">
     <ContentView.Content>
-        <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
             <Label x:Name="themeLabel"
                    Text="Choose your theme"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   FontSize="Medium"/>
-            <Picker x:Name="themePicker"/> 
+                   FontSize="Medium"
+                   Grid.Row="0"/>
+            <Picker x:Name="themePicker"
+                    Grid.Row="1"/> 
 
-            <BoxView x:Name="color1"/>
-            <BoxView x:Name="color2"/>
-            <BoxView x:Name="color3"/>
-            <BoxView x:Name="color4"/>
-            <BoxView x:Name="color5"/>
-            
-        </StackLayout>
+            <BoxView x:Name="color1"
+                     Grid.Row="2"/>
+            <BoxView x:Name="color2"
+                     Grid.Row="3"/>
+            <BoxView x:Name="color3"
+                     Grid.Row="4"/>
+            <BoxView x:Name="color4"
+                     Grid.Row="5"/>
+            <BoxView x:Name="color5"
+                     Grid.Row="6"/>
+
+            <Button x:Name="ReloginBt"
+                    Text="Change Account"
+                    Grid.Row="7"/>
+        </Grid>
     </ContentView.Content>
 </ContentView>

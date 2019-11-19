@@ -6,8 +6,23 @@
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.GroupsView">
   <ContentView.Content>
-      <Grid x:Name="groupsViewList">
-            <ListView x:Name="listView"/>
+      <Grid x:Name="groupsViewList"
+            HorizontalOptions="Center"
+              VerticalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <ListView x:Name="listView"
+                      Grid.Row="0"/>
+            <Label x:Name="NoGroupsLabel"
+                   Text="No Groups"
+                   FontSize="Medium"
+                   Grid.Row="0"/>
+            <Button x:Name="NewGroupBt"
+                    Text="Add new"
+                    Grid.Row="1"/>
         </Grid>
   </ContentView.Content>
 </ContentView>

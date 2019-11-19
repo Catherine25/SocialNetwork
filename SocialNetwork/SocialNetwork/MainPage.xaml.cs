@@ -2,6 +2,7 @@
 using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
+using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,7 +51,7 @@ namespace SocialNetwork
             menu.SetCurrentUserViewRequest += SetUserView;
 
 			if (_user == null)
-				RequestForText(RequestDialog.RequestPurpose.currentName);
+				RequestForUser(UserRequestDialog.RequestPurpose.currentName);
 			else
 				SetUserView();
 
@@ -65,15 +66,16 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme, _loader));
 
         private void SetGroupView(User user, Group group) =>
-            mainPageGrid.SetSingleChild(new GroupView(user, group));
+            mainPageGrid.SetSingleChild(new GroupView(user, group, _loader));
 
         private void SetGroupsView()
         {
             GroupsView view = new GroupsView(_user);
             view.SetTheme(_themes.CurrentTheme);
             view.OpenGroupViewRequest += SetGroupView;
+            view.ShowDialogRequest += RequestForGroup;
             mainPageGrid.SetSingleChild(view);
-        }
+        }        
 
         private void SetFriendsView(FriendsView.Mode mode)
         {
@@ -85,7 +87,7 @@ namespace SocialNetwork
             else if (mode == FriendsView.Mode.Default)
             {
                 view.OpenUserViewRequest += SetUserView;
-                view.ShowDialogRequest += RequestForText;
+                view.ShowDialogRequest += RequestForUser;
             }
             else
                 throw new NotImplementedException();
@@ -102,11 +104,19 @@ namespace SocialNetwork
             view.OpenFriendsViewRequest += SetFriendsView;
         }
 
-        public void RequestForText(RequestDialog.RequestPurpose purpose)
+        public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
         {
-            RequestDialog dialog = new RequestDialog(purpose, _localData.Users);
+            UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.Users);
             dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += Dialog_RequestCompleted;
+            dialog.RequestCompleted += UserRequestCompleted;
+            mainPageGrid.SetSingleChild(dialog);
+        }
+
+        private void RequestForGroup(GroupRequestDialog.RequestPurpose obj)
+        {
+            GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.Groups);
+            dialog.SetTheme(_themes.CurrentTheme);
+            dialog.RequestCompleted += GroupRequestCompleted;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -115,6 +125,7 @@ namespace SocialNetwork
             SettingsView view = new SettingsView(_user, themes);
             view.SetTheme(_themes.CurrentTheme);
             view.ChangeThemeRequest += ChangeTheme;
+            view.ReloginRequest += RequestForUser;
             mainPageGrid.SetSingleChild(view);
         }
 
@@ -142,9 +153,9 @@ namespace SocialNetwork
             menu.SetTheme(theme);
         }
 
-        private void Dialog_RequestCompleted(User user, RequestDialog.RequestPurpose purpose)
+        private void UserRequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
         {
-            if (purpose == RequestDialog.RequestPurpose.currentName)
+            if (purpose == UserRequestDialog.RequestPurpose.currentName)
             {
                 _user = user;
                 _localData.ChangeUser(user);
@@ -152,11 +163,21 @@ namespace SocialNetwork
                 user.Groups = _localData.FindGroupsOfUser(user);
                 SetUserView();
             }
-            else if (purpose == RequestDialog.RequestPurpose.newFriendName)
+            else if (purpose == UserRequestDialog.RequestPurpose.newFriendName)
             {
                 _loader.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
                 SetFriendsView(FriendsView.Mode.Default);
+            }
+        }
+
+        private void GroupRequestCompleted(Group group, GroupRequestDialog.RequestPurpose purpose)
+        {
+            if (purpose == GroupRequestDialog.RequestPurpose.newGroupName)
+            {
+                _loader.AddUserToGroup(_user, group);
+                _user.Groups.Add(group);
+                SetGroupsView();
             }
         }
 

@@ -58,6 +58,13 @@ namespace SocialNetwork.Data
 
         public void DeleteFriend(User u1, User u2) =>
             _publisher.DeleteFriendship(u1, u2);
+        public void AddNewGroup(Group group) =>
+            _publisher.PublishGroup(group);
+
+        public void AddUserToGroup(User user, Group group) =>
+            _publisher.PublishUserToGroup(user, group);
+        public void DeleteUserFromGroup(User user, Group group) =>
+            _publisher.DeleteUserFromGroup(user, group);
 
         public void AddNewMessage(Message message, Conversation conversation) =>
             _publisher.PublishMessage(conversation, message);
