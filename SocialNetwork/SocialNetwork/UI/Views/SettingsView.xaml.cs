@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 
 //TODO: Add themes
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsView : ContentView, IColorable

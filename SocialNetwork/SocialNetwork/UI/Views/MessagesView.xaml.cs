@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 
 //TODO: Open selected conversation dialog
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MessagesView : ContentView, IColorable

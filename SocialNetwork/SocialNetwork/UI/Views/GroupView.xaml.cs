@@ -5,7 +5,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupView : ContentView, IColorable

@@ -4,25 +4,25 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="SocialNetwork.UI.FriendsView">
+             x:Class="SocialNetwork.UI.Views.GroupsView">
   <ContentView.Content>
-        <Grid x:Name="friendsViewGrid"
-              HorizontalOptions="Center"
+      <Grid x:Name="groupsViewList"
+            HorizontalOptions="Center"
               VerticalOptions="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
+
             <ListView x:Name="listView"
                       Grid.Row="0"/>
-            <Label x:Name="NoFriendsLabel"
-                   Text="No Friends"
+            <Label x:Name="NoGroupsLabel"
+                   Text="No Groups"
                    FontSize="Medium"
                    Grid.Row="0"/>
-            <Button x:Name="NewFriendBt"
+            <Button x:Name="NewGroupBt"
                     Text="Add new"
                     Grid.Row="1"/>
         </Grid>
-    </ContentView.Content>
+  </ContentView.Content>
 </ContentView>

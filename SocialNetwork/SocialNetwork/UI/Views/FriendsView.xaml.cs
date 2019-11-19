@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI {
+namespace SocialNetwork.UI.Views
+{
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FriendsView : ContentView, IColorable
     {

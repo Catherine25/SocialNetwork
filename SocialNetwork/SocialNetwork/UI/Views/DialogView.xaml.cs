@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI {
+namespace SocialNetwork.UI.Views
+{
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Dialog : ContentView, IColorable {
+    public partial class DialogView : ContentView, IColorable {
 
         private User User;
         private Conversation Conversation;
@@ -19,7 +20,7 @@ namespace SocialNetwork.UI {
         private Theme theme;
         private SQLLoader _loader;
 
-        public Dialog(Conversation conversaton, User user, Theme newTheme, SQLLoader loader)
+        public DialogView(Conversation conversaton, User user, Theme newTheme, SQLLoader loader)
         {
             InitializeComponent();
             

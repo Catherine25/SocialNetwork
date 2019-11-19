@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="SocialNetwork.UI.MenuView">
+             x:Class="SocialNetwork.UI.Views.MenuView">
   <ContentView.Content>
         <Grid x:Name="buttonGrid">
             <Grid.ColumnDefinitions>
