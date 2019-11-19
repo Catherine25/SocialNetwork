@@ -37,7 +37,8 @@ namespace SocialNetwork.Data.Database
 		public bool Message_isFormMember = false; //"isFormMember"
 
 		public string AddUser = "INSERT INTO Users (AvatarLink, username, Bio) VALUES (?, ?, ?);";
-		public string AddGroup = "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (?, ?, ?);";
+        public string AddGroup(Group group) =>
+            "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (" + group.AvatarLink + ", " + group.Title + ", " + group.Description + ");";
         public string AddUserToGroup(User user, Group group) =>
             "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (" + user.Id + ", " + group.Id + ");";
         public string AddFriendship(User u1, User u2) =>
@@ -45,8 +46,7 @@ namespace SocialNetwork.Data.Database
 		public string AddConversation(Conversation conversation) =>
 			"INSERT INTO Conversation (u1_id, u2_id) VALUES (" + conversation.member1.Id + ", " + conversation.member2.Id + ");";
         public string AddMessage(Message m, Conversation c) =>
-            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('"
-            + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
+            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('" + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
 
 		public string UpdateUser = "UPDATE Users SET AvatarLink=?, username=?, Bio=? WHERE u_id=?;";
 		public string UpdateGroup = "UPDATE Groups SET AvatarLink=?, Title=?, Description=? WHERE g_id=?;";
