@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using Xamarin.Essentials;
@@ -12,15 +13,15 @@ namespace SocialNetwork.UI.Views
     {
         User CurrentUser;
         Group Group;
-        SQLLoader _loader;
+        LocalData _localData;
 
-        public GroupView(User user, Group group, SQLLoader loader)
+        public GroupView(User user, Group group, LocalData localData)
         {
             InitializeComponent();
 
             CurrentUser = user;
             Group = group;
-            _loader = loader;
+            _localData = localData;
 
             removeBt.Clicked += RemoveBt_Clicked;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
@@ -64,13 +65,13 @@ namespace SocialNetwork.UI.Views
             {
                 button.Text = "Add to groups list";
                 CurrentUser.Groups.Remove(Group);
-                _loader.DeleteUserFromGroup(CurrentUser, Group);
+                _localData.DeleteUserFromGroup(CurrentUser, Group);
             }
             else
             {
                 button.Text = "Remove from groups list";
                 CurrentUser.Groups.Add(Group);
-                _loader.AddUserToGroup(CurrentUser, Group);
+                _localData.AddUserToGroup(CurrentUser, Group);
             }
         }
     }
