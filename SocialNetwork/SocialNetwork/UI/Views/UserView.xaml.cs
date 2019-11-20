@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
@@ -16,15 +17,15 @@ namespace SocialNetwork.UI.Views
     {
         User Visitee;
         User Visitor;
-        SQLLoader _loader;
+        LocalData _localData;
 
-        public UserView(User user, User visitor, SQLLoader loader)
+        public UserView(User user, User visitor, LocalData localData)
         {
             InitializeComponent();
 
             Visitee = user;
             Visitor = visitor;
-            _loader = loader;
+            _localData = localData;
 
             if (visitor == user)
                 removeBt.IsVisible = false;
@@ -72,13 +73,13 @@ namespace SocialNetwork.UI.Views
             if(Visitor.Friends.Contains(Visitee))
             {
                 Visitor.Friends.Remove(Visitee);
-                _loader.DeleteFriend(Visitor, Visitee);
+                _localData.DeleteFriend(Visitor, Visitee);
                 button.Text = "Add to friends list";
             }
             else
             {
                 Visitor.Friends.Add(Visitee);
-                _loader.AddNewFriend(Visitor, Visitee);
+                _localData.AddNewFriend(Visitor, Visitee);
                 button.Text = "Remove from friends list";
             }
         }
