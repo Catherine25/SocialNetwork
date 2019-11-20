@@ -23,6 +23,12 @@
     <Compile Update="UI\DataRequests\UserRequestDialog.xaml.cs">
       <DependentUpon>UserRequestDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Update="UI\Editors\GroupEditor.xaml.cs">
+      <DependentUpon>GroupEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Editors\UserEditor.xaml.cs">
+      <DependentUpon>UserEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Update="UI\Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
@@ -30,6 +36,9 @@
 
   <ItemGroup>
     <EmbeddedResource Update="UI\DataRequests\GroupRequestDialog.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Editors\UserEditor.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Views\DialogView.xaml">
