@@ -1,7 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SocialNetwork.Data.Database
 {
@@ -52,5 +49,8 @@ namespace SocialNetwork.Data.Database
 
         public void PublishMessage(Conversation conversation, Message message) =>
             ExecuteNonQuery(_commands.AddMessage(message, conversation));
+
+        public void PublishUser(User user) =>
+            ExecuteNonQuery(_commands.AddUser(user));
     }
 }
