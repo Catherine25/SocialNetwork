@@ -36,7 +36,8 @@ namespace SocialNetwork.Data.Database
 		public DateTime Message_datetime = DateTime.MinValue; //"dt"
 		public bool Message_isFormMember = false; //"isFormMember"
 
-		public string AddUser = "INSERT INTO Users (AvatarLink, username, Bio) VALUES (?, ?, ?);";
+        public string AddUser(User user) =>
+            "INSERT INTO Users (AvatarLink, username, Bio) VALUES ('" + user.AvatarLink + "', '" + user.Name + "', '" + user.Bio + "');";
         public string AddGroup(Group group) =>
             "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (" + group.AvatarLink + ", " + group.Title + ", " + group.Description + ");";
         public string AddUserToGroup(User user, Group group) =>
