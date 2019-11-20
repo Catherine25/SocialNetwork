@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,9 @@ namespace SocialNetwork.UI.Views
         private Conversation Conversation;
         private Dictionary<Guid, Message> messagesId;
         private Theme theme;
-        private SQLLoader _loader;
+        private LocalData _localData;
 
-        public DialogView(Conversation conversaton, User user, Theme newTheme, SQLLoader loader)
+        public DialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
         {
             InitializeComponent();
             
@@ -28,7 +29,7 @@ namespace SocialNetwork.UI.Views
             Conversation = conversaton;
             messagesId = new Dictionary<Guid, Message>();
             theme = newTheme;
-            _loader = loader;
+            _localData = localData;
 
             List<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime).ToList();
 
@@ -56,7 +57,7 @@ namespace SocialNetwork.UI.Views
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
 
-            _loader.AddNewMessage(message, Conversation);
+            _localData.AddNewMessage(message, Conversation);
         }
 
         public Button CreateButton(Message message, bool currentUserIsMember1)
