@@ -115,6 +115,7 @@ namespace SocialNetwork
         {
             UserView view = new UserView(_user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
+            view.EditUserRequest += SetUserEditor;
             mainPageGrid.SetSingleChild(view);
         }
 
@@ -178,7 +179,10 @@ namespace SocialNetwork
 
         #region Editors
 
-        private void SetUserEditor(UserEditor.EditPurpose purpose) => mainPageGrid.SetSingleChild(new UserEditor(purpose, _localData));
+        private void SetUserEditor(UserEditor.EditPurpose purpose) =>
+            mainPageGrid.SetSingleChild(new UserEditor(purpose, _localData));
+        private void SetUserEditor(UserEditor.EditPurpose purpose, User user) =>
+            mainPageGrid.SetSingleChild(new UserEditor(purpose, _localData, user));
 
         private void SetGroupEditor() => throw new NotImplementedException();
 
