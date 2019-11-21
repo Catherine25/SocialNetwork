@@ -42,14 +42,10 @@ namespace SocialNetwork.Data.Database
         public List<Group> GetGroups() => _loader.LoadGroups();
         public List<Tuple<int, int>> GetFriends() => _loader.LoadUserFriends();
         public List<Tuple<int, int>> GetUGroups() => _loader.LoadUserGroups();
-        public List<Conversation> Conversations
+        public List<Conversation> GetConversations()
         {
-            get
-            {
-                ConvertIntoLocalClasses();
-                return _conversations;
-            }
-            private set => _conversations = value;
+            ConvertIntoLocalClasses();
+            return _conversations;
         }
         public List<ConversationData> GetConversationsData() => _loader.LoadConversationsData();
         public List<Message> GetMessages()
@@ -65,7 +61,7 @@ namespace SocialNetwork.Data.Database
 
         public void AddEmptyConversation(Conversation newC)
         {
-            var conversations = Conversations;
+            var conversations = GetConversations();
             if (conversations.Any(c =>
                 (c.member1 == newC.member1 && c.member2 == newC.member2) ||
                 (c.member1 == newC.member2 && c.member2 == newC.member1)))
@@ -147,6 +143,8 @@ namespace SocialNetwork.Data.Database
 
                 existingConversation.messages = existingMessages;
             }
+
+            _conversations = conversations;
         }
 
         public List<Group> FindGroupsOfUser(User user)
