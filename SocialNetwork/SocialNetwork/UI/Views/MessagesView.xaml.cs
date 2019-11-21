@@ -41,7 +41,8 @@ namespace SocialNetwork.UI.Views
 
         private void Reload()
         {
-            int length = _localData.Conversations.Count;
+            var conversations = _localData.GetConversations().Where(c => c.member1 == user || c.member2 == user);
+            int length = conversations.Count();
             if(length == 0)
             {
                 Label label = new Label
@@ -57,7 +58,7 @@ namespace SocialNetwork.UI.Views
             {
                 for (int i = 0; i < length; i++)
                 {
-                    string header = GetHeader(_localData.Conversations.ElementAt(i));
+                    string header = GetHeader(_localData.GetConversations().ElementAt(i));
                     //if (conversationsHeaders.Any(X => X == header))
                     //    ;//throw new Exception();
                     //else
@@ -75,7 +76,7 @@ namespace SocialNetwork.UI.Views
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, _localData.Conversations.ElementAt(i));
+            OpenDialodRequest(user, _localData.GetConversations().ElementAt(i));
         }
 
         private string GetHeader(Conversation conversation)
