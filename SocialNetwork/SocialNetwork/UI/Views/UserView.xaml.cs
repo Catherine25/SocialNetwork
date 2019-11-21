@@ -15,9 +15,16 @@ namespace SocialNetwork.UI.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserView : ContentView, IColorable
     {
-        User Visitee;
-        User Visitor;
-        LocalData _localData;
+        private const string AddString = "Add to friends list";
+        private const string RemoveString = "Remove from friends list";
+        private const string EditString = "Edit profile";
+        private const string NoImageLink = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
+
+        private User Visitee;
+        private User Visitor;
+        private LocalData _localData;
+
+        public event Action<Editors.UserEditor.EditPurpose, User> EditUserRequest;
 
         public UserView(User user, User visitor, LocalData localData)
         {
@@ -28,11 +35,14 @@ namespace SocialNetwork.UI.Views
             _localData = localData;
 
             if (visitor == user)
-                removeBt.IsVisible = false;
+            {
+                bottomBt.Text = EditString;
+                bottomBt.Clicked += EditBt_Clicked;
+            }
             else
             {
-                removeBt.Clicked += RemoveBt_Clicked;
-                removeBt.Text = visitor.Friends.Contains(Visitee) ? "Remove from friends list" : "Add to friends list";
+                bottomBt.Clicked += RemoveBt_Clicked;
+                bottomBt.Text = visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
             }
 
             try
@@ -41,7 +51,7 @@ namespace SocialNetwork.UI.Views
             }
             catch
             {
-                image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
+                image.Source = NoImageLink;
             }
 
             name.Text = user.Name;
@@ -60,7 +70,7 @@ namespace SocialNetwork.UI.Views
             }
             catch
             {
-                image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
+                image.Source = NoImageLink;
             }
         }
 
@@ -74,14 +84,17 @@ namespace SocialNetwork.UI.Views
             {
                 Visitor.Friends.Remove(Visitee);
                 _localData.DeleteFriend(Visitor, Visitee);
-                button.Text = "Add to friends list";
+                button.Text = AddString;
             }
             else
             {
                 Visitor.Friends.Add(Visitee);
                 _localData.AddNewFriend(Visitor, Visitee);
-                button.Text = "Remove from friends list";
+                button.Text = RemoveString;
             }
         }
+
+        private void EditBt_Clicked(object sender, EventArgs e) =>
+            EditUserRequest(Editors.UserEditor.EditPurpose.update, Visitor);
     }
 }
