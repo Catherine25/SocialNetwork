@@ -24,13 +24,28 @@ namespace SocialNetwork.UI.Editors
 
         public event Action<User> EditorResult;
 
-        public UserEditor(EditPurpose purpose, LocalData localData, User user = null)
+        public UserEditor(EditPurpose purpose, LocalData localData, User user)
         {
             InitializeComponent();
 
             _purpose = purpose;
             _localData = localData;
             oldUser = user;
+
+            TrySetImage(oldUser.AvatarLink);
+            NameEntry.Text = oldUser.Name;
+            BioEntry.Text = oldUser.Bio;
+
+            ImagePreview.Clicked += Image_Clicked;
+            CompleteBt.Clicked += UserCompleted;
+        }
+
+        public UserEditor(EditPurpose purpose, LocalData localData)
+        {
+            InitializeComponent();
+
+            _purpose = purpose;
+            _localData = localData;
 
             ImagePreview.Clicked += Image_Clicked;
             CompleteBt.Clicked += UserCompleted;
@@ -77,6 +92,11 @@ namespace SocialNetwork.UI.Editors
         {
             link = await Clipboard.GetTextAsync();
 
+            TrySetImage(link);
+        }
+
+        private void TrySetImage(string link)
+        {
             try
             {
                 ImagePreview.Source = ImageSource.FromUri(new Uri(link));
