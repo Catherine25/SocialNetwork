@@ -14,28 +14,41 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-          
-            <Label x:Name="ImageLabel"
-                 Text="Click to change avatar"
-                 Grid.Row="0"/>
-            <ImageButton x:Name="ImagePreview"
-                         Grid.Row="1"/>
-          
-            <Label x:Name="NameLabel"
-                 Text="Enter name"
-                 Grid.Row="2"/>
-            <Entry x:Name="NameEntry"
-                   Grid.Row="3"/>
 
-            <Label x:Name="BioLabel"
-                 Text="Enter bio"
-                 Grid.Row="4"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <ImageButton x:Name="ImagePreview"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         Grid.RowSpan="3"
+                         Grid.ColumnSpan="2"/>
+
+            <Entry x:Name="NameEntry"
+                   Text="Enter name"
+                   Grid.Row="1"
+                   Grid.Column="4"
+                   Grid.ColumnSpan="2"/>
+
             <Entry x:Name="BioEntry"
-                   Grid.Row="5"/>
+                   Grid.Row="3"
+                   Grid.Column="4"
+                   Grid.ColumnSpan="2"/>
 
             <Button x:Name="CompleteBt"
-                    Text="Complete"/>
+                    Text="Complete"
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="5"/>
         </Grid>
   </ContentView.Content>
 </ContentView>
