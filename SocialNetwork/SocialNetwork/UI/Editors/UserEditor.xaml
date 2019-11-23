@@ -28,6 +28,7 @@
             </Grid.ColumnDefinitions>
 
             <ImageButton x:Name="ImagePreview"
+                         Aspect="AspectFill"
                          Grid.Row="1"
                          Grid.Column="1"
                          Grid.RowSpan="3"
