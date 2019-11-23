@@ -90,6 +90,8 @@ namespace SocialNetwork.Data.Database
 
         public void AddNewUser(User user) =>
             _publisher.PublishUser(user);
+        public void UpdateUser(User oldUser, User user) =>
+            _publisher.UpdateUser(oldUser, user);
 
         #endregion
 
