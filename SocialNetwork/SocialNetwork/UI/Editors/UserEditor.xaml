@@ -4,13 +4,10 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="SocialNetwork.UI.UserView">
+             x:Class="SocialNetwork.UI.Editors.UserEditor">
   <ContentView.Content>
-        <Grid x:Name="userViewGrid">
-
-            <Grid.RowDefinitions> <!-- 9 rows -->
-                <RowDefinition/>
-                <RowDefinition/>
+      <Grid>
+            <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -20,8 +17,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions> <!-- 8 columns -->
-                <ColumnDefinition/>
+            <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -31,24 +27,29 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <ImageButton x:Name="image"
-                         Grid.Row="0"
-                         Grid.Column="0"
+            <ImageButton x:Name="ImagePreview"
+                         Aspect="AspectFill"
+                         Grid.Row="1"
+                         Grid.Column="1"
                          Grid.RowSpan="3"
-                         Grid.ColumnSpan="3"/>
-            <Button x:Name="name"
-                    Grid.Row="0"
-                    Grid.Column="3"
+                         Grid.ColumnSpan="2"/>
+
+            <Entry x:Name="NameEntry"
+                   Text="Enter name"
+                   Grid.Row="1"
+                   Grid.Column="4"
+                   Grid.ColumnSpan="2"/>
+
+            <Entry x:Name="BioEntry"
+                   Grid.Row="3"
+                   Grid.Column="4"
+                   Grid.ColumnSpan="2"/>
+
+            <Button x:Name="CompleteBt"
+                    Text="Complete"
+                    Grid.Row="5"
+                    Grid.Column="1"
                     Grid.ColumnSpan="5"/>
-            <Button x:Name="bio"
-                    Grid.Row="1"
-                    Grid.Column="3"
-                    Grid.RowSpan="2"
-                    Grid.ColumnSpan="5"/>
-            <Button x:Name="removeBt"
-                    Grid.Row="8"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="8"/>
         </Grid>
   </ContentView.Content>
 </ContentView>

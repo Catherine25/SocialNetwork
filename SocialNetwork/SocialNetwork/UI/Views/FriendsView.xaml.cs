@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
 using System;
@@ -10,13 +11,14 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI {
+namespace SocialNetwork.UI.Views
+{
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FriendsView : ContentView, IColorable
     {
         public enum Mode { Default, ChooseNew }
         private Mode _mode;
-        private SQLLoader _loader;
+        private LocalData _localData;
         private User _user;
         
         public List<User> Friends;
@@ -26,11 +28,11 @@ namespace SocialNetwork.UI {
         public event Action<User, Conversation> SetNewConversationRequest;
 		public event Action<UserRequestDialog.RequestPurpose> ShowDialogRequest;
 
-        public FriendsView(User user, Mode mode, SQLLoader loader)
+        public FriendsView(User user, Mode mode, LocalData localData)
         {
             InitializeComponent();
             _mode = mode;
-            _loader = loader;
+            _localData = localData;
             _user = user;
 
 			NewFriendBt.Clicked += NewFriendBt_Clicked;
@@ -65,7 +67,7 @@ namespace SocialNetwork.UI {
             if (_mode == Mode.ChooseNew)
             {
                 Conversation c = new Conversation(0, _user, friend);
-                _loader.AddEmptyConversation(c);
+                _localData.AddEmptyConversation(c);
                 SetNewConversationRequest(friend, c);
             }
             else

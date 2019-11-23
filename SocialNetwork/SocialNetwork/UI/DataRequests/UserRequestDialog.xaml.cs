@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.UI.Editors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,17 @@ namespace SocialNetwork.UI.DataRequests
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class UserRequestDialog : ContentView
 	{
-        private string text;
         private RequestPurpose _purpose;
         private List<User> _users;
 
+        private string EnterName = "Enter your name";
+        private string EnterFriend = "Enter new friend name";
+
         public enum RequestPurpose { currentName, newFriendName }
         public event Action<User, RequestPurpose> RequestCompleted;
+        public event Action<UserEditor.EditPurpose> ShowUserEditorRequest;
 
-		public UserRequestDialog(RequestPurpose purpose, List<User> users)
+        public UserRequestDialog(RequestPurpose purpose, List<User> users)
 		{
 			InitializeComponent();
 
@@ -29,34 +33,35 @@ namespace SocialNetwork.UI.DataRequests
 
             ConfirmBt.Clicked += ConfirmBt_Clicked;
             CancelBt.Clicked += CancelBt_Clicked;
-            textEntry.Unfocused += TextEntry_Unfocused;
+            RegistrateBt.Clicked += RegistrateBt_Clicked;
             textEntry.Completed += TextEntry_Completed;
 
             if (purpose == RequestPurpose.currentName)
-                infoLabel.Text = "Enter your name";
+                infoLabel.Text = EnterName;
             else if (purpose == RequestPurpose.newFriendName)
-                infoLabel.Text = "Enter new friend name";
+                infoLabel.Text = EnterFriend;
+
+            RegistrateBt.IsVisible = false;
 		}
 
-        private void TextEntry_Completed(object sender, EventArgs e)
-        {
-            text = textEntry.Text;
-            User user = _users.Find(u => u.Name == text);
-            if (user != null)
-                RequestCompleted(user, _purpose);
-        }
+        private void RegistrateBt_Clicked(object sender, EventArgs e) =>
+            ShowUserEditorRequest(UserEditor.EditPurpose.createNew);
+
+        private void TextEntry_Completed(object sender, EventArgs e) => Analyze();
 
         private void CancelBt_Clicked(object sender, EventArgs e) =>
             RequestCompleted(null, _purpose);
 
-        private void ConfirmBt_Clicked(object sender, EventArgs e)
+        private void ConfirmBt_Clicked(object sender, EventArgs e) => Analyze();
+
+        private void Analyze()
         {
-            User user = _users.Find(u => u.Name == text);
+            User user = _users.Find(u => u.Name == textEntry.Text);
+
             if (user != null)
                 RequestCompleted(user, _purpose);
+            else
+                RegistrateBt.IsVisible = true;
         }
-
-        private void TextEntry_Unfocused(object sender, FocusEventArgs e) =>
-            text = textEntry.Text;
     }
 }

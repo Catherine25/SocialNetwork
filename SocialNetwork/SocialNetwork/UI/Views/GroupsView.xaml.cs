@@ -12,7 +12,7 @@ using Xamarin.Forms.Xaml;
 
 //TODO: Open selected group page
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupsView : ContentView, IColorable

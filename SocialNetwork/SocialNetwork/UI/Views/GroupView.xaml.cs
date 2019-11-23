@@ -1,26 +1,27 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupView : ContentView, IColorable
     {
         User CurrentUser;
         Group Group;
-        SQLLoader _loader;
+        LocalData _localData;
 
-        public GroupView(User user, Group group, SQLLoader loader)
+        public GroupView(User user, Group group, LocalData localData)
         {
             InitializeComponent();
 
             CurrentUser = user;
             Group = group;
-            _loader = loader;
+            _localData = localData;
 
             removeBt.Clicked += RemoveBt_Clicked;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
@@ -64,13 +65,13 @@ namespace SocialNetwork.UI
             {
                 button.Text = "Add to groups list";
                 CurrentUser.Groups.Remove(Group);
-                _loader.DeleteUserFromGroup(CurrentUser, Group);
+                _localData.DeleteUserFromGroup(CurrentUser, Group);
             }
             else
             {
                 button.Text = "Remove from groups list";
                 CurrentUser.Groups.Add(Group);
-                _loader.AddUserToGroup(CurrentUser, Group);
+                _localData.AddUserToGroup(CurrentUser, Group);
             }
         }
     }

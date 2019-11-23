@@ -4,15 +4,17 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="SocialNetwork.UI.MessagesView">
-    <ContentView.Content>
-        <Grid x:Name="messagesGrid">
+             x:Class="SocialNetwork.UI.Views.DialogView">
+  <ContentView.Content>
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="9*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ListView x:Name="listView" Grid.Row="0"/>
-            <Button x:Name="NewConversationBt" Text="Start new" Grid.Row="1"/>
+            <ScrollView Grid.Row="0">
+                <StackLayout x:Name="stack"/>
+            </ScrollView>
+            <Entry x:Name="newMessageEntry" Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>

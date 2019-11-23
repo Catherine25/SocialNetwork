@@ -19,7 +19,6 @@ namespace SocialNetwork
         NewMessagesImitator _bot;
         Themes _themes;
         User _currentUser;
-		SQLLoader _loader;
         LocalData _localData;
         
         #endregion
@@ -32,21 +31,20 @@ namespace SocialNetwork
             _localData = new LocalData();
             _themes = new Themes();
 
-            try
-            {
-                Debug.WriteLine("Trying to connect to database");
-                _loader = new SQLLoader(_localData, TimeSpan.FromSeconds(3));
-            }
-            catch
-            {
-                Debug.WriteLine("Failed. Connecting to generator");
-                //_loader = new GeneratorLoader();
-            }
+            //try
+            //{
+            //    Debug.WriteLine("Trying to connect to database");
+            //}
+            //catch
+            //{
+            //    Debug.WriteLine("Failed. Connecting to generator");
+            //    //_loader = new GeneratorLoader();
+            //}
 			
             // _bot = new NewMessagesImitator(_currentUser, DateTime.Now, TimeSpan.FromSeconds(5));
             // _bot.MessageGenerated += BotGeneratedMessage;
 
-            MainPage = new MainPage(_themes, _localData, _loader);
+            MainPage = new MainPage(_themes, _localData);
         }
 
 		/// <summary>Special method with validation</summary>

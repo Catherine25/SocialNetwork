@@ -3,6 +3,8 @@ using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI;
 using SocialNetwork.UI.DataRequests;
+using SocialNetwork.UI.Editors;
+using SocialNetwork.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +21,6 @@ namespace SocialNetwork
         private User _user;
         private Themes _themes;
         private LocalData _localData;
-        private SQLLoader _loader;
 
         public List<Theme> themes = new List<Theme>();
 
@@ -32,7 +33,7 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(Themes themes, LocalData localData, SQLLoader loader)
+        public MainPage(Themes themes, LocalData localData)
 		{
             Debug.WriteLine("MainPage running");
 
@@ -40,7 +41,6 @@ namespace SocialNetwork
 
             _themes = themes;
             _localData = localData;
-            _loader = loader;
             _themes.ThemeLoaded += ThemeLoaded;
 
             menu.SetTheme(themes.CurrentTheme);
@@ -58,15 +58,13 @@ namespace SocialNetwork
             Debug.WriteLine("MainPage end");
         }
 
-        #region Requests handling
+        #region Views
 
-        #region Set view
-
-        private void SetDialog(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new Dialog(conversation, user, _themes.CurrentTheme, _loader));
+        private void SetDialogView(User user, Conversation conversation) =>
+            mainPageGrid.SetSingleChild(new DialogView(conversation, user, _themes.CurrentTheme, _localData));
 
         private void SetGroupView(User user, Group group) =>
-            mainPageGrid.SetSingleChild(new GroupView(user, group, _loader));
+            mainPageGrid.SetSingleChild(new GroupView(user, group, _localData));
 
         private void SetGroupsView()
         {
@@ -79,11 +77,11 @@ namespace SocialNetwork
 
         private void SetFriendsView(FriendsView.Mode mode)
         {
-            FriendsView view = new FriendsView(_user, mode, _loader);
+            FriendsView view = new FriendsView(_user, mode, _localData);
             view.SetTheme(_themes.CurrentTheme);
 
             if (mode == FriendsView.Mode.ChooseNew)
-                view.SetNewConversationRequest += SetDialog;
+                view.SetNewConversationRequest += SetDialogView;
             else if (mode == FriendsView.Mode.Default)
             {
                 view.OpenUserViewRequest += SetUserView;
@@ -100,24 +98,8 @@ namespace SocialNetwork
             MessagesView view = new MessagesView(_user, _localData);
             mainPageGrid.SetSingleChild(view);
             view.SetTheme(_themes.CurrentTheme);
-            view.OpenDialodRequest += SetDialog;
+            view.OpenDialodRequest += SetDialogView;
             view.OpenFriendsViewRequest += SetFriendsView;
-        }
-
-        public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
-        {
-            UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.Users);
-            dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += UserRequestCompleted;
-            mainPageGrid.SetSingleChild(dialog);
-        }
-
-        private void RequestForGroup(GroupRequestDialog.RequestPurpose obj)
-        {
-            GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.Groups);
-            dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += GroupRequestCompleted;
-            mainPageGrid.SetSingleChild(dialog);
         }
 
         private void SetSettingsView()
@@ -131,26 +113,38 @@ namespace SocialNetwork
 
         private void SetUserView()
         {
-            UserView view = new UserView(_user, _user, _loader);
+            UserView view = new UserView(_user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
+            view.EditUserRequest += SetUserEditor;
             mainPageGrid.SetSingleChild(view);
         }
-        
+
         private void SetUserView(User user)
         {
-            UserView view = new UserView(user, _user, _loader);
+            UserView view = new UserView(user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
 
         #endregion
 
-        private void ThemeLoaded(Theme theme) => themes.Add(theme);
+        #region Request Dialogs
 
-        private void ChangeTheme(Theme theme)
+        public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
         {
-            _themes.CurrentTheme = theme;
-            menu.SetTheme(theme);
+            UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.GetUsers());
+            dialog.SetTheme(_themes.CurrentTheme);
+            dialog.RequestCompleted += UserRequestCompleted;
+            dialog.ShowUserEditorRequest += SetUserEditor;
+            mainPageGrid.SetSingleChild(dialog);
+        }
+
+        private void RequestForGroup(GroupRequestDialog.RequestPurpose obj)
+        {
+            GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.GetGroups());
+            dialog.SetTheme(_themes.CurrentTheme);
+            dialog.RequestCompleted += GroupRequestCompleted;
+            mainPageGrid.SetSingleChild(dialog);
         }
 
         private void UserRequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
@@ -165,7 +159,7 @@ namespace SocialNetwork
             }
             else if (purpose == UserRequestDialog.RequestPurpose.newFriendName)
             {
-                _loader.AddNewFriend(_user, user);
+                _localData.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
                 SetFriendsView(FriendsView.Mode.Default);
             }
@@ -175,10 +169,42 @@ namespace SocialNetwork
         {
             if (purpose == GroupRequestDialog.RequestPurpose.newGroupName)
             {
-                _loader.AddUserToGroup(_user, group);
+                _localData.AddUserToGroup(_user, group);
                 _user.Groups.Add(group);
                 SetGroupsView();
             }
+        }
+
+        #endregion
+
+        #region Editors
+
+        private void SetUserEditor(UserEditor.EditPurpose purpose)
+        {
+            var editor = new UserEditor(purpose, _localData);
+            editor.EditorResult += SetUserView;
+            mainPageGrid.SetSingleChild(editor);
+        }
+
+        private void SetUserEditor(UserEditor.EditPurpose purpose, User user)
+        {
+            var editor = new UserEditor(purpose, _localData, user);
+            editor.EditorResult += SetUserView;
+            mainPageGrid.SetSingleChild(editor);
+        }
+
+        private void SetGroupEditor() => throw new NotImplementedException();
+
+        #endregion
+
+        #region Themes
+
+        private void ThemeLoaded(Theme theme) => themes.Add(theme);
+
+        private void ChangeTheme(Theme theme)
+        {
+            _themes.CurrentTheme = theme;
+            menu.SetTheme(theme);
         }
 
         #endregion

@@ -37,6 +37,11 @@
                     Grid.Row="3"
                     Grid.Column="2"
                     Text="Cancel"/>
+            <Button x:Name="RegistrateBt"
+                    Text="Create new"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"/>
         </Grid>
   </ContentView.Content>
 </ContentView>

@@ -8,60 +8,134 @@ namespace SocialNetwork.Data.Database
 {   
     public class LocalData
     {
-		private User CurrentUser;
-
-        public List<User> Users { get; private set; }
-        public List<Group> Groups { get; private set; }
-		public List<Tuple<int, int>> Friends { get; private set; }
-		public List<Tuple<int, int>> UGroups { get; private set; }
-		public List<Conversation> Conversations { get; private set; }
-		public List<ConversationData> ConversationsData { get; private set; }
-		public List<Message> Messages { get; private set; }
-		public List<MessageData> MessagesData { get; private set; }
-
-		public void ChangeUser(User user)
-		{
-			CurrentUser = user;
-
-			if (CurrentUser != null)
-				Conversations = Conversations.Where(c => c.member1.Id == CurrentUser.Id || c.member2.Id == CurrentUser.Id).ToList();
-
-            ConvertIntoLocalClasses();
-		}
-
-		public List<User> FindFriendsOfUser(User user)
+        string connectionString;
+        public LocalData()
         {
+            string server = "35.180.63.12";
+            string database = "Kate";
+            string uid = "Admin";
+            string password = "3555serg";
+
+            connectionString =
+                "SERVER=" + server +
+                "; PORT = 3306 ;" +
+                "DATABASE=" + database + ";" +
+                "UID=" + uid + ";" +
+                "PASSWORD=" + password + ";";
+
+            _loader = new SQLLoader(connectionString);
+            _publisher = new Publisher(connectionString);
+        }
+
+        public enum DataType { ConversationsData, Groups, MessagesData, UserFriends, UserGroups, Users, All }
+
+        private User CurrentUser;
+        private SQLLoader _loader;
+        private Publisher _publisher;
+        private List<Conversation> _conversations;
+        private List<Message> _messages;
+        
+        
+        #region Collections
+
+        public List<User> GetUsers() => _loader.LoadUsers();
+        public List<Group> GetGroups() => _loader.LoadGroups();
+        public List<Tuple<int, int>> GetFriends() => _loader.LoadUserFriends();
+        public List<Tuple<int, int>> GetUGroups() => _loader.LoadUserGroups();
+        public List<Conversation> GetConversations()
+        {
+            ConvertIntoLocalClasses();
+            return _conversations;
+        }
+        public List<ConversationData> GetConversationsData() => _loader.LoadConversationsData();
+        public List<Message> GetMessages()
+        {
+            ConvertIntoLocalClasses();
+            return _messages;
+        }
+        public List<MessageData> GetMessagesData() => _loader.LoadMessagesData();
+
+        #endregion
+
+        #region Single Update Request
+
+        public void AddEmptyConversation(Conversation newC)
+        {
+            var conversations = GetConversations();
+            if (conversations.Any(c =>
+                (c.member1 == newC.member1 && c.member2 == newC.member2) ||
+                (c.member1 == newC.member2 && c.member2 == newC.member1)))
+                return;
+
+            _publisher.PublishConversation(newC);
+        }
+
+        public void DeleteConversation(Conversation conversation) => _publisher.DeleteConversation(conversation);
+
+        public void AddNewFriend(User u1, User u2) =>
+            _publisher.PublishFriendship(u1, u2);
+
+        public void DeleteFriend(User u1, User u2) =>
+            _publisher.DeleteFriendship(u1, u2);
+        public void AddNewGroup(Group group) =>
+            _publisher.PublishGroup(group);
+
+        public void AddUserToGroup(User user, Group group) =>
+            _publisher.PublishUserToGroup(user, group);
+        public void DeleteUserFromGroup(User user, Group group) =>
+            _publisher.DeleteUserFromGroup(user, group);
+
+        public void AddNewMessage(Message message, Conversation conversation) =>
+            _publisher.PublishMessage(conversation, message);
+
+        public void AddNewUser(User user) =>
+            _publisher.PublishUser(user);
+        public void UpdateUser(User oldUser, User user) =>
+            _publisher.UpdateUser(oldUser, user);
+
+        #endregion
+
+        public void ChangeUser(User user) => CurrentUser = user;
+
+        public List<User> FindFriendsOfUser(User user)
+        {
+            var totalList = GetFriends();
+            var users = GetUsers();
             List<User> friends = new List<User>();
 
-            List<Tuple<int, int>> list1 = Friends.FindAll(X => X.Item1 == user.Id);
-            List<Tuple<int, int>> list2 = Friends.FindAll(X => X.Item2 == user.Id);
+            List<Tuple<int, int>> list1 = totalList.FindAll(X => X.Item1 == user.Id);
+            List<Tuple<int, int>> list2 = totalList.FindAll(X => X.Item2 == user.Id);
 
-           List<int> ids = new List<int>();
+            List<int> ids = new List<int>();
             ids.AddRange(list1.Select(x => x.Item2));
             ids.AddRange(list2.Select(x => x.Item1));
 
             foreach(int id in ids)
-                friends.Add(Users.Find(x => x.Id == id));
+                friends.Add(users.Find(x => x.Id == id));
 
             return friends;
         }
 
         public void ConvertIntoLocalClasses()
         {
-            Conversations = new List<Conversation>();
-            foreach (ConversationData cd in ConversationsData)
+            var conversations = new List<Conversation>();
+            var conversationsData = GetConversationsData();
+            var messagesData = GetMessagesData();
+            var users = GetUsers();
+
+            foreach (ConversationData cd in conversationsData)
             {
                 Conversation conversation = new Conversation (
                     cd.c_id,
-                    Users.Find(c=>c.Id == cd.u1_id),
-                    Users.Find(c=>c.Id == cd.u2_id));
-                Conversations.Add(conversation);
+                    users.Find(c=>c.Id == cd.u1_id),
+                    users.Find(c=>c.Id == cd.u2_id));
+                conversations.Add(conversation);
             }
 
-            foreach (MessageData md in MessagesData)
+            foreach (MessageData md in messagesData)
             {
                 Message message = new Message(md.m_id, md.text, md.dt, md.isFromMember1);
-                Conversation existingConversation = Conversations.Find(c => c.Id == md.c_id);
+                Conversation existingConversation = conversations.Find(c => c.Id == md.c_id);
                 List<Message> existingMessages = existingConversation.messages;
                 
                 if(existingMessages != null)
@@ -71,40 +145,31 @@ namespace SocialNetwork.Data.Database
 
                 existingConversation.messages = existingMessages;
             }
+
+            _conversations = conversations;
         }
 
         public List<Group> FindGroupsOfUser(User user)
         {
-            List<Group> groups = new List<Group>();
+            var ugroups = GetUGroups();
+            var groups = GetGroups();
 
-            List<Tuple<int, int>> list1 = UGroups.FindAll(X => X.Item1 == user.Id);
+            List<Group> resGroups = new List<Group>();
+
+            List<Tuple<int, int>> list1 = ugroups.FindAll(X => X.Item1 == user.Id);
             
             List<int> ids = list1.Select(x => x.Item2).ToList();
             
             foreach (int id in ids)
-                groups.Add(Groups.Find(x => x.Id == id));
+                resGroups.Add(groups.Find(x => x.Id == id));
 
-            return groups;
+            return resGroups;
         }
 
-        public User FindUserByName(string name) => Users.Find(X => X.Name == name);
-
-        public void SyncWithServer (
-            List<ConversationData> conversations,
-            List<Group> groups,
-            List<MessageData> md,
-            List<Tuple<int, int>> newUserFriends,
-            List<Tuple<int, int>> newUserGroups,
-            List<User> newUsers)
+        public User FindUserByName(string name)
         {
-			ConversationsData = conversations;
-			Groups = groups;
-			MessagesData = md;
-			Friends = newUserFriends;
-			UGroups = newUserGroups;
-			Users = newUsers;
-
-			ConvertIntoLocalClasses();
+            var users = GetUsers();
+            return users.Find(X => X.Name == name);
         }
     }
 }

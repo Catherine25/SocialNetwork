@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 
 //TODO: Open selected conversation dialog
 
-namespace SocialNetwork.UI
+namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MessagesView : ContentView, IColorable
@@ -41,23 +41,21 @@ namespace SocialNetwork.UI
 
         private void Reload()
         {
-            int length = _localData.Conversations.Count;
+            List<Conversation> conversations = _localData.GetConversations();
+            conversations = conversations.Where(c => c.member1.Id == user.Id || c.member2.Id == user.Id).ToList();
+            conversations = conversations.Where(c => c.messages != null).ToList();
+            int length = conversations.Count();
             if(length == 0)
             {
-                Label label = new Label
-                {
-                    Text = "No Conversations",
-                    FontSize = 90,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center
-                };
-                messagesGrid.SetSingleChild(label);
+                NoConversationsBt.IsVisible = true;
             }
             else
             {
+                NoConversationsBt.IsVisible = false;
+
                 for (int i = 0; i < length; i++)
                 {
-                    string header = GetHeader(_localData.Conversations.ElementAt(i));
+                    string header = GetHeader(_localData.GetConversations().ElementAt(i));
                     //if (conversationsHeaders.Any(X => X == header))
                     //    ;//throw new Exception();
                     //else
@@ -75,7 +73,7 @@ namespace SocialNetwork.UI
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, _localData.Conversations.ElementAt(i));
+            OpenDialodRequest(user, _localData.GetConversations().ElementAt(i));
         }
 
         private string GetHeader(Conversation conversation)

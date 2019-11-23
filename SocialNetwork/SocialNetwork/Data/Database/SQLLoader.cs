@@ -10,66 +10,12 @@ namespace SocialNetwork.Data
 {
 	public class SQLLoader
 	{
-        private Publisher _publisher;
-        private LocalData _localData;
-        private string connectionString;
+        public enum DataType { ConversationsData, Groups, MessagesData, UserFriends, UserGroups, Users, All }
+
+        private string _connectionString;
         private SQLCommands sqlCommands = new SQLCommands();
-		private TimeSpan timer;
-		private bool suspended = true;
 
-		public SQLLoader(LocalData localData, TimeSpan timeSpan)
-		{
-			string server = "35.180.63.12";
-			string database = "Kate";
-			string uid = "Admin";
-			string password = "3555serg";
-
-			connectionString =
-                "SERVER=" + server +
-                "; PORT = 3306 ;" +
-                "DATABASE=" + database + ";" +
-                "UID=" + uid + ";" +
-                "PASSWORD=" + password + ";";
-
-			timer = timeSpan;
-			_localData = localData;
-            _publisher = new Publisher(connectionString);
-
-			SyncWithServerImmediately();
-            new Thread(SyncWithServer).Start();
-        }
-
-        #region Single Update Request
-
-        public void AddEmptyConversation(Conversation newC)
-        {
-            if (_localData.Conversations.Any(c =>
-                (c.member1 == newC.member1 && c.member2 == newC.member2) ||
-                (c.member1 == newC.member2 && c.member2 == newC.member1)))
-                return;
-
-            _publisher.PublishConversation(newC);
-        }
-
-        public void DeleteConversation(Conversation conversation) => _publisher.DeleteConversation(conversation);
-
-        public void AddNewFriend(User u1, User u2) =>
-            _publisher.PublishFriendship(u1, u2);
-
-        public void DeleteFriend(User u1, User u2) =>
-            _publisher.DeleteFriendship(u1, u2);
-        public void AddNewGroup(Group group) =>
-            _publisher.PublishGroup(group);
-
-        public void AddUserToGroup(User user, Group group) =>
-            _publisher.PublishUserToGroup(user, group);
-        public void DeleteUserFromGroup(User user, Group group) =>
-            _publisher.DeleteUserFromGroup(user, group);
-
-        public void AddNewMessage(Message message, Conversation conversation) =>
-            _publisher.PublishMessage(conversation, message);
-
-        #endregion
+        public SQLLoader(string connectionString) => _connectionString = connectionString;
 
         #region Collections
 
@@ -77,7 +23,7 @@ namespace SocialNetwork.Data
         {
             List<User> users = new List<User>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllUsers, connection))
             {
                 connection.Open();
@@ -101,7 +47,7 @@ namespace SocialNetwork.Data
 		{
             List<Group> groups = new List<Group>();
 
-			using (MySqlConnection connection = new MySqlConnection(connectionString))
+			using (MySqlConnection connection = new MySqlConnection(_connectionString))
 			using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllGroups, connection))
 			{
 				connection.Open();
@@ -125,7 +71,7 @@ namespace SocialNetwork.Data
         {
             List<Tuple<int, int>> friends = new List<Tuple<int, int>>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllFriends, connection))
             {
                 connection.Open();
@@ -145,7 +91,7 @@ namespace SocialNetwork.Data
         {
             List<Tuple<int, int>> pairs = new List<Tuple<int, int>>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllusers_groups, connection))
             {
                 connection.Open();
@@ -164,7 +110,7 @@ namespace SocialNetwork.Data
         {
             List<ConversationData> pairs = new List<ConversationData>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllConversations, connection))
             {
                 connection.Open();
@@ -187,7 +133,7 @@ namespace SocialNetwork.Data
         {
             List<MessageData> pairs = new List<MessageData>();
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
             using (MySqlCommand cmd = new MySqlCommand(new SQLCommands().SelectAllMessages, connection))
             {
                 connection.Open();
@@ -209,27 +155,5 @@ namespace SocialNetwork.Data
         }
 
 		#endregion Collections
-
-		public void SetupTimer(TimeSpan span) => timer = span;
-
-		private void SyncWithServer()
-        {
-            DateTime initial = DateTime.Now;
-
-            while (!suspended)
-                if (initial + timer <= DateTime.Now)
-				{
-					SyncWithServerImmediately();
-					initial = DateTime.Now;
-				}
-        }
-
-		private void SyncWithServerImmediately() => _localData.SyncWithServer(
-			LoadConversationsData(),
-			LoadGroups(),
-			LoadMessagesData(),
-			LoadUserFriends(),
-			LoadUserGroups(),
-			LoadUsers());
-	}
+    }
 }
