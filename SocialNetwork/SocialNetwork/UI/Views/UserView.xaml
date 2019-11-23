@@ -32,6 +32,7 @@
             </Grid.ColumnDefinitions>
 
             <ImageButton x:Name="image"
+                         Aspect="AspectFill"
                          Grid.Row="0"
                          Grid.Column="0"
                          Grid.RowSpan="3"
