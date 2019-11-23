@@ -56,22 +56,6 @@ namespace SocialNetwork.UI.Views
 
             name.Text = user.Name;
             bio.Text = user.Bio;
-
-            image.Clicked += Image_Clicked;
-        }
-
-        private async void Image_Clicked(object sender, EventArgs e)
-        {
-            string uriString = await Clipboard.GetTextAsync();
-
-            try
-            {
-                image.Source = ImageSource.FromUri(new Uri(uriString));
-            }
-            catch
-            {
-                image.Source = NoImageLink;
-            }
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
