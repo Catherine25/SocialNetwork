@@ -179,10 +179,19 @@ namespace SocialNetwork
 
         #region Editors
 
-        private void SetUserEditor(UserEditor.EditPurpose purpose) =>
-            mainPageGrid.SetSingleChild(new UserEditor(purpose, _localData));
-        private void SetUserEditor(UserEditor.EditPurpose purpose, User user) =>
-            mainPageGrid.SetSingleChild(new UserEditor(purpose, _localData, user));
+        private void SetUserEditor(UserEditor.EditPurpose purpose)
+        {
+            var editor = new UserEditor(purpose, _localData);
+            editor.EditorResult += SetUserView;
+            mainPageGrid.SetSingleChild(editor);
+        }
+
+        private void SetUserEditor(UserEditor.EditPurpose purpose, User user)
+        {
+            var editor = new UserEditor(purpose, _localData, user);
+            editor.EditorResult += SetUserView;
+            mainPageGrid.SetSingleChild(editor);
+        }
 
         private void SetGroupEditor() => throw new NotImplementedException();
 
