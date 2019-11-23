@@ -52,5 +52,8 @@ namespace SocialNetwork.Data.Database
 
         public void PublishUser(User user) =>
             ExecuteNonQuery(_commands.AddUser(user));
+
+        public void UpdateUser(User oldUser, User user) =>
+            ExecuteNonQuery(_commands.UpdateUser(oldUser, user));
     }
 }
