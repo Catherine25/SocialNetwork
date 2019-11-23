@@ -41,21 +41,18 @@ namespace SocialNetwork.UI.Views
 
         private void Reload()
         {
-            var conversations = _localData.GetConversations().Where(c => c.member1 == user || c.member2 == user);
+            List<Conversation> conversations = _localData.GetConversations();
+            conversations = conversations.Where(c => c.member1.Id == user.Id || c.member2.Id == user.Id).ToList();
+            conversations = conversations.Where(c => c.messages != null).ToList();
             int length = conversations.Count();
             if(length == 0)
             {
-                Label label = new Label
-                {
-                    Text = "No Conversations",
-                    FontSize = 90,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center
-                };
-                messagesGrid.SetSingleChild(label);
+                NoConversationsBt.IsVisible = true;
             }
             else
             {
+                NoConversationsBt.IsVisible = false;
+
                 for (int i = 0; i < length; i++)
                 {
                     string header = GetHeader(_localData.GetConversations().ElementAt(i));
