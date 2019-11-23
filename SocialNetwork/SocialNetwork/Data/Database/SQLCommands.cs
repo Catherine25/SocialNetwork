@@ -49,7 +49,8 @@ namespace SocialNetwork.Data.Database
         public string AddMessage(Message m, Conversation c) =>
             "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('" + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
 
-		public string UpdateUser = "UPDATE Users SET AvatarLink=?, username=?, Bio=? WHERE u_id=?;";
+        public string UpdateUser(User oldUser, User user) =>
+            "UPDATE Users SET AvatarLink='" + user.AvatarLink + "', username='" + oldUser.Name + "', Bio='" + user.Bio + "' WHERE u_id=" + oldUser.Id + ";";
 		public string UpdateGroup = "UPDATE Groups SET AvatarLink=?, Title=?, Description=? WHERE g_id=?;";
 
 		public string DeleteUser = "DELETE FROM Users where u_id=?;";
