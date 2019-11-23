@@ -22,7 +22,7 @@ namespace SocialNetwork.UI.Editors
         private EditPurpose _purpose;
         private User oldUser;
 
-        public event Action<User> EditorResult;
+        public event Action EditorResult;
 
         public UserEditor(EditPurpose purpose, LocalData localData, User user)
         {
@@ -56,7 +56,11 @@ namespace SocialNetwork.UI.Editors
             string name = NameEntry.Text;
             string bio = BioEntry.Text;
 
-            if (name == null || name == "" || _localData.GetUsers().Any(u => u.Name == name))
+            if (name == null || name == "")
+            {
+                NameEntry.TextColor = Color.Accent;
+            }
+            else if (_purpose == EditPurpose.createNew && _localData.GetUsers().Any(u => u.Name == name))
             {
                 NameEntry.TextColor = Color.Accent;
             }
@@ -79,12 +83,12 @@ namespace SocialNetwork.UI.Editors
                 }
                 else if(_purpose == EditPurpose.update)
                 {
-                    //_localData.UpdateUser(oldUser, user);
+                    _localData.UpdateUser(oldUser, user);
                     user = _localData.GetUsers().Find(u => u.Id == oldUser.Id);
                 }
                 else throw new NotImplementedException();
                 
-                EditorResult(user);
+                EditorResult();
             }
         }
 
