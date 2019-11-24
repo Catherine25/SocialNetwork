@@ -63,8 +63,12 @@ namespace SocialNetwork
         private void SetDialogView(User user, Conversation conversation) =>
             mainPageGrid.SetSingleChild(new DialogView(conversation, user, _themes.CurrentTheme, _localData));
 
-        private void SetGroupView(User user, Group group) =>
-            mainPageGrid.SetSingleChild(new GroupView(user, group, _localData));
+        private void SetGroupView(User user, Group group)
+        {
+            var view = new GroupView(user, group, _localData);
+            view.SetTheme(_themes.CurrentTheme);
+            mainPageGrid.SetSingleChild(view);
+        }
 
         private void SetGroupsView()
         {
@@ -136,6 +140,7 @@ namespace SocialNetwork
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += UserRequestCompleted;
             dialog.ShowUserEditorRequest += SetUserEditor;
+            dialog.ShowFriendsViewRequest += SetFriendsView;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -144,6 +149,8 @@ namespace SocialNetwork
             GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.GetGroups());
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += GroupRequestCompleted;
+            dialog.ShowGroupsViewRequest += SetGroupsView;
+            dialog.ShowGroupEditorRequest += SetGroupEditor;
             mainPageGrid.SetSingleChild(dialog);
         }
 
@@ -193,7 +200,12 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(editor);
         }
 
-        private void SetGroupEditor() => throw new NotImplementedException();
+        private void SetGroupEditor(GroupEditor.EditPurpose purpose)
+        {
+            var editor = new GroupEditor(purpose, _localData);
+            editor.EditorResult += SetGroupsView;
+            mainPageGrid.SetSingleChild(editor);
+        }
 
         #endregion
 

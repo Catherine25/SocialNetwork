@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.UI.Editors;
+using SocialNetwork.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace SocialNetwork.UI.DataRequests
         public enum RequestPurpose { currentName, newFriendName }
         public event Action<User, RequestPurpose> RequestCompleted;
         public event Action<UserEditor.EditPurpose> ShowUserEditorRequest;
+        public event Action<FriendsView.Mode> ShowFriendsViewRequest;
 
         public UserRequestDialog(RequestPurpose purpose, List<User> users)
 		{
@@ -47,10 +49,18 @@ namespace SocialNetwork.UI.DataRequests
         private void RegistrateBt_Clicked(object sender, EventArgs e) =>
             ShowUserEditorRequest(UserEditor.EditPurpose.createNew);
 
-        private void TextEntry_Completed(object sender, EventArgs e) => Analyze();
+        private void TextEntry_Completed(object sender, EventArgs e) =>
+            Analyze();
 
-        private void CancelBt_Clicked(object sender, EventArgs e) =>
-            RequestCompleted(null, _purpose);
+        private void CancelBt_Clicked(object sender, EventArgs e)
+        {
+            if (_purpose == RequestPurpose.currentName)
+                ;
+            else if (_purpose == RequestPurpose.newFriendName)
+                ShowFriendsViewRequest(FriendsView.Mode.Default);
+            //RequestCompleted(null, _purpose);
+            else throw new NotImplementedException();
+        }
 
         private void ConfirmBt_Clicked(object sender, EventArgs e) => Analyze();
 
