@@ -39,7 +39,7 @@ namespace SocialNetwork.Data.Database
         public string AddUser(User user) =>
             "INSERT INTO Users (AvatarLink, username, Bio) VALUES ('" + user.AvatarLink + "', '" + user.Name + "', '" + user.Bio + "');";
         public string AddGroup(Group group) =>
-            "INSERT INTO Groups (AvatarLink, Title, Description) VALUES (" + group.AvatarLink + ", " + group.Title + ", " + group.Description + ");";
+            "INSERT INTO Groups (AvatarLink, Title, Description) VALUES ('" + group.AvatarLink + "', '" + group.Title + "', '" + group.Description + "');";
         public string AddUserToGroup(User user, Group group) =>
             "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (" + user.Id + ", " + group.Id + ");";
         public string AddFriendship(User u1, User u2) =>
