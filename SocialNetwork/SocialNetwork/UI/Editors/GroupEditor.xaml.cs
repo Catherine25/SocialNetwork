@@ -24,11 +24,16 @@ namespace SocialNetwork.UI.Editors
         {
             InitializeComponent();
 
-            _purpose = purpose;
-            _localData = localData;
-
             ImagePreview.Clicked += ImagePreview_Clicked;
             CompleteBt.Clicked += CompleteBt_Clicked;
+
+            Update(purpose, localData);
+        }
+
+        public void Update(EditPurpose purpose, LocalData localData)
+        {
+            _purpose = purpose;
+            _localData = localData;
         }
 
         private void CompleteBt_Clicked(object sender, EventArgs e)
