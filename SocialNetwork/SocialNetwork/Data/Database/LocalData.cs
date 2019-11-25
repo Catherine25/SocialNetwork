@@ -72,16 +72,32 @@ namespace SocialNetwork.Data.Database
 
         public void DeleteConversation(Conversation conversation) => _publisher.DeleteConversation(conversation);
 
-        public void AddNewFriend(User u1, User u2) =>
+        public void AddNewFriend(User u1, User u2)
+        {
+            var friends = FindFriendsOfUser(u1);
+            if (friends.Any(f => f.Id == u2.Id))
+                return;
             _publisher.PublishFriendship(u1, u2);
+        }
 
         public void DeleteFriend(User u1, User u2) =>
             _publisher.DeleteFriendship(u1, u2);
-        public void AddNewGroup(Group group) =>
+        public void AddNewGroup(Group group)
+        {
+            var groups = GetGroups();
+            if (groups.Any(g => g.Id == group.Id))
+                return;
             _publisher.PublishGroup(group);
+        }
 
-        public void AddUserToGroup(User user, Group group) =>
+        public void AddUserToGroup(User user, Group group)
+        {
+            var groups = FindGroupsOfUser(user);
+            if (groups.Any(g => g.Id == group.Id))
+                return;
             _publisher.PublishUserToGroup(user, group);
+        }
+
         public void DeleteUserFromGroup(User user, Group group) =>
             _publisher.DeleteUserFromGroup(user, group);
 
@@ -95,6 +111,14 @@ namespace SocialNetwork.Data.Database
 
         #endregion
 
+        #region Update
+
+        public User Update(User user) =>
+            GetUsers().First(u => u.Name == user.Name);
+        public Conversation Update(Conversation conversation) =>
+            GetConversations().First(c => c.Id == conversation.Id);
+
+        #endregion
         public void ChangeUser(User user) => CurrentUser = user;
 
         public List<User> FindFriendsOfUser(User user)
@@ -115,6 +139,9 @@ namespace SocialNetwork.Data.Database
 
             return friends;
         }
+
+        public List<Conversation> FindConversationsOfUser(User user) =>
+            GetConversations().Where(c => c.member1.Id == user.Id || c.member2.Id == user.Id).ToList();
 
         public void ConvertIntoLocalClasses()
         {
