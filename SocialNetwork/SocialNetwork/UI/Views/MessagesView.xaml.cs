@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
@@ -18,24 +19,26 @@ namespace SocialNetwork.UI.Views
     {
         private User user;
         private List<string> conversationsHeaders;
+        private Dictionary<int, int> keyValues;
         public event Action<User, Conversation> OpenDialodRequest;
         public event Action<FriendsView.Mode> OpenFriendsViewRequest;
-        private Data.Database.LocalData _localData;
+        private LocalData _localData;
 
-        public MessagesView(User _user, Data.Database.LocalData localData)
+        public MessagesView(User _user, LocalData localData)
         {
             InitializeComponent();
 
             NewConversationBt.Clicked += NewConversationBt_Clicked;
+            listView.ItemSelected += ItemSelected;
 
             Update(_user, localData);
         }
 
-        public void Update(User _user, Data.Database.LocalData localData)
+        public void Update(User _user, LocalData localData)
         {
             user = _user;
             _localData = localData;
-
+            keyValues = new Dictionary<int, int>();
             conversationsHeaders = new List<string>();
 
             Reload();
@@ -46,39 +49,33 @@ namespace SocialNetwork.UI.Views
 
         private void Reload()
         {
-            List<Conversation> conversations = _localData.GetConversations();
-            conversations = conversations.Where(c => c.member1.Id == user.Id || c.member2.Id == user.Id).ToList();
-            conversations = conversations.Where(c => c.messages != null).ToList();
-            int length = conversations.Count();
-            if(length == 0)
-            {
-                NoConversationsBt.IsVisible = true;
-            }
-            else
-            {
-                NoConversationsBt.IsVisible = false;
+            user = _localData.Update(user);
 
-                for (int i = 0; i < length; i++)
-                {
-                    string header = GetHeader(_localData.GetConversations().ElementAt(i));
-                    //if (conversationsHeaders.Any(X => X == header))
-                    //    ;//throw new Exception();
-                    //else
-                    conversationsHeaders.Add(header);
-                }
+            var filteredConversations = _localData.FindConversationsOfUser(user);
+            filteredConversations = filteredConversations.Where(f => f.messages != null).ToList();
+            filteredConversations = filteredConversations.Where(f => f.messages.Count != 0).ToList();
+            int length = filteredConversations.Count;
 
-                listView.ItemsSource = conversationsHeaders;
+            NoConversationsBt.IsVisible = length == 0;
+            listView.IsVisible = length != 0;
+
+            for (int i = 0; i < length; i++)
+            {
+                Conversation c = filteredConversations[i];
+                string s = GetHeader(c);
+                conversationsHeaders.Add(s);
+                keyValues.Add(i, c.Id);
             }
 
-            listView.ItemSelected += ItemSelected;
-
+            listView.ItemsSource = conversationsHeaders;
             BindingContext = this;
         }
 
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, _localData.GetConversations().ElementAt(i));
+            int index = e.SelectedItemIndex;
+            Conversation conversation =_localData.GetConversations().First(c => c.Id == keyValues[index]);
+            OpenDialodRequest(user, conversation);
         }
 
         private string GetHeader(Conversation conversation)
@@ -90,7 +87,7 @@ namespace SocialNetwork.UI.Views
             User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
             string authorName = author == user ? "You" : author.Name;
 
-            string text = authorName + ": " + message.Text;
+            string text = authorName + ": \t" + message.Text;
             return text;
         }
 
