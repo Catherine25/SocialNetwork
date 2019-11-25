@@ -25,27 +25,25 @@ namespace SocialNetwork.UI.Editors
         {
             InitializeComponent();
 
-            _purpose = purpose;
-            _localData = localData;
-            oldUser = user;
-
-            TrySetImage(oldUser.AvatarLink);
-            NameEntry.Text = oldUser.Name;
-            BioEntry.Text = oldUser.Bio;
-
             ImagePreview.Clicked += Image_Clicked;
             CompleteBt.Clicked += UserCompleted;
+
+            Update(purpose, localData, user);
         }
 
-        public UserEditor(EditPurpose purpose, LocalData localData)
+        public void Update(EditPurpose purpose, LocalData localData, User user)
         {
-            InitializeComponent();
-
             _purpose = purpose;
             _localData = localData;
 
-            ImagePreview.Clicked += Image_Clicked;
-            CompleteBt.Clicked += UserCompleted;
+            if(user != null)
+            {
+                oldUser = user;
+
+                TrySetImage(oldUser.AvatarLink);
+                NameEntry.Text = oldUser.Name;
+                BioEntry.Text = oldUser.Bio;
+            }
         }
 
         private void UserCompleted(object sender, EventArgs e)
