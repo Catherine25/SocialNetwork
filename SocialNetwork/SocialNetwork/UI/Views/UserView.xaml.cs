@@ -30,20 +30,19 @@ namespace SocialNetwork.UI.Views
         {
             InitializeComponent();
 
+            bottomBt.Clicked += EditBt_Clicked;
+            bottomBt.Clicked += RemoveBt_Clicked;
+
+            Update(user, visitor, localData);
+        }
+
+        public void Update(User user, User visitor, LocalData localData)
+        {
             Visitee = user;
             Visitor = visitor;
             _localData = localData;
 
-            if (visitor == user)
-            {
-                bottomBt.Text = EditString;
-                bottomBt.Clicked += EditBt_Clicked;
-            }
-            else
-            {
-                bottomBt.Clicked += RemoveBt_Clicked;
-                bottomBt.Text = visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
-            }
+            bottomBt.Text = visitor == user ? EditString : visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
 
             try
             {
