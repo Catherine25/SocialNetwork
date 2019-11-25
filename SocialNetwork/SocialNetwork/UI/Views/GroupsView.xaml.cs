@@ -27,9 +27,16 @@ namespace SocialNetwork.UI.Views
         {
             InitializeComponent();
 
-            User = user;
-
             NewGroupBt.Clicked += NewGroupBt_Clicked;
+
+            listView.ItemSelected += ItemSelected;
+            
+            Update(user);
+        }
+
+        public void Update(User user)
+        {
+            User = user;
 
             if (user.Groups.Count == 0)
             {
@@ -44,7 +51,6 @@ namespace SocialNetwork.UI.Views
                 Groups = user.Groups;
                 GroupTitles = Groups.Select(x => x.Title).ToList();
                 listView.ItemsSource = GroupTitles;
-                listView.ItemSelected += ItemSelected;
 
                 BindingContext = this;
             }
