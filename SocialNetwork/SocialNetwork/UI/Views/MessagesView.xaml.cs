@@ -26,12 +26,17 @@ namespace SocialNetwork.UI.Views
         {
             InitializeComponent();
 
+            NewConversationBt.Clicked += NewConversationBt_Clicked;
+
+            Update(_user, localData);
+        }
+
+        public void Update(User _user, Data.Database.LocalData localData)
+        {
             user = _user;
             _localData = localData;
 
             conversationsHeaders = new List<string>();
-
-            NewConversationBt.Clicked += NewConversationBt_Clicked;
 
             Reload();
         }
