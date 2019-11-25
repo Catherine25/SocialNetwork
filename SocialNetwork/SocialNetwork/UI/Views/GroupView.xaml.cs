@@ -19,11 +19,18 @@ namespace SocialNetwork.UI.Views
         {
             InitializeComponent();
 
+            removeBt.Clicked += RemoveBt_Clicked;
+            image.Clicked += Image_Clicked;
+
+            Update(user, group, localData);
+        }
+
+        public void Update(User user, Group group, LocalData localData)
+        {
             CurrentUser = user;
             Group = group;
             _localData = localData;
 
-            removeBt.Clicked += RemoveBt_Clicked;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
 
             try
@@ -37,8 +44,6 @@ namespace SocialNetwork.UI.Views
 
             title.Text = group.Title;
             description.Text = group.Description;
-
-            image.Clicked += Image_Clicked;
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
