@@ -31,11 +31,18 @@ namespace SocialNetwork.UI.Views
         public FriendsView(User user, Mode mode, LocalData localData)
         {
             InitializeComponent();
+
+            Update(user, mode, localData);
+
+			NewFriendBt.Clicked += NewFriendBt_Clicked;
+            listView.ItemSelected += ItemSelected;
+        }
+
+        public void Update(User user, Mode mode, LocalData localData)
+        {
             _mode = mode;
             _localData = localData;
             _user = user;
-
-			NewFriendBt.Clicked += NewFriendBt_Clicked;
 
             if (_user.Friends.Count == 0)
             {
@@ -50,13 +57,13 @@ namespace SocialNetwork.UI.Views
                 Friends = user.Friends;
                 FriendNames = Friends.Select(x => x.Name).ToList();
                 listView.ItemsSource = FriendNames;
-                listView.ItemSelected += ItemSelected;
 
                 BindingContext = this;
             }
         }
 
-		private void NewFriendBt_Clicked(object sender, EventArgs e) =>
+
+        private void NewFriendBt_Clicked(object sender, EventArgs e) =>
             ShowDialogRequest(UserRequestDialog.RequestPurpose.newFriendName);
 
 		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
