@@ -1,16 +1,12 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
-using SocialNetwork.UI;
 using SocialNetwork.UI.DataRequests;
 using SocialNetwork.UI.Editors;
-using SocialNetwork.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace SocialNetwork
@@ -21,6 +17,7 @@ namespace SocialNetwork
         private User _user;
         private Themes _themes;
         private LocalData _localData;
+        private Renderer _renderer;
 
         public List<Theme> themes = new List<Theme>();
 
@@ -41,6 +38,7 @@ namespace SocialNetwork
 
             _themes = themes;
             _localData = localData;
+            _renderer = new Renderer();
             _themes.ThemeLoaded += ThemeLoaded;
 
             menu.SetTheme(themes.CurrentTheme);
@@ -61,32 +59,32 @@ namespace SocialNetwork
         #region Views
 
         private void SetDialogView(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(new DialogView(conversation, user, _themes.CurrentTheme, _localData));
+            mainPageGrid.SetSingleChild(_renderer.GetDialogView(conversation, user, _themes.CurrentTheme, _localData));
 
         private void SetGroupView(User user, Group group)
         {
-            var view = new GroupView(user, group, _localData);
+            var view = _renderer.GetGroupView(user, group, _localData);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
 
         private void SetGroupsView()
         {
-            GroupsView view = new GroupsView(_user);
+            var view = _renderer.GetGroupsView(_user);
             view.SetTheme(_themes.CurrentTheme);
             view.OpenGroupViewRequest += SetGroupView;
             view.ShowDialogRequest += RequestForGroup;
             mainPageGrid.SetSingleChild(view);
         }        
 
-        private void SetFriendsView(FriendsView.Mode mode)
+        private void SetFriendsView(UI.Views.FriendsView.Mode mode)
         {
-            FriendsView view = new FriendsView(_user, mode, _localData);
+            var view = _renderer.GetFriendsView(_user, mode, _localData);
             view.SetTheme(_themes.CurrentTheme);
 
-            if (mode == FriendsView.Mode.ChooseNew)
+            if (mode == UI.Views.FriendsView.Mode.ChooseNew)
                 view.SetNewConversationRequest += SetDialogView;
-            else if (mode == FriendsView.Mode.Default)
+            else if (mode == UI.Views.FriendsView.Mode.Default)
             {
                 view.OpenUserViewRequest += SetUserView;
                 view.ShowDialogRequest += RequestForUser;
@@ -99,7 +97,7 @@ namespace SocialNetwork
 
         private void SetMessagesView()
         {
-            MessagesView view = new MessagesView(_user, _localData);
+            var view = _renderer.GetMessagesView(_user, _localData);
             mainPageGrid.SetSingleChild(view);
             view.SetTheme(_themes.CurrentTheme);
             view.OpenDialodRequest += SetDialogView;
@@ -108,7 +106,7 @@ namespace SocialNetwork
 
         private void SetSettingsView()
         {
-            SettingsView view = new SettingsView(_user, themes);
+            var view = _renderer.GetSettingsView(_user, themes);
             view.SetTheme(_themes.CurrentTheme);
             view.ChangeThemeRequest += ChangeTheme;
             view.ReloginRequest += RequestForUser;
@@ -117,7 +115,7 @@ namespace SocialNetwork
 
         private void SetUserView()
         {
-            UserView view = new UserView(_user, _user, _localData);
+            var view = _renderer.GetUserView(_user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
             view.EditUserRequest += SetUserEditor;
             mainPageGrid.SetSingleChild(view);
@@ -125,7 +123,7 @@ namespace SocialNetwork
 
         private void SetUserView(User user)
         {
-            UserView view = new UserView(user, _user, _localData);
+            var view = _renderer.GetUserView(user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
@@ -136,7 +134,7 @@ namespace SocialNetwork
 
         public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
         {
-            UserRequestDialog dialog = new UserRequestDialog(purpose, _localData.GetUsers());
+            UserRequestDialog dialog = _renderer.GetUserRequestDialog(purpose, _localData.GetUsers());
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += UserRequestCompleted;
             dialog.ShowUserEditorRequest += SetUserEditor;
@@ -144,9 +142,9 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(dialog);
         }
 
-        private void RequestForGroup(GroupRequestDialog.RequestPurpose obj)
+        private void RequestForGroup(GroupRequestDialog.RequestPurpose purpose)
         {
-            GroupRequestDialog dialog = new GroupRequestDialog(GroupRequestDialog.RequestPurpose.newGroupName, _localData.GetGroups());
+            var dialog = _renderer.GetGroupRequestDialog(purpose, _localData.GetGroups());
             dialog.SetTheme(_themes.CurrentTheme);
             dialog.RequestCompleted += GroupRequestCompleted;
             dialog.ShowGroupsViewRequest += SetGroupsView;
@@ -168,7 +166,7 @@ namespace SocialNetwork
             {
                 _localData.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
-                SetFriendsView(FriendsView.Mode.Default);
+                SetFriendsView(UI.Views.FriendsView.Mode.Default);
             }
         }
 
@@ -188,14 +186,14 @@ namespace SocialNetwork
 
         private void SetUserEditor(UserEditor.EditPurpose purpose)
         {
-            var editor = new UserEditor(purpose, _localData);
+            var editor = _renderer.GetUserEditor(purpose, _localData);
             editor.EditorResult += SetUserView;
             mainPageGrid.SetSingleChild(editor);
         }
 
         private void SetUserEditor(UserEditor.EditPurpose purpose, User user)
         {
-            var editor = new UserEditor(purpose, _localData, user);
+            var editor = _renderer.GetUserEditor(purpose, _localData, user);
             editor.EditorResult += SetUserView;
             mainPageGrid.SetSingleChild(editor);
         }
