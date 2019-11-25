@@ -24,7 +24,14 @@ namespace SocialNetwork.UI.Views
         public DialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
         {
             InitializeComponent();
-            
+
+            newMessageEntry.Completed += NewMessageEntry_Completed;
+
+            Update(conversaton, user, newTheme, localData);
+        }
+
+        public void Update(Conversation conversaton, User user, Theme newTheme, LocalData localData)
+        {
             User = user;
             Conversation = conversaton;
             messagesId = new Dictionary<Guid, Message>();
@@ -35,6 +42,8 @@ namespace SocialNetwork.UI.Views
 
             int length = orderedEnumerable.Count();
 
+            stack.Children.Clear();
+
             for (int i = 0; i < length; i++)
             {
                 Message message = orderedEnumerable.ElementAt(i);
@@ -44,7 +53,6 @@ namespace SocialNetwork.UI.Views
                 stack.Children.Add(button);
             }
 
-            newMessageEntry.Completed += NewMessageEntry_Completed;
         }
 
         private void NewMessageEntry_Completed(object sender, EventArgs e)
