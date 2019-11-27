@@ -66,6 +66,7 @@ namespace SocialNetwork.UI.Views
             string groupName = e.SelectedItem as string;
             Group group = Groups.Find(X=>X.Title == groupName);
             OpenGroupViewRequest(User, group);
+            (sender as ListView).SelectedItem = null;
         }
     }
 }
