@@ -29,9 +29,22 @@ namespace SocialNetwork.UI.Views
             InitializeComponent();
 
             NewConversationBt.Clicked += NewConversationBt_Clicked;
-            listView.ItemSelected += ItemSelected;
+            //listView.ItemSelected += ItemSelected;
+            listView.ItemTapped += ListView_ItemTapped;
 
             Update(_user, localData);
+        }
+
+        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (sender is ListView lv)
+            {
+                int index = e.ItemIndex;
+                Conversation conversation = _localData.GetConversations().First(c => c.Id == keyValues[index]);
+                OpenDialodRequest(user, conversation);
+            }
+
+            (sender as ListView).SelectedItem = null;
         }
 
         public void Update(User _user, LocalData localData)
@@ -71,12 +84,12 @@ namespace SocialNetwork.UI.Views
             BindingContext = this;
         }
 
-        private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            int index = e.SelectedItemIndex;
-            Conversation conversation =_localData.GetConversations().First(c => c.Id == keyValues[index]);
-            OpenDialodRequest(user, conversation);
-        }
+        //private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        //{
+        //    int index = e.SelectedItemIndex;
+        //    Conversation conversation =_localData.GetConversations().First(c => c.Id == keyValues[index]);
+        //    OpenDialodRequest(user, conversation);
+        //}
 
         private string GetHeader(Conversation conversation)
         {
