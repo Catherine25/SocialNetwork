@@ -68,6 +68,9 @@ namespace SocialNetwork.UI.Views
 
 		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
         {
+            if (e.SelectedItem == null)
+                return;
+
             string friendName = e.SelectedItem as string;
             User friend = Friends.Find(X=>X .Name == friendName);
 
@@ -79,6 +82,8 @@ namespace SocialNetwork.UI.Views
             }
             else
                 OpenUserViewRequest(friend);
+
+            (sender as ListView).SelectedItem = null;
         }
 
         public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
