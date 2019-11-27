@@ -47,7 +47,7 @@ namespace SocialNetwork.Data.Database
 		public string AddConversation(Conversation conversation) =>
 			"INSERT INTO Conversation (u1_id, u2_id) VALUES (" + conversation.member1.Id + ", " + conversation.member2.Id + ");";
         public string AddMessage(Message m, Conversation c) =>
-            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('" + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', '" + (m.IsFromMember1 == true ? 1 : 0).ToString() + "');";
+            "INSERT INTO Message (Conversation_c_id, message, dt, isFromMember1) VALUES ('" + c.Id + "', '" + m.Text + "', '" + m.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "', " + (m.IsFromMember1 ? 1 : 0) + ");";
 
         public string UpdateUser(User oldUser, User user) =>
             "UPDATE Users SET AvatarLink='" + user.AvatarLink + "', username='" + oldUser.Name + "', Bio='" + user.Bio + "' WHERE u_id=" + oldUser.Id + ";";
