@@ -46,7 +46,13 @@ namespace SocialNetwork.UI.Views
             description.Text = group.Description;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            if (theme is null)
+            {
+                throw new ArgumentNullException(nameof(theme));
+            } (this as View).SetTheme(theme);
+        }
 
         private async void Image_Clicked(object sender, EventArgs e)
         {
