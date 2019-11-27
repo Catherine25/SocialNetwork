@@ -65,7 +65,7 @@ namespace SocialNetwork.UI.Views
             string text = (sender as Entry).Text;
             (sender as Entry).Text = "";
             
-            Message message = new Message(0, text, DateTime.Now, _conversation.member1 == User ? true : false);
+            Message message = new Message(0, text, DateTime.Now, _conversation.member1.Id == User.Id);
             _conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
@@ -82,11 +82,10 @@ namespace SocialNetwork.UI.Views
             };
             messagesId.Add(button.Id, message);
 
-            if ((currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1))
-                button.Margin = new Thickness { Left = 100 };
-            else
-                button.Margin = new Thickness { Right = 100 };
-            
+            button.Margin = (currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1)
+                ? new Thickness { Left = 100 }
+                : new Thickness { Right = 100 };
+
             button.Clicked += messageClicked;
             return button;
         }
