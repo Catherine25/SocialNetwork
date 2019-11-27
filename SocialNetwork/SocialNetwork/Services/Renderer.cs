@@ -25,168 +25,168 @@ namespace SocialNetwork.Services
         private SettingsView settingsView;
         private UserView userView;
 
-        public GroupRequestDialog GetGroupRequestDialog(GroupRequestDialog.RequestPurpose purpose, List<Group> groups)
+        public ref GroupRequestDialog GetGroupRequestDialog(GroupRequestDialog.RequestPurpose purpose, List<Group> groups)
         {
             if (groupRequestDialog != null)
             {
                 groupRequestDialog.Update(purpose, groups);
-                return groupRequestDialog;
+                return ref groupRequestDialog;
             }
             else
             {
                 groupRequestDialog = new GroupRequestDialog(purpose, groups);
-                return groupRequestDialog;
+                return ref groupRequestDialog;
             }
         }
 
-        public UserRequestDialog GetUserRequestDialog(UserRequestDialog.RequestPurpose purpose, List<User> users)
+        public ref UserRequestDialog GetUserRequestDialog(UserRequestDialog.RequestPurpose purpose, List<User> users)
         {
             if (userRequestDialog != null)
             {
                 userRequestDialog.Update(purpose, users);
-                return userRequestDialog;
+                return ref userRequestDialog;
             }
             else
             {
                 userRequestDialog = new UserRequestDialog(purpose, users);
-                return userRequestDialog;
+                return ref userRequestDialog;
             }
         }
 
-        public GroupEditor GetGroupEditor(GroupEditor.EditPurpose purpose, LocalData localData)
+        public ref GroupEditor GetGroupEditor(GroupEditor.EditPurpose purpose, LocalData localData)
         {
             if (groupEditor != null)
             {
                 groupEditor.Update(purpose, localData);
-                return groupEditor;
+                return ref groupEditor;
             }
             else
             {
                 groupEditor = new GroupEditor(purpose, localData);
-                return groupEditor;
+                return ref groupEditor;
             }
         }
         
-        public UserEditor GetUserEditor(UserEditor.EditPurpose purpose, LocalData localData, User user = null)
+        public ref UserEditor GetUserEditor(UserEditor.EditPurpose purpose, LocalData localData, User user = null)
         {
             if (userEditor != null)
             {
                 userEditor.Update(purpose, localData, user);
-                return userEditor;
+                return ref userEditor;
             }
             else
             {
                 userEditor = new UserEditor(purpose, localData, user);
-                return userEditor;
+                return ref userEditor;
             }
         }
 
-        public DialogView GetDialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
+        public ref DialogView GetDialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
         {
             if (dialogView != null)
             {
                 dialogView.Update(conversaton, user, newTheme, localData);
-                return dialogView;
+                return ref dialogView;
             }
             else
             {
                 dialogView = new DialogView(conversaton, user, newTheme, localData);
-                return dialogView;
+                return ref dialogView;
             }
         }
-        
-        public FriendsView GetFriendsView(User user, FriendsView.Mode mode, LocalData localData)
+
+        public ref FriendsView GetFriendsView(User user, FriendsView.Mode mode, LocalData localData)
         {
             if (friendsView != null)
             {
                 friendsView.Update(user, mode, localData);
-                return friendsView;
+                return ref friendsView;
             }
             else
             {
                 friendsView = new FriendsView(user, mode, localData);
-                return friendsView;
+                return ref friendsView;
             }
         }
 
-        public GroupsView GetGroupsView(User user)
+        public ref GroupsView GetGroupsView(User user)
         {
             if (groupsView != null)
             {
                 groupsView.Update(user);
-                return groupsView;
+                return ref groupsView;
             }
             else
             {
                 groupsView = new GroupsView(user);
-                return groupsView;
+                return ref groupsView;
             }
         }
 
-        public GroupView GetGroupView(User user, Group group, LocalData localData)
+        public ref GroupView GetGroupView(User user, Group group, LocalData localData)
         {
             if (groupView != null)
             {
                 groupView.Update(user, group, localData);
-                return groupView;
+                return ref groupView;
             }
             else
             {
                 groupView = new GroupView(user, group, localData);
-                return groupView;
+                return ref groupView;
             }
         }
-        
-        public MenuView GetMenuView()
+
+        public ref MenuView GetMenuView()
         {
             if (menuView != null)
-                return menuView;
+                return ref menuView;
             else
             {
                 menuView = new MenuView();
-                return menuView;
+                return ref menuView;
             }
         }
-        
-        public MessagesView GetMessagesView(User user, LocalData localData)
+
+        public ref MessagesView GetMessagesView(User user, LocalData localData)
         {
             if (messagesView != null)
             {
                 messagesView.Update(user, localData);
-                return messagesView;
+                return ref messagesView;
             }
             else
             {
                 messagesView = new MessagesView(user, localData);
-                return messagesView;
+                return ref messagesView;
             }
         }
-        
-        public SettingsView GetSettingsView(User user, List<Theme> newThemes) 
+
+        public ref SettingsView GetSettingsView(User user, List<Theme> newThemes) 
         {
             if (settingsView != null)
             {
                 settingsView.Update(user, newThemes);
-                return settingsView;
+                return ref settingsView;
             }
             else
             {
                 settingsView = new SettingsView(user, newThemes);
-                return settingsView;
+                return ref settingsView;
             }
         }
 
-        public UserView GetUserView(User user, User visitor, LocalData localData)
+        public ref UserView GetUserView(User user, User visitor, LocalData localData)
         {
             if (userView != null)
             {
                 userView.Update(user, visitor, localData);
-                return userView;
+                return ref userView;
             }
             else
             {
                 userView = new UserView(user, visitor, localData);
-                return userView;
+                return ref userView;
             }
         }
     }
