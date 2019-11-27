@@ -101,8 +101,11 @@ namespace SocialNetwork.Data.Database
         public void DeleteUserFromGroup(User user, Group group) =>
             _publisher.DeleteUserFromGroup(user, group);
 
-        public void AddNewMessage(Message message, Conversation conversation) =>
+        public void AddNewMessage(Message message, Conversation conversation)
+        {
+            message.Text = message.Text.Replace("'", "");
             _publisher.PublishMessage(conversation, message);
+        }
 
         public void AddNewUser(User user) =>
             _publisher.PublishUser(user);
