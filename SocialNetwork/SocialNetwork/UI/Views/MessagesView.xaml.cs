@@ -3,6 +3,7 @@ using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ namespace SocialNetwork.UI.Views
 
         public MessagesView(User _user, LocalData localData)
         {
+            Debug.WriteLine("[m] [MessagesView] Constructor running");
+
             InitializeComponent();
 
             NewConversationBt.Clicked += NewConversationBt_Clicked;
@@ -37,6 +40,8 @@ namespace SocialNetwork.UI.Views
 
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
+            Debug.WriteLine("[m] [MessagesView] ListView_ItemTapped running");
+
             if (sender is ListView lv)
             {
                 int index = e.ItemIndex;
@@ -49,6 +54,8 @@ namespace SocialNetwork.UI.Views
 
         public void Update(User _user, LocalData localData)
         {
+            Debug.WriteLine("[m] [MessagesView] Update running");
+
             user = _user;
             _localData = localData;
             keyValues = new Dictionary<int, int>();
@@ -57,11 +64,17 @@ namespace SocialNetwork.UI.Views
             Reload();
         }
 
-        private void NewConversationBt_Clicked(object sender, EventArgs e) =>
+        private void NewConversationBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MessagesView] NewConversationBt_Clicked running");
+
             OpenFriendsViewRequest(FriendsView.Mode.ChooseNew);
+        }
 
         private void Reload()
         {
+            Debug.WriteLine("[m] [MessagesView] Reload running");
+
             user = _localData.Update(user);
 
             var filteredConversations = _localData.FindConversationsOfUser(user);
@@ -93,6 +106,8 @@ namespace SocialNetwork.UI.Views
 
         private string GetHeader(Conversation conversation)
         {
+            Debug.WriteLine("[m] [MessagesView] GetHeader running");
+
             //get last message
             Message message = conversation.messages[conversation.messages.Count - 1];
 
@@ -104,6 +119,11 @@ namespace SocialNetwork.UI.Views
             return text;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [MessagesView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
     }
 }
