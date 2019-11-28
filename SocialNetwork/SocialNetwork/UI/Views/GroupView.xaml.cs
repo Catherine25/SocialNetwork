@@ -1,7 +1,9 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
+using SocialNetwork.UI.Editors;
 using System;
+using System.Diagnostics;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -15,22 +17,37 @@ namespace SocialNetwork.UI.Views
         Group Group;
         LocalData _localData;
 
+        public event Action<GroupEditor.EditPurpose> EditGroupRequest;
+
         public GroupView(User user, Group group, LocalData localData)
         {
+            Debug.WriteLine("[m] [GroupView] Constructor running");
+
             InitializeComponent();
 
             removeBt.Clicked += RemoveBt_Clicked;
             image.Clicked += Image_Clicked;
+            editBt.Clicked += EditBt_Clicked;
 
             Update(user, group, localData);
         }
 
+        private void EditBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [GroupView] EditBt_Clicked running");
+
+            EditGroupRequest(GroupEditor.EditPurpose.edit);
+        }
+
         public void Update(User user, Group group, LocalData localData)
         {
+            Debug.WriteLine("[m] [GroupView] Update running");
+
             CurrentUser = user;
             Group = group;
             _localData = localData;
 
+            editBt.IsEnabled = CurrentUser.Id == _localData.FindUserByName("Admin").Id;
             removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
 
             try
@@ -48,14 +65,15 @@ namespace SocialNetwork.UI.Views
 
         public void SetTheme(Theme theme)
         {
-            if (theme is null)
-            {
-                throw new ArgumentNullException(nameof(theme));
-            } (this as View).SetTheme(theme);
+            Debug.WriteLine("[m] [GroupView] SetTheme running");
+
+            (this as View).SetTheme(theme);
         }
 
         private async void Image_Clicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("[m] [GroupView] Image_Clicked running");
+
             string uriString = await Clipboard.GetTextAsync();
 
             try
@@ -70,6 +88,8 @@ namespace SocialNetwork.UI.Views
 
         private void RemoveBt_Clicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("[m] [GroupView] RemoveBt_Clicked running");
+
             Button button = sender as Button;
 
             if (CurrentUser.Groups.Contains(Group))
