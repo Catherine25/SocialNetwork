@@ -111,6 +111,8 @@ namespace SocialNetwork.Data.Database
             _publisher.PublishUser(user);
         public void UpdateUser(User oldUser, User user) =>
             _publisher.UpdateUser(oldUser, user);
+        public void UpdateGroup(Group oldGroup, Group group) =>
+            _publisher.UpdateGroup(oldGroup, group);
 
         #endregion
 
