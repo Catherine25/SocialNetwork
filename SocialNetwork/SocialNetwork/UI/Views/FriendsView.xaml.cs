@@ -4,6 +4,7 @@ using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,8 @@ namespace SocialNetwork.UI.Views
 
         public FriendsView(User user, Mode mode, LocalData localData)
         {
+            Debug.WriteLine("[m] [FriendsView] Constructor running");
+
             InitializeComponent();
 
             Update(user, mode, localData);
@@ -40,6 +43,8 @@ namespace SocialNetwork.UI.Views
 
         public void Update(User user, Mode mode, LocalData localData)
         {
+            Debug.WriteLine("[m] [FriendsView] Update running");
+
             _mode = mode;
             _localData = localData;
             _user = user;
@@ -63,11 +68,17 @@ namespace SocialNetwork.UI.Views
         }
 
 
-        private void NewFriendBt_Clicked(object sender, EventArgs e) =>
-            ShowDialogRequest(UserRequestDialog.RequestPurpose.newFriendName);
-
-		private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
+        private void NewFriendBt_Clicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("[m] [FriendsView] NewFriendBt_Clicked running");
+
+            ShowDialogRequest(UserRequestDialog.RequestPurpose.newFriendName);
+        }
+
+        private void ItemSelected(object sender, SelectedItemChangedEventArgs e) 
+        {
+            Debug.WriteLine("[m] [FriendsView] ItemSelected running");
+
             if (e.SelectedItem == null)
                 return;
 
@@ -86,6 +97,11 @@ namespace SocialNetwork.UI.Views
             (sender as ListView).SelectedItem = null;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [FriendsView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
     }
 }
