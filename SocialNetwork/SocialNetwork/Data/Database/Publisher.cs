@@ -42,7 +42,7 @@ namespace SocialNetwork.Data.Database
             ExecuteNonQuery(_commands.DeleteFriendOfUser(u1, u2));
 
         public void PublishUserToGroup(User user, Group group) =>
-            ExecuteNonQuery(_commands.AddUserToGroup(user, group));
+            ExecuteNonQuery(_commands.AddUserToGroup(user.Id, group.Id));
 
         public void DeleteUserFromGroup(User user, Group group) =>
             ExecuteNonQuery(_commands.UnsubscribeUserFromGroup(user, group));
@@ -55,5 +55,8 @@ namespace SocialNetwork.Data.Database
 
         public void UpdateUser(User oldUser, User user) =>
             ExecuteNonQuery(_commands.UpdateUser(oldUser, user));
+
+        public void UpdateGroup(Group oldGroup, Group group) =>
+            ExecuteNonQuery(_commands.UpdateGroup(oldGroup.Id, group));
     }
 }
