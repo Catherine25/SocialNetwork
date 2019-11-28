@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,21 +31,46 @@ namespace SocialNetwork.UI.Views
             settingsViewBt.Clicked += SettingsViewBt_Clicked;
         }
 
-        private void SettingsViewBt_Clicked(object sender, EventArgs e) =>
+        private void SettingsViewBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MenuView] SettingsViewBt_Clicked running");
+
             SetSettingsViewRequest();
+        }
 
-        private void GroupsViewBt_Clicked(object sender, EventArgs e) =>
+        private void GroupsViewBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MenuView] GroupsViewBt_Clicked running");
+
             SetGroupsViewRequest();
+        }
 
-        private void FriendsViewBt_Clicked(object sender, EventArgs e) =>
+        private void FriendsViewBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MenuView] FriendsViewBt_Clicked running");
+
             SetFriendsViewRequest(FriendsView.Mode.Default);
+        }
 
-        private void MessagesViewBt_Clicked(object sender, EventArgs e) =>
+        private void MessagesViewBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MenuView] MessagesViewBt_Clicked running");
+
             SetMessagesViewRequest();
+        }
 
-        private void UserViewBt_Clicked(object sender, EventArgs e) =>
+        private void UserViewBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MenuView] UserViewBt_Clicked running");
+
             SetCurrentUserViewRequest();
+        }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [MenuView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
     }
 }
