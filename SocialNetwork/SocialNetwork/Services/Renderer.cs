@@ -53,16 +53,16 @@ namespace SocialNetwork.Services
             }
         }
 
-        public ref GroupEditor GetGroupEditor(GroupEditor.EditPurpose purpose, LocalData localData)
+        public ref GroupEditor GetGroupEditor(GroupEditor.EditPurpose purpose, LocalData localData, Group group)
         {
             if (groupEditor != null)
             {
-                groupEditor.Update(purpose, localData);
+                groupEditor.Update(purpose, localData, group);
                 return ref groupEditor;
             }
             else
             {
-                groupEditor = new GroupEditor(purpose, localData);
+                groupEditor = new GroupEditor(purpose, localData, group);
                 return ref groupEditor;
             }
         }
