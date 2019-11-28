@@ -11,29 +11,39 @@ namespace SocialNetwork.UI.Editors
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupEditor : ContentView
     {
-        public enum EditPurpose { createNew }
+        public enum EditPurpose { createNew, edit }
 
         private string _noGroupAvatarLink = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
         private string link;
         private EditPurpose _purpose;
         private LocalData _localData;
+        private Group _oldGroup;
 
         public event Action EditorResult;
 
-        public GroupEditor(EditPurpose purpose, LocalData localData)
+        public GroupEditor(EditPurpose purpose, LocalData localData, Group group = null)
         {
             InitializeComponent();
 
             ImagePreview.Clicked += ImagePreview_Clicked;
             CompleteBt.Clicked += CompleteBt_Clicked;
 
-            Update(purpose, localData);
+            Update(purpose, localData, group);
         }
 
-        public void Update(EditPurpose purpose, LocalData localData)
+        public void Update(EditPurpose purpose, LocalData localData, Group group = null)
         {
             _purpose = purpose;
             _localData = localData;
+
+            if(group != null)
+            {
+                _oldGroup = group;
+
+                TrySetImage(_oldGroup.AvatarLink);
+                TitleEntry.Text = _oldGroup.Title;
+                DescriptionEntry.Text = _oldGroup.Description;
+            }
         }
 
         private void CompleteBt_Clicked(object sender, EventArgs e)
@@ -62,7 +72,11 @@ namespace SocialNetwork.UI.Editors
                     _localData.AddNewGroup(group);
                     group.Id = _localData.GetGroups().Find(u => u.Title == group.Title).Id;
                 }
-                else throw new NotImplementedException();
+                else if (_purpose is EditPurpose.edit)
+                {
+                    _localData.UpdateGroup(group, group);
+                    group.Id = _localData.GetGroups().Find(u => u.Title == group.Title).Id;
+                }
 
                 EditorResult();
             }
