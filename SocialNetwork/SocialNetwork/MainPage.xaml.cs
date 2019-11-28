@@ -14,12 +14,19 @@ namespace SocialNetwork
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
+        public enum ViewSet { DialogView, FriendsView, GroupsView, GroupView, MenuView, MessagesView, SettingsView, UserView  }
+        public enum DialogSet { UserRequestDialog, GroupRequestDialog }
+        public enum EditorSet { UserEditor, SetGroupEditor }
+
         private User _user;
         private Themes _themes;
         private LocalData _localData;
         private Renderer _renderer;
 
         public List<Theme> themes = new List<Theme>();
+        public HashSet<ViewSet> _definedViews = new HashSet<ViewSet>();
+        public HashSet<DialogSet> _definedDialogs = new HashSet<DialogSet>();
+        public HashSet<EditorSet> _definedEditors = new HashSet<EditorSet>();
 
         public event Action<User> UserChangeRequest;
 
@@ -66,15 +73,26 @@ namespace SocialNetwork
             var view = _renderer.GetGroupView(user, group, _localData);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
+
+            if (!_definedEditors.Contains(EditorSet.SetGroupEditor))
+            {
+                view.EditGroupRequest += SetGroupEditor;
+                _definedEditors.Add(EditorSet.SetGroupEditor);
+            }
         }
 
         private void SetGroupsView()
         {
             var view = _renderer.GetGroupsView(_user);
             view.SetTheme(_themes.CurrentTheme);
-            view.OpenGroupViewRequest += SetGroupView;
-            view.ShowDialogRequest += RequestForGroup;
             mainPageGrid.SetSingleChild(view);
+
+            if (!_definedViews.Contains(ViewSet.GroupsView))
+            {
+                view.OpenGroupViewRequest += SetGroupView;
+                view.ShowDialogRequest += RequestForGroup;
+                _definedViews.Add(ViewSet.GroupsView);
+            }
         }        
 
         private void SetFriendsView(UI.Views.FriendsView.Mode mode)
@@ -82,15 +100,19 @@ namespace SocialNetwork
             var view = _renderer.GetFriendsView(_user, mode, _localData);
             view.SetTheme(_themes.CurrentTheme);
 
-            if (mode == UI.Views.FriendsView.Mode.ChooseNew)
-                view.SetNewConversationRequest += SetDialogView;
-            else if (mode == UI.Views.FriendsView.Mode.Default)
+            if (!_definedViews.Contains(ViewSet.FriendsView))
             {
-                view.OpenUserViewRequest += SetUserView;
-                view.ShowDialogRequest += RequestForUser;
+                if (mode == UI.Views.FriendsView.Mode.ChooseNew)
+                    view.SetNewConversationRequest += SetDialogView;
+                else if (mode == UI.Views.FriendsView.Mode.Default)
+                {
+                    view.OpenUserViewRequest += SetUserView;
+                    view.ShowDialogRequest += RequestForUser;
+                }
+                else
+                    throw new NotImplementedException();
+                _definedViews.Add(ViewSet.FriendsView);
             }
-            else
-                throw new NotImplementedException();
 
             mainPageGrid.SetSingleChild(view);
         }
@@ -100,25 +122,40 @@ namespace SocialNetwork
             var view = _renderer.GetMessagesView(_user, _localData);
             mainPageGrid.SetSingleChild(view);
             view.SetTheme(_themes.CurrentTheme);
-            view.OpenDialodRequest += SetDialogView;
-            view.OpenFriendsViewRequest += SetFriendsView;
+
+            if (!_definedViews.Contains(ViewSet.MessagesView))
+            {
+                view.OpenDialodRequest += SetDialogView;
+                view.OpenFriendsViewRequest += SetFriendsView;
+                _definedViews.Add(ViewSet.MessagesView);
+            }
         }
 
         private void SetSettingsView()
         {
             var view = _renderer.GetSettingsView(_user, themes);
             view.SetTheme(_themes.CurrentTheme);
-            view.ChangeThemeRequest += ChangeTheme;
-            view.ReloginRequest += RequestForUser;
             mainPageGrid.SetSingleChild(view);
+            
+            if (!_definedViews.Contains(ViewSet.SettingsView))
+            {
+                view.ChangeThemeRequest += ChangeTheme;
+                view.ReloginRequest += RequestForUser;
+                _definedViews.Add(ViewSet.SettingsView);
+            }
         }
 
         private void SetUserView()
         {
             var view = _renderer.GetUserView(_user, _user, _localData);
             view.SetTheme(_themes.CurrentTheme);
-            view.EditUserRequest += SetUserEditor;
             mainPageGrid.SetSingleChild(view);
+
+            if (!_definedViews.Contains(ViewSet.UserView))
+            {
+                view.EditUserRequest += SetUserEditor;
+                _definedViews.Add(ViewSet.UserView);
+            }
         }
 
         private void SetUserView(User user)
@@ -136,20 +173,32 @@ namespace SocialNetwork
         {
             UserRequestDialog dialog = _renderer.GetUserRequestDialog(purpose, _localData.GetUsers());
             dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += UserRequestCompleted;
-            dialog.ShowUserEditorRequest += SetUserEditor;
-            dialog.ShowFriendsViewRequest += SetFriendsView;
             mainPageGrid.SetSingleChild(dialog);
+
+            if (!_definedDialogs.Contains(DialogSet.UserRequestDialog))
+            {
+                dialog.RequestCompleted += UserRequestCompleted;
+                dialog.ShowUserEditorRequest += SetUserEditor;
+                dialog.ShowFriendsViewRequest += SetFriendsView;
+
+                _definedDialogs.Add(DialogSet.UserRequestDialog);
+            }
         }
 
         private void RequestForGroup(GroupRequestDialog.RequestPurpose purpose)
         {
             var dialog = _renderer.GetGroupRequestDialog(purpose, _localData.GetGroups());
             dialog.SetTheme(_themes.CurrentTheme);
-            dialog.RequestCompleted += GroupRequestCompleted;
-            dialog.ShowGroupsViewRequest += SetGroupsView;
-            dialog.ShowGroupEditorRequest += SetGroupEditor;
             mainPageGrid.SetSingleChild(dialog);
+
+            if (!_definedDialogs.Contains(DialogSet.GroupRequestDialog))
+            {
+                dialog.RequestCompleted += GroupRequestCompleted;
+                dialog.ShowGroupsViewRequest += SetGroupsView;
+                dialog.ShowGroupEditorRequest += SetGroupEditor;
+
+                _definedDialogs.Add(DialogSet.GroupRequestDialog);
+            }
         }
 
         private void UserRequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
@@ -187,22 +236,49 @@ namespace SocialNetwork
         private void SetUserEditor(UserEditor.EditPurpose purpose)
         {
             var editor = _renderer.GetUserEditor(purpose, _localData);
-            editor.EditorResult += SetUserView;
             mainPageGrid.SetSingleChild(editor);
+
+            if (!_definedEditors.Contains(EditorSet.UserEditor))
+            {
+                editor.EditorResult += SetUserView;
+                _definedEditors.Add(EditorSet.UserEditor);
+            }
         }
 
         private void SetUserEditor(UserEditor.EditPurpose purpose, User user)
         {
             var editor = _renderer.GetUserEditor(purpose, _localData, user);
-            editor.EditorResult += SetUserView;
             mainPageGrid.SetSingleChild(editor);
+
+            if (!_definedEditors.Contains(EditorSet.UserEditor))
+            {
+                editor.EditorResult += SetUserView;
+                _definedEditors.Add(EditorSet.UserEditor);
+            }
         }
 
         private void SetGroupEditor(GroupEditor.EditPurpose purpose)
         {
             var editor = new GroupEditor(purpose, _localData);
-            editor.EditorResult += SetGroupsView;
             mainPageGrid.SetSingleChild(editor);
+
+            if (!_definedEditors.Contains(EditorSet.SetGroupEditor))
+            {
+                editor.EditorResult += SetGroupsView;
+                _definedEditors.Add(EditorSet.SetGroupEditor);
+            }
+        }
+
+        private void SetGroupEditor(GroupEditor.EditPurpose purpose, Group group)
+        {
+            var editor = new GroupEditor(purpose, _localData, group);
+            mainPageGrid.SetSingleChild(editor);
+
+            if (!_definedEditors.Contains(EditorSet.SetGroupEditor))
+            {
+                editor.EditorResult += SetGroupsView;
+                _definedEditors.Add(EditorSet.SetGroupEditor);
+            }
         }
 
         #endregion
