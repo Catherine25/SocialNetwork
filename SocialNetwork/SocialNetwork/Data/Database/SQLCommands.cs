@@ -40,8 +40,8 @@ namespace SocialNetwork.Data.Database
             "INSERT INTO Users (AvatarLink, username, Bio) VALUES ('" + user.AvatarLink + "', '" + user.Name + "', '" + user.Bio + "');";
         public string AddGroup(Group group) =>
             "INSERT INTO Groups (AvatarLink, Title, Description) VALUES ('" + group.AvatarLink + "', '" + group.Title + "', '" + group.Description + "');";
-        public string AddUserToGroup(User user, Group group) =>
-            "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (" + user.Id + ", " + group.Id + ");";
+        public string AddUserToGroup(int uId, int gId) =>
+            "INSERT INTO users_groups (Users_u_id, Groups_g_id) VALUES (" + uId + ", " + gId + ");";
         public string AddFriendship(User u1, User u2) =>
             "INSERT INTO Friends (Users_u_id, f_id) VALUES (" + u1.Id + ", " + u2.Id + ");";
 		public string AddConversation(Conversation conversation) =>
@@ -51,7 +51,8 @@ namespace SocialNetwork.Data.Database
 
         public string UpdateUser(User oldUser, User user) =>
             "UPDATE Users SET AvatarLink='" + user.AvatarLink + "', username='" + oldUser.Name + "', Bio='" + user.Bio + "' WHERE u_id=" + oldUser.Id + ";";
-		public string UpdateGroup = "UPDATE Groups SET AvatarLink=?, Title=?, Description=? WHERE g_id=?;";
+        public string UpdateGroup(int id, Group group) =>
+            "UPDATE Groups SET AvatarLink='" + group.AvatarLink + "', Title='" + group.Title + "', Description='" + group.Description + "' WHERE g_id=" + id + ";";
 
 		public string DeleteUser = "DELETE FROM Users where u_id=?;";
 		public string DeleteGroup = "DELETE FROM Groups where g_id=?;";
