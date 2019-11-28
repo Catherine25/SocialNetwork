@@ -3,6 +3,7 @@ using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace SocialNetwork.UI.Views
 
         public GroupsView(User user)
         {
+            Debug.WriteLine("[m] [GroupsView] Constructor running");
+
             InitializeComponent();
 
             NewGroupBt.Clicked += NewGroupBt_Clicked;
@@ -36,6 +39,8 @@ namespace SocialNetwork.UI.Views
 
         public void Update(User user)
         {
+            Debug.WriteLine("[m] [GroupsView] Update running");
+
             User = user;
 
             if (user.Groups.Count == 0)
@@ -56,13 +61,27 @@ namespace SocialNetwork.UI.Views
             }
         }
 
-        private void NewGroupBt_Clicked(object sender, EventArgs e) =>
-            ShowDialogRequest(GroupRequestDialog.RequestPurpose.newGroupName);
+        private void NewGroupBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [GroupsView] NewGroupBt_Clicked running");
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+            ShowDialogRequest(GroupRequestDialog.RequestPurpose.newGroupName);
+        }
+
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [GroupsView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
 
         private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
+            if ((sender as ListView).SelectedItem == null)
+                return;
+
+            Debug.WriteLine("[m] [GroupsView] ItemSelected running");
+
             string groupName = e.SelectedItem as string;
             Group group = Groups.Find(X=>X.Title == groupName);
             OpenGroupViewRequest(User, group);
