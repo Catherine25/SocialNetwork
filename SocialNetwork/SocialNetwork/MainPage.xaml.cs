@@ -74,16 +74,16 @@ namespace SocialNetwork
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
 
-            if (!_definedEditors.Contains(EditorSet.SetGroupEditor))
+            if (!_definedViews.Contains(ViewSet.GroupView))
             {
                 view.EditGroupRequest += SetGroupEditor;
-                _definedEditors.Add(EditorSet.SetGroupEditor);
+                _definedViews.Add(ViewSet.GroupView);
             }
         }
 
         private void SetGroupsView()
         {
-            var view = _renderer.GetGroupsView(_user);
+            var view = _renderer.GetGroupsView(_user, _localData);
             view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
 
