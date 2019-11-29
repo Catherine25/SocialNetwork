@@ -32,7 +32,7 @@ namespace SocialNetwork.Data {
 
         private void LoadTheme(string link)
         {
-            Debug.WriteLine("LoadTheme() running");
+            //Debug.WriteLine("LoadTheme() running");
 
             WebRequest webRequest = WebRequest.Create(link);
             WebResponse webResponse = webRequest.GetResponse();
@@ -67,7 +67,7 @@ namespace SocialNetwork.Data {
 
         public void LoadRomanukeThemes(object o)
         {
-            Debug.WriteLine("LoadRomanukeThemes() running");
+            //Debug.WriteLine("LoadRomanukeThemes() running");
             
             WebRequest webRequest = WebRequest.Create("https://color.romanuke.com");
             WebResponse webResponse = webRequest.GetResponse();

@@ -29,13 +29,18 @@ namespace SocialNetwork.UI.DataRequests
         {
             InitializeComponent();
 
-            _purpose = purpose;
-            _groups = groups;
-
             ConfirmBt.Clicked += ConfirmBt_Clicked;
             CancelBt.Clicked += CancelBt_Clicked;
             RegistrateBt.Clicked += RegistrateBt_Clicked;
             textEntry.Completed += TextEntry_Completed;
+
+            Update(purpose, groups);
+        }
+
+        public void Update(RequestPurpose purpose, List<Group> groups)
+        {
+            _purpose = purpose;
+            _groups = groups;
 
             if (purpose == RequestPurpose.newGroupName)
                 infoLabel.Text = enterTitle;

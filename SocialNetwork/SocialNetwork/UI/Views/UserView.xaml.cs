@@ -1,12 +1,9 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
+using SocialNetwork.UI.Editors;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,26 +21,29 @@ namespace SocialNetwork.UI.Views
         private User Visitor;
         private LocalData _localData;
 
-        public event Action<Editors.UserEditor.EditPurpose, User> EditUserRequest;
+        public event Action<UserEditor.EditPurpose, User> EditUserRequest;
 
         public UserView(User user, User visitor, LocalData localData)
         {
+            Debug.WriteLine("[m] [UserView] Constructor running");
+
             InitializeComponent();
+
+            bottomBt.Clicked += EditBt_Clicked;
+            bottomBt.Clicked += RemoveBt_Clicked;
+
+            Update(user, visitor, localData);
+        }
+
+        public void Update(User user, User visitor, LocalData localData)
+        {
+            Debug.WriteLine("[m] [UserView] Update running");
 
             Visitee = user;
             Visitor = visitor;
             _localData = localData;
 
-            if (visitor == user)
-            {
-                bottomBt.Text = EditString;
-                bottomBt.Clicked += EditBt_Clicked;
-            }
-            else
-            {
-                bottomBt.Clicked += RemoveBt_Clicked;
-                bottomBt.Text = visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
-            }
+            bottomBt.Text = visitor == user ? EditString : visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
 
             try
             {
@@ -58,27 +58,40 @@ namespace SocialNetwork.UI.Views
             bio.Text = user.Bio;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [UserView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
 
         private void RemoveBt_Clicked(object sender, EventArgs e)
         {
-            Button button = sender as Button;
+            Debug.WriteLine("[m] [UserView] RemoveBt_Clicked running");
 
-            if(Visitor.Friends.Contains(Visitee))
+            if (sender is Button button)
             {
-                Visitor.Friends.Remove(Visitee);
-                _localData.DeleteFriend(Visitor, Visitee);
-                button.Text = AddString;
-            }
-            else
-            {
-                Visitor.Friends.Add(Visitee);
-                _localData.AddNewFriend(Visitor, Visitee);
-                button.Text = RemoveString;
+                if (Visitor.Friends.Contains(Visitee))
+                {
+                    Visitor.Friends.Remove(Visitee);
+                    _localData.DeleteFriend(Visitor, Visitee);
+                    button.Text = AddString;
+                }
+                else
+                {
+                    Visitor.Friends.Add(Visitee);
+                    _localData.AddNewFriend(Visitor, Visitee);
+                    button.Text = RemoveString;
+                }
             }
         }
 
-        private void EditBt_Clicked(object sender, EventArgs e) =>
-            EditUserRequest(Editors.UserEditor.EditPurpose.update, Visitor);
+        private void EditBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [UserView] EditBt_Clicked running");
+
+            if(Visitee == null)
+                EditUserRequest(UserEditor.EditPurpose.update, Visitor);
+        }
     }
 }

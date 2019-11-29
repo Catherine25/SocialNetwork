@@ -16,35 +16,48 @@ namespace SocialNetwork.UI.Views
     public partial class DialogView : ContentView, IColorable {
 
         private User User;
-        private Conversation Conversation;
+        private Conversation _conversation;
         private Dictionary<Guid, Message> messagesId;
         private Theme theme;
         private LocalData _localData;
 
-        public DialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
+        public DialogView(Conversation conversation, User user, Theme newTheme, LocalData localData)
         {
             InitializeComponent();
-            
+
+            newMessageEntry.Completed += NewMessageEntry_Completed;
+
+            Update(conversation, user, newTheme, localData);
+        }
+
+        public void Update(Conversation conversation, User user, Theme newTheme, LocalData localData)
+        {
             User = user;
-            Conversation = conversaton;
+            int id1 = conversation.member1.Id;
+            int id2 = conversation.member2.Id;
+
+            _conversation = localData.GetConversations().First(c => (c.member1.Id == id1 && c.member2.Id == id2) || (c.member1.Id == id2 && c.member2.Id == id1));
             messagesId = new Dictionary<Guid, Message>();
             theme = newTheme;
             _localData = localData;
 
-            List<Message> orderedEnumerable = conversaton.messages.OrderBy(x => x.DateTime).ToList();
+            if (_conversation.messages == null)
+                _conversation.messages = new List<Message>();
+            
+            List<Message> orderedEnumerable = _conversation.messages.OrderBy(x => x.DateTime).ToList();
 
             int length = orderedEnumerable.Count();
+
+            stack.Children.Clear();
 
             for (int i = 0; i < length; i++)
             {
                 Message message = orderedEnumerable.ElementAt(i);
-                Button button = CreateButton(message, conversaton.member1 == user);
-                messagesId.Add(button.Id, message);
+                Button button = CreateButton(message, _conversation.member1 == user);
                 button.SetTheme(theme);
                 stack.Children.Add(button);
             }
 
-            newMessageEntry.Completed += NewMessageEntry_Completed;
         }
 
         private void NewMessageEntry_Completed(object sender, EventArgs e)
@@ -52,12 +65,12 @@ namespace SocialNetwork.UI.Views
             string text = (sender as Entry).Text;
             (sender as Entry).Text = "";
             
-            Message message = new Message(0, text, DateTime.Now, Conversation.member1 == User ? true : false);
-            Conversation.messages.Add(message);
+            Message message = new Message(0, text, DateTime.Now, _conversation.member1.Id == User.Id);
+            _conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
 
-            _localData.AddNewMessage(message, Conversation);
+            _localData.AddNewMessage(message, _conversation);
         }
 
         public Button CreateButton(Message message, bool currentUserIsMember1)
@@ -67,10 +80,12 @@ namespace SocialNetwork.UI.Views
                 TextColor = theme.TextColor,
                 Text = message.Text
             };
-            if ((currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1))
-                button.Margin = new Thickness { Left = 100 };
-            else
-                button.Margin = new Thickness { Right = 100 };
+            messagesId.Add(button.Id, message);
+
+            button.Margin = (currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1)
+                ? new Thickness { Left = 100 }
+                : new Thickness { Right = 100 };
+
             button.Clicked += messageClicked;
             return button;
         }

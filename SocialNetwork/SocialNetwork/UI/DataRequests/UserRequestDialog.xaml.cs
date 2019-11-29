@@ -30,13 +30,18 @@ namespace SocialNetwork.UI.DataRequests
 		{
 			InitializeComponent();
 
-            _purpose = purpose;
-            _users = users;
-
             ConfirmBt.Clicked += ConfirmBt_Clicked;
             CancelBt.Clicked += CancelBt_Clicked;
             RegistrateBt.Clicked += RegistrateBt_Clicked;
             textEntry.Completed += TextEntry_Completed;
+
+            Update(purpose, users);
+		}
+
+        public void Update(RequestPurpose purpose, List<User> users)
+        {
+            _purpose = purpose;
+            _users = users;
 
             if (purpose == RequestPurpose.currentName)
                 infoLabel.Text = EnterName;
@@ -44,7 +49,7 @@ namespace SocialNetwork.UI.DataRequests
                 infoLabel.Text = EnterFriend;
 
             RegistrateBt.IsVisible = false;
-		}
+        }
 
         private void RegistrateBt_Clicked(object sender, EventArgs e) =>
             ShowUserEditorRequest(UserEditor.EditPurpose.createNew);

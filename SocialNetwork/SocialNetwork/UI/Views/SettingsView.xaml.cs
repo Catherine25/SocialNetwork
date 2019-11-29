@@ -24,11 +24,17 @@ namespace SocialNetwork.UI.Views
         public SettingsView(User user, List<Theme> newThemes)
         {
             InitializeComponent();
-			themes = new List<Theme>();
-            ImportThemes(newThemes);
 
             themePicker.SelectedIndexChanged += ThemePicker_SelectedIndexChanged;
             ReloginBt.Clicked += ReloginBt_Clicked;
+
+            Update(user, newThemes);
+        }
+
+        public void Update(User user, List<Theme> newThemes)
+        {
+            themes = new List<Theme>();
+            ImportThemes(newThemes);
         }
 
         private void ReloginBt_Clicked(object sender, EventArgs e) =>

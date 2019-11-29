@@ -1,7 +1,9 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,66 +20,94 @@ namespace SocialNetwork.UI.Views
     {
         private User user;
         private List<string> conversationsHeaders;
+        private Dictionary<int, int> keyValues;
         public event Action<User, Conversation> OpenDialodRequest;
         public event Action<FriendsView.Mode> OpenFriendsViewRequest;
-        private Data.Database.LocalData _localData;
+        private LocalData _localData;
 
-        public MessagesView(User _user, Data.Database.LocalData localData)
+        public MessagesView(User _user, LocalData localData)
         {
+            Debug.WriteLine("[m] [MessagesView] Constructor running");
+
             InitializeComponent();
+
+            NewConversationBt.Clicked += NewConversationBt_Clicked;
+            //listView.ItemSelected += ItemSelected;
+            listView.ItemTapped += ListView_ItemTapped;
+
+            Update(_user, localData);
+        }
+
+        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            Debug.WriteLine("[m] [MessagesView] ListView_ItemTapped running");
+
+            if (sender is ListView lv)
+            {
+                int index = e.ItemIndex;
+                Conversation conversation = _localData.GetConversations().First(c => c.Id == keyValues[index]);
+                OpenDialodRequest(user, conversation);
+            }
+
+            (sender as ListView).SelectedItem = null;
+        }
+
+        public void Update(User _user, LocalData localData)
+        {
+            Debug.WriteLine("[m] [MessagesView] Update running");
 
             user = _user;
             _localData = localData;
-
+            keyValues = new Dictionary<int, int>();
             conversationsHeaders = new List<string>();
-
-            NewConversationBt.Clicked += NewConversationBt_Clicked;
 
             Reload();
         }
 
-        private void NewConversationBt_Clicked(object sender, EventArgs e) =>
+        private void NewConversationBt_Clicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[m] [MessagesView] NewConversationBt_Clicked running");
+
             OpenFriendsViewRequest(FriendsView.Mode.ChooseNew);
+        }
 
         private void Reload()
         {
-            List<Conversation> conversations = _localData.GetConversations();
-            conversations = conversations.Where(c => c.member1.Id == user.Id || c.member2.Id == user.Id).ToList();
-            conversations = conversations.Where(c => c.messages != null).ToList();
-            int length = conversations.Count();
-            if(length == 0)
-            {
-                NoConversationsBt.IsVisible = true;
-            }
-            else
-            {
-                NoConversationsBt.IsVisible = false;
+            Debug.WriteLine("[m] [MessagesView] Reload running");
 
-                for (int i = 0; i < length; i++)
-                {
-                    string header = GetHeader(_localData.GetConversations().ElementAt(i));
-                    //if (conversationsHeaders.Any(X => X == header))
-                    //    ;//throw new Exception();
-                    //else
-                    conversationsHeaders.Add(header);
-                }
+            user = _localData.Update(user);
 
-                listView.ItemsSource = conversationsHeaders;
+            var filteredConversations = _localData.FindConversationsOfUser(user);
+            filteredConversations = filteredConversations.Where(f => f.messages != null).ToList();
+            filteredConversations = filteredConversations.Where(f => f.messages.Count != 0).ToList();
+            int length = filteredConversations.Count;
+
+            NoConversationsBt.IsVisible = length == 0;
+            listView.IsVisible = length != 0;
+
+            for (int i = 0; i < length; i++)
+            {
+                Conversation c = filteredConversations[i];
+                string s = GetHeader(c);
+                conversationsHeaders.Add(s);
+                keyValues.Add(i, c.Id);
             }
 
-            listView.ItemSelected += ItemSelected;
-
+            listView.ItemsSource = conversationsHeaders;
             BindingContext = this;
         }
 
-        private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            int i = e.SelectedItemIndex;
-            OpenDialodRequest(user, _localData.GetConversations().ElementAt(i));
-        }
+        //private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        //{
+        //    int index = e.SelectedItemIndex;
+        //    Conversation conversation =_localData.GetConversations().First(c => c.Id == keyValues[index]);
+        //    OpenDialodRequest(user, conversation);
+        //}
 
         private string GetHeader(Conversation conversation)
         {
+            Debug.WriteLine("[m] [MessagesView] GetHeader running");
+
             //get last message
             Message message = conversation.messages[conversation.messages.Count - 1];
 
@@ -85,10 +115,15 @@ namespace SocialNetwork.UI.Views
             User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
             string authorName = author == user ? "You" : author.Name;
 
-            string text = authorName + ": " + message.Text;
+            string text = authorName + ": \t" + message.Text;
             return text;
         }
 
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
+        public void SetTheme(Theme theme)
+        {
+            Debug.WriteLine("[m] [MessagesView] SetTheme running");
+
+            (this as View).SetTheme(theme);
+        }
     }
 }
