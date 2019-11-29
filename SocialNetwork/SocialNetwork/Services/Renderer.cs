@@ -109,16 +109,16 @@ namespace SocialNetwork.Services
             }
         }
 
-        public ref GroupsView GetGroupsView(User user)
+        public ref GroupsView GetGroupsView(User user, LocalData localData)
         {
             if (groupsView != null)
             {
-                groupsView.Update(user);
+                groupsView.Update(user, localData);
                 return ref groupsView;
             }
             else
             {
-                groupsView = new GroupsView(user);
+                groupsView = new GroupsView(user, localData);
                 return ref groupsView;
             }
         }
