@@ -17,7 +17,7 @@ namespace SocialNetwork.UI.Views
         Group Group;
         LocalData _localData;
 
-        public event Action<GroupEditor.EditPurpose> EditGroupRequest;
+        public event Action<GroupEditor.EditPurpose, Group> EditGroupRequest;
 
         public GroupView(User user, Group group, LocalData localData)
         {
@@ -36,7 +36,7 @@ namespace SocialNetwork.UI.Views
         {
             Debug.WriteLine("[m] [GroupView] EditBt_Clicked running");
 
-            EditGroupRequest(GroupEditor.EditPurpose.edit);
+            EditGroupRequest(GroupEditor.EditPurpose.edit, Group);
         }
 
         public void Update(User user, Group group, LocalData localData)
