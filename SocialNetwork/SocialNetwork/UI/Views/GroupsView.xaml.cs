@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Data;
+using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
 using System;
@@ -19,12 +20,13 @@ namespace SocialNetwork.UI.Views
     public partial class GroupsView : ContentView, IColorable
     {
         private User User;
+        private LocalData _localData;
         public List<Group> Groups;
         public List<string> GroupTitles;
         public event Action<User, Group> OpenGroupViewRequest;
         public event Action<GroupRequestDialog.RequestPurpose> ShowDialogRequest;
 
-        public GroupsView(User user)
+        public GroupsView(User user, LocalData localData)
         {
             Debug.WriteLine("[m] [GroupsView] Constructor running");
 
@@ -34,14 +36,16 @@ namespace SocialNetwork.UI.Views
 
             listView.ItemSelected += ItemSelected;
             
-            Update(user);
+            Update(user, localData);
         }
 
-        public void Update(User user)
+        public void Update(User user, LocalData localData)
         {
             Debug.WriteLine("[m] [GroupsView] Update running");
 
             User = user;
+            _localData = localData;
+            User.Groups = _localData.FindGroupsOfUser(User);
 
             if (user.Groups.Count == 0)
             {
