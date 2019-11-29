@@ -74,7 +74,7 @@ namespace SocialNetwork.UI.Editors
                 }
                 else if (_purpose is EditPurpose.edit)
                 {
-                    _localData.UpdateGroup(group, group);
+                    _localData.UpdateGroup(_oldGroup, group);
                     group.Id = _localData.GetGroups().Find(u => u.Title == group.Title).Id;
                 }
 
