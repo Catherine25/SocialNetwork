@@ -46,7 +46,12 @@
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     Grid.ColumnSpan="5"/>
-            <Button x:Name="bottomBt"
+            <Button x:Name="_removeBt"
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="8"/>
+            <Button x:Name="_editBt"
+                    Text="Edit"
                     Grid.Row="8"
                     Grid.Column="0"
                     Grid.ColumnSpan="8"/>

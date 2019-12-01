@@ -49,7 +49,7 @@ namespace SocialNetwork.UI.Views
         {
             Debug.WriteLine("[m] [MenuView] FriendsViewBt_Clicked running");
 
-            SetFriendsViewRequest(FriendsView.Mode.Default);
+            SetFriendsViewRequest(FriendsView.Mode.Editable);
         }
 
         private void MessagesViewBt_Clicked(object sender, EventArgs e)

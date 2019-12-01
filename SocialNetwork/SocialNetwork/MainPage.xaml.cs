@@ -77,6 +77,7 @@ namespace SocialNetwork
             if (!_definedViews.Contains(ViewSet.GroupView))
             {
                 view.EditGroupRequest += SetGroupEditor;
+                view.ShowMembersRequest += SetFriendsView;
                 _definedViews.Add(ViewSet.GroupView);
             }
         }
@@ -102,15 +103,10 @@ namespace SocialNetwork
 
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
-                if (mode == UI.Views.FriendsView.Mode.ChooseNew)
-                    view.SetNewConversationRequest += SetDialogView;
-                else if (mode == UI.Views.FriendsView.Mode.Default)
-                {
-                    view.OpenUserViewRequest += SetUserView;
-                    view.ShowDialogRequest += RequestForUser;
-                }
-                else
-                    throw new NotImplementedException();
+                view.SetNewConversationRequest += SetDialogView;
+                view.OpenUserViewRequest += SetUserView;
+                view.ShowDialogRequest += RequestForUser;
+                
                 _definedViews.Add(ViewSet.FriendsView);
             }
 
@@ -215,7 +211,7 @@ namespace SocialNetwork
             {
                 _localData.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
-                SetFriendsView(UI.Views.FriendsView.Mode.Default);
+                SetFriendsView(UI.Views.FriendsView.Mode.Editable);
             }
         }
 
