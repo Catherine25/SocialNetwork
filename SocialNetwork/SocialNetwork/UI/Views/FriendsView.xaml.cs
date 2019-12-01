@@ -17,7 +17,7 @@ namespace SocialNetwork.UI.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FriendsView : ContentView, IColorable
     {
-        public enum Mode { Default, ChooseNew }
+        public enum Mode { Editable, ChooseNew, ReadOnly }
         private Mode _mode;
         private LocalData _localData;
         private User _user;
@@ -37,8 +37,8 @@ namespace SocialNetwork.UI.Views
 
             Update(user, mode, localData);
 
-			NewFriendBt.Clicked += NewFriendBt_Clicked;
-            listView.ItemSelected += ItemSelected;
+			_newFriendBt.Clicked += NewFriendBt_Clicked;
+            _listView.ItemSelected += ItemSelected;
         }
 
         public void Update(User user, Mode mode, LocalData localData)
@@ -49,19 +49,21 @@ namespace SocialNetwork.UI.Views
             _localData = localData;
             _user = user;
 
+            _newFriendBt.IsVisible = mode != Mode.ReadOnly;
+
             if (_user.Friends.Count == 0)
             {
-                NoFriendsLabel.IsVisible = true;
-                listView.IsVisible = false;
+                _noFriendsLabel.IsVisible = true;
+                _listView.IsVisible = false;
             }
             else
             {
-                NoFriendsLabel.IsVisible = false;
-                listView.IsVisible = true;
+                _noFriendsLabel.IsVisible = false;
+                _listView.IsVisible = true;
 
                 Friends = user.Friends;
                 FriendNames = Friends.Select(x => x.Name).ToList();
-                listView.ItemsSource = FriendNames;
+                _listView.ItemsSource = FriendNames;
 
                 BindingContext = this;
             }
