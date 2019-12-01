@@ -29,8 +29,8 @@ namespace SocialNetwork.UI.Views
 
             InitializeComponent();
 
-            bottomBt.Clicked += EditBt_Clicked;
-            bottomBt.Clicked += RemoveBt_Clicked;
+            _editBt.Clicked += EditBt_Clicked;
+            _removeBt.Clicked += RemoveBt_Clicked;
 
             Update(user, visitor, localData);
         }
@@ -43,19 +43,23 @@ namespace SocialNetwork.UI.Views
             Visitor = visitor;
             _localData = localData;
 
-            bottomBt.Text = visitor == user ? EditString : visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
+            Visitee = _localData.Update(Visitee);
+
+            _removeBt.Text = Visitor == Visitee ? EditString : visitor.Friends.Contains(Visitee) ? RemoveString : AddString;
+            _removeBt.IsVisible = Visitor != Visitee;
+            _editBt.IsVisible = Visitor.Id == Visitee.Id;
 
             try
             {
-                image.Source = ImageSource.FromUri(new Uri(user.AvatarLink));
+                image.Source = ImageSource.FromUri(new Uri(Visitee.AvatarLink));
             }
             catch
             {
                 image.Source = NoImageLink;
             }
 
-            name.Text = user.Name;
-            bio.Text = user.Bio;
+            name.Text = Visitee.Name;
+            bio.Text = Visitee.Bio;
         }
 
         public void SetTheme(Theme theme)
@@ -90,8 +94,7 @@ namespace SocialNetwork.UI.Views
         {
             Debug.WriteLine("[m] [UserView] EditBt_Clicked running");
 
-            if(Visitee == null)
-                EditUserRequest(UserEditor.EditPurpose.update, Visitor);
+            EditUserRequest(UserEditor.EditPurpose.update, Visitor);
         }
     }
 }
