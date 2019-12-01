@@ -14,13 +14,13 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <ListView x:Name="listView"
+            <ListView x:Name="_listView"
                       Grid.Row="0"/>
-            <Label x:Name="NoFriendsLabel"
+            <Label x:Name="_noFriendsLabel"
                    Text="No Friends"
                    FontSize="Medium"
                    Grid.Row="0"/>
-            <Button x:Name="NewFriendBt"
+            <Button x:Name="_newFriendBt"
                     Text="Add new"
                     Grid.Row="1"/>
         </Grid>
