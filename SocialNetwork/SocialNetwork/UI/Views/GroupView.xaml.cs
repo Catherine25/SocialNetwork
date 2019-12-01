@@ -16,51 +16,66 @@ namespace SocialNetwork.UI.Views
         User CurrentUser;
         Group Group;
         LocalData _localData;
+        private string _noImageLink = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
 
         public event Action<GroupEditor.EditPurpose, Group> EditGroupRequest;
+        public event Action<FriendsView.Mode> ShowMembersRequest;
 
         public GroupView(User user, Group group, LocalData localData)
         {
             Debug.WriteLine("[m] [GroupView] Constructor running");
 
             InitializeComponent();
+            
+            _image.Clicked += Image_Clicked;
 
-            removeBt.Clicked += RemoveBt_Clicked;
-            image.Clicked += Image_Clicked;
-            editBt.Clicked += EditBt_Clicked;
+            _removeBt.Clicked += (object sender, EventArgs e) =>
+            {
+                Button button = sender as Button;
+
+                if (CurrentUser.Groups.Contains(Group))
+                {
+                    button.Text = "Add to groups list";
+                    CurrentUser.Groups.Remove(Group);
+                    _localData.DeleteUserFromGroup(CurrentUser, Group);
+                }
+                else
+                {
+                    button.Text = "Remove from groups list";
+                    CurrentUser.Groups.Add(Group);
+                    _localData.AddUserToGroup(CurrentUser, Group);
+                }
+            };
+            
+            _editBt.Clicked += (object sender, EventArgs e) => EditGroupRequest(GroupEditor.EditPurpose.edit, Group);
+
+            _showMembersBt.Clicked += (object o, EventArgs e) => ShowMembersRequest(FriendsView.Mode.ReadOnly);
+
+            //debug
+
+            _editBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [GroupView] _editBt Clicked");
+            _removeBt.Clicked += (object sender, EventArgs e) => Debug.WriteLine("[m] [GroupView] _removeBt Clicked");
+            _image.Clicked += (object sender, EventArgs e) => Debug.WriteLine("[m] [GroupView] _image Clicked");
+            _showMembersBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [GroupView] _showMembersBt Clicked running");
+
+            //debug
 
             Update(user, group, localData);
         }
 
-        private void EditBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [GroupView] EditBt_Clicked running");
-
-            EditGroupRequest(GroupEditor.EditPurpose.edit, Group);
-        }
-
         public void Update(User user, Group group, LocalData localData)
         {
-            Debug.WriteLine("[m] [GroupView] Update running");
-
             CurrentUser = user;
             Group = group;
             _localData = localData;
 
-            editBt.IsEnabled = CurrentUser.Id == _localData.FindUserByName("Admin").Id;
-            removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
+            _editBt.IsEnabled = CurrentUser.Id == _localData.FindUserByName("Admin").Id;
+            _removeBt.Text = CurrentUser.Groups.Contains(Group) ? "Remove from groups list" : "Add to groups list";
 
-            try
-            {
-                image.Source = ImageSource.FromUri(new Uri(group.AvatarLink));
-            }
-            catch
-            {
-                image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
-            }
+            SetImage(Group.AvatarLink);
 
-            title.Text = group.Title;
-            description.Text = group.Description;
+            _title.Text = group.Title;
+            _description.Text = group.Description;
         }
 
         public void SetTheme(Theme theme)
@@ -76,33 +91,18 @@ namespace SocialNetwork.UI.Views
 
             string uriString = await Clipboard.GetTextAsync();
 
+            SetImage(uriString);
+        }
+
+        private void SetImage(string uriString)
+        {
             try
             {
-                image.Source = ImageSource.FromUri(new Uri(uriString));
+                _image.Source = ImageSource.FromUri(new Uri(uriString));
             }
             catch
             {
-                image.Source = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
-            }
-        }
-
-        private void RemoveBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [GroupView] RemoveBt_Clicked running");
-
-            Button button = sender as Button;
-
-            if (CurrentUser.Groups.Contains(Group))
-            {
-                button.Text = "Add to groups list";
-                CurrentUser.Groups.Remove(Group);
-                _localData.DeleteUserFromGroup(CurrentUser, Group);
-            }
-            else
-            {
-                button.Text = "Remove from groups list";
-                CurrentUser.Groups.Add(Group);
-                _localData.AddUserToGroup(CurrentUser, Group);
+                _image.Source = _noImageLink;
             }
         }
     }
