@@ -9,7 +9,8 @@
         <Grid x:Name="groupViewGrid">
 
             <Grid.RowDefinitions>
-                <!-- 9 rows -->
+                <!-- 10 rows -->
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -33,27 +34,32 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <ImageButton x:Name="image"
+            <ImageButton x:Name="_image"
                          Grid.Row="0"
                          Grid.Column="0"
                          Grid.RowSpan="3"
                          Grid.ColumnSpan="3"/>
-            <Button x:Name="title"
+            <Button x:Name="_title"
                     Grid.Row="0"
                     Grid.Column="3"
                     Grid.ColumnSpan="5"/>
-            <Button x:Name="description"
+            <Button x:Name="_description"
                     Grid.Row="1"
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     Grid.ColumnSpan="5"/>
-            <Button x:Name="editBt"
+            <Button x:Name="_editBt"
                     Text="Edit"
                     Grid.Column="0"
                     Grid.ColumnSpan="8"
                     Grid.Row="7"/>
-            <Button x:Name="removeBt"
+            <Button x:Name="_showMembersBt"
+                    Text="Show members"
                     Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="8"/>
+            <Button x:Name="_removeBt"
+                    Grid.Row="9"
                     Grid.Column="0"
                     Grid.ColumnSpan="8"/>
         </Grid>
