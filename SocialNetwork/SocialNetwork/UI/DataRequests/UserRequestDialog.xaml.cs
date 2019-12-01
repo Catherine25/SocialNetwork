@@ -62,7 +62,7 @@ namespace SocialNetwork.UI.DataRequests
             if (_purpose == RequestPurpose.currentName)
                 ;
             else if (_purpose == RequestPurpose.newFriendName)
-                ShowFriendsViewRequest(FriendsView.Mode.Default);
+                ShowFriendsViewRequest(FriendsView.Mode.Editable);
             //RequestCompleted(null, _purpose);
             else throw new NotImplementedException();
         }
