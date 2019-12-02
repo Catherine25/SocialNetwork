@@ -37,24 +37,38 @@
                          Grid.Column="0"
                          Grid.RowSpan="3"
                          Grid.ColumnSpan="3"/>
+            
             <Button x:Name="name"
                     Grid.Row="0"
                     Grid.Column="3"
                     Grid.ColumnSpan="5"/>
+            
             <Button x:Name="bio"
                     Grid.Row="1"
                     Grid.Column="3"
                     Grid.RowSpan="2"
                     Grid.ColumnSpan="5"/>
-            <Button x:Name="_removeBt"
+            
+            <!-- visible by mode area -->
+
+            <Button x:Name="_showFriendsBt"
+                    Text="Show Friends"
                     Grid.Row="8"
                     Grid.Column="0"
-                    Grid.ColumnSpan="8"/>
+                    Grid.ColumnSpan="4"/>
+
+            <Button x:Name="_removeBt"
+                    Grid.Row="8"
+                    Grid.Column="4"
+                    Grid.ColumnSpan="4"/>
+            
             <Button x:Name="_editBt"
                     Text="Edit"
                     Grid.Row="8"
                     Grid.Column="0"
                     Grid.ColumnSpan="8"/>
+            
+            <!-- visible by mode area -->
         </Grid>
   </ContentView.Content>
 </ContentView>
