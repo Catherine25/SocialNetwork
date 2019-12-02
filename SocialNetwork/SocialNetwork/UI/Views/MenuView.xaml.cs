@@ -24,46 +24,27 @@ namespace SocialNetwork.UI.Views
         {
             InitializeComponent();
 
-            userViewBt.Clicked += UserViewBt_Clicked;
-            messagesViewBt.Clicked += MessagesViewBt_Clicked;
-            friendsViewBt.Clicked += FriendsViewBt_Clicked;
-            groupsViewBt.Clicked += GroupsViewBt_Clicked;
-            settingsViewBt.Clicked += SettingsViewBt_Clicked;
-        }
+            #region Debug
+            
+            userViewBt.Clicked += (object sender, EventArgs e) =>
+                Debug.WriteLine("[m] [MenuView] UserViewBt_Clicked running");
+            settingsViewBt.Clicked += (object sender, EventArgs e) =>
+                Debug.WriteLine("[m] [MenuView] SettingsViewBt_Clicked running");
+            groupsViewBt.Clicked += (object sender, EventArgs e) =>
+                Debug.WriteLine("[m] [MenuView] GroupsViewBt_Clicked running");
+            friendsViewBt.Clicked += (object sender, EventArgs e) =>
+                Debug.WriteLine("[m] [MenuView] FriendsViewBt_Clicked running");
+            messagesViewBt.Clicked += (object sender, EventArgs e) =>
+                Debug.WriteLine("[m] [MenuView] MessagesViewBt_Clicked running");
 
-        private void SettingsViewBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [MenuView] SettingsViewBt_Clicked running");
+            #endregion
 
-            SetSettingsViewRequest();
-        }
-
-        private void GroupsViewBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [MenuView] GroupsViewBt_Clicked running");
-
-            SetGroupsViewRequest();
-        }
-
-        private void FriendsViewBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [MenuView] FriendsViewBt_Clicked running");
-
-            SetFriendsViewRequest(FriendsView.Mode.Editable);
-        }
-
-        private void MessagesViewBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [MenuView] MessagesViewBt_Clicked running");
-
-            SetMessagesViewRequest();
-        }
-
-        private void UserViewBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [MenuView] UserViewBt_Clicked running");
-
-            SetCurrentUserViewRequest();
+            userViewBt.Clicked += (object sender, EventArgs e) => SetCurrentUserViewRequest();
+            messagesViewBt.Clicked += (object sender, EventArgs e) => SetMessagesViewRequest();
+            friendsViewBt.Clicked += (object sender, EventArgs e) =>
+                SetFriendsViewRequest(FriendsView.Mode.Editable);
+            groupsViewBt.Clicked += (object sender, EventArgs e) => SetGroupsViewRequest();
+            settingsViewBt.Clicked += (object sender, EventArgs e) => SetSettingsViewRequest();
         }
 
         public void SetTheme(Theme theme)
@@ -71,6 +52,17 @@ namespace SocialNetwork.UI.Views
             Debug.WriteLine("[m] [MenuView] SetTheme running");
 
             (this as View).SetTheme(theme);
+        }
+
+        public void SetButtonsEnable(bool value)
+        {
+            Debug.WriteLine("[m] [MenuView] SetButtonsVisibility running with value = {0}", value);
+
+            userViewBt.IsEnabled = value;
+            messagesViewBt.IsEnabled = value;
+            friendsViewBt.IsEnabled = value;
+            groupsViewBt.IsEnabled = value;
+            settingsViewBt.IsEnabled = value;
         }
     }
 }
