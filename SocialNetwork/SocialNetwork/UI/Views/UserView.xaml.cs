@@ -22,6 +22,7 @@ namespace SocialNetwork.UI.Views
         private LocalData _localData;
 
         public event Action<UserEditor.EditPurpose, User> EditUserRequest;
+        public event Action<FriendsView.Mode, User> ShowFriendsListRequest;
 
         public UserView(User user, User visitor, LocalData localData)
         {
@@ -29,8 +30,15 @@ namespace SocialNetwork.UI.Views
 
             InitializeComponent();
 
-            _editBt.Clicked += EditBt_Clicked;
+            _editBt.Clicked += (object o, EventArgs e) => EditUserRequest(UserEditor.EditPurpose.update, Visitor); ;
             _removeBt.Clicked += RemoveBt_Clicked;
+            _showFriendsBt.Clicked += (object o, EventArgs e) => ShowFriendsListRequest(FriendsView.Mode.ReadOnly, Visitee);
+
+            #region Debug
+            _editBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [UserView] _editBt Clicked");
+            _removeBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [UserView] _removeBt Clicked");
+            _showFriendsBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [UserView] _showFriendsBt Clicked");
+            #endregion
 
             Update(user, visitor, localData);
         }
@@ -71,8 +79,6 @@ namespace SocialNetwork.UI.Views
 
         private void RemoveBt_Clicked(object sender, EventArgs e)
         {
-            Debug.WriteLine("[m] [UserView] RemoveBt_Clicked running");
-
             if (sender is Button button)
             {
                 if (Visitor.Friends.Contains(Visitee))
@@ -88,13 +94,6 @@ namespace SocialNetwork.UI.Views
                     button.Text = RemoveString;
                 }
             }
-        }
-
-        private void EditBt_Clicked(object sender, EventArgs e)
-        {
-            Debug.WriteLine("[m] [UserView] EditBt_Clicked running");
-
-            EditUserRequest(UserEditor.EditPurpose.update, Visitor);
         }
     }
 }
