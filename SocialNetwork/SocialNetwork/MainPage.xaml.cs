@@ -56,9 +56,15 @@ namespace SocialNetwork
             menu.SetCurrentUserViewRequest += SetUserView;
 
 			if (_user == null)
-				RequestForUser(UserRequestDialog.RequestPurpose.currentName);
-			else
-				SetUserView();
+            {
+                menu.SetButtonsEnable(false);
+                RequestForUser(UserRequestDialog.RequestPurpose.currentName);
+            }
+            else
+            {
+                SetUserView();
+                menu.SetButtonsEnable(true);
+            }
 
             Debug.WriteLine("MainPage end");
         }
@@ -113,6 +119,23 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(view);
         }
 
+        private void SetFriendsView(UI.Views.FriendsView.Mode mode, User user)
+        {
+            var view = _renderer.GetFriendsView(user, mode, _localData);
+            view.SetTheme(_themes.CurrentTheme);
+
+            if (!_definedViews.Contains(ViewSet.FriendsView))
+            {
+                view.SetNewConversationRequest += SetDialogView;
+                view.OpenUserViewRequest += SetUserView;
+                view.ShowDialogRequest += RequestForUser;
+
+                _definedViews.Add(ViewSet.FriendsView);
+            }
+
+            mainPageGrid.SetSingleChild(view);
+        }
+
         private void SetMessagesView()
         {
             var view = _renderer.GetMessagesView(_user, _localData);
@@ -150,6 +173,7 @@ namespace SocialNetwork
             if (!_definedViews.Contains(ViewSet.UserView))
             {
                 view.EditUserRequest += SetUserEditor;
+                view.ShowFriendsListRequest += SetFriendsView;
                 _definedViews.Add(ViewSet.UserView);
             }
         }
@@ -206,6 +230,7 @@ namespace SocialNetwork
                 user.Friends = _localData.FindFriendsOfUser(user);
                 user.Groups = _localData.FindGroupsOfUser(user);
                 SetUserView();
+                menu.SetButtonsEnable(true);
             }
             else if (purpose == UserRequestDialog.RequestPurpose.newFriendName)
             {
