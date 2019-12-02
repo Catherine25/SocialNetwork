@@ -51,6 +51,9 @@ namespace SocialNetwork.UI.Views
 
             _newFriendBt.IsVisible = mode != Mode.ReadOnly;
 
+            if (mode == Mode.ReadOnly)
+                _user.Friends = _localData.FindFriendsOfUser(_user);
+
             if (_user.Friends.Count == 0)
             {
                 _noFriendsLabel.IsVisible = true;
@@ -85,7 +88,7 @@ namespace SocialNetwork.UI.Views
                 return;
 
             string friendName = e.SelectedItem as string;
-            User friend = Friends.Find(X=>X .Name == friendName);
+            User friend = Friends.Find(X => X.Name == friendName);
 
             if (_mode == Mode.ChooseNew)
             {
