@@ -11,33 +11,15 @@ namespace SocialNetwork.Services
 {
     class Renderer
     {
-        private GroupRequestDialog groupRequestDialog;
         private UserRequestDialog userRequestDialog;
-        private GroupEditor groupEditor;
         private UserEditor userEditor;
 
         private DialogView dialogView;
         private FriendsView friendsView;
-        private GroupsView groupsView;
-        private GroupView groupView;
-        private MenuView menuView;
+        //private MenuView menuView;
         private MessagesView messagesView;
         private SettingsView settingsView;
         private UserView userView;
-
-        public ref GroupRequestDialog GetGroupRequestDialog(GroupRequestDialog.RequestPurpose purpose, List<Group> groups)
-        {
-            if (groupRequestDialog != null)
-            {
-                groupRequestDialog.Update(purpose, groups);
-                return ref groupRequestDialog;
-            }
-            else
-            {
-                groupRequestDialog = new GroupRequestDialog(purpose, groups);
-                return ref groupRequestDialog;
-            }
-        }
 
         public ref UserRequestDialog GetUserRequestDialog(UserRequestDialog.RequestPurpose purpose, List<User> users)
         {
@@ -50,20 +32,6 @@ namespace SocialNetwork.Services
             {
                 userRequestDialog = new UserRequestDialog(purpose, users);
                 return ref userRequestDialog;
-            }
-        }
-
-        public ref GroupEditor GetGroupEditor(GroupEditor.EditPurpose purpose, LocalData localData, Group group)
-        {
-            if (groupEditor != null)
-            {
-                groupEditor.Update(purpose, localData, group);
-                return ref groupEditor;
-            }
-            else
-            {
-                groupEditor = new GroupEditor(purpose, localData, group);
-                return ref groupEditor;
             }
         }
         
@@ -109,44 +77,16 @@ namespace SocialNetwork.Services
             }
         }
 
-        public ref GroupsView GetGroupsView(User user, LocalData localData)
-        {
-            if (groupsView != null)
-            {
-                groupsView.Update(user, localData);
-                return ref groupsView;
-            }
-            else
-            {
-                groupsView = new GroupsView(user, localData);
-                return ref groupsView;
-            }
-        }
-
-        public ref GroupView GetGroupView(User user, Group group, LocalData localData)
-        {
-            if (groupView != null)
-            {
-                groupView.Update(user, group, localData);
-                return ref groupView;
-            }
-            else
-            {
-                groupView = new GroupView(user, group, localData);
-                return ref groupView;
-            }
-        }
-
-        public ref MenuView GetMenuView()
-        {
-            if (menuView != null)
-                return ref menuView;
-            else
-            {
-                menuView = new MenuView();
-                return ref menuView;
-            }
-        }
+        //public ref MenuView GetMenuView()
+        //{
+        //    if (menuView != null)
+        //        return ref menuView;
+        //    else
+        //    {
+        //        menuView = new MenuView();
+        //        return ref menuView;
+        //    }
+        //}
 
         public ref MessagesView GetMessagesView(User user, LocalData localData)
         {

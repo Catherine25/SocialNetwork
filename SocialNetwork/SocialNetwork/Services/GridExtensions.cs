@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SocialNetwork.Data;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace SocialNetwork.Services
 {
@@ -10,11 +6,7 @@ namespace SocialNetwork.Services
     {
         public static void SetSingleChild(this Grid grid, View view)
         {
-            int count = grid.Children.Count;
-
-            for (int i = 1; i < count; i++)
-                grid.Children.RemoveAt(count - i);
-            
+            grid.Children.Clear();
             grid.Children.Add(view);
         }
     }

@@ -17,14 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="UI\DataRequests\GroupRequestDialog.xaml.cs">
-      <DependentUpon>GroupRequestDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Update="UI\DataRequests\UserRequestDialog.xaml.cs">
       <DependentUpon>UserRequestDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UI\Editors\GroupEditor.xaml.cs">
-      <DependentUpon>GroupEditor.xaml</DependentUpon>
     </Compile>
     <Compile Update="UI\Editors\UserEditor.xaml.cs">
       <DependentUpon>UserEditor.xaml</DependentUpon>
@@ -35,25 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="UI\DataRequests\GroupRequestDialog.xaml">
+    <EmbeddedResource Update="UI\Editors\UserEditor.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="UI\Editors\UserEditor.xaml">
+    <EmbeddedResource Update="UI\MenuBar.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Views\DialogView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Views\FriendsView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UI\Views\GroupsView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UI\Views\GroupView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UI\Views\MenuView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Views\MessagesView.xaml">

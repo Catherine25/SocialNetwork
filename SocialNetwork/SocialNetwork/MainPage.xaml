@@ -7,13 +7,5 @@
              mc:Ignorable="d"
              x:Class="SocialNetwork.MainPage">
 
-    <Grid x:Name="mainPageGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="9*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <ui:MenuView x:Name="menu"
-                     Grid.Row="1">
-        </ui:MenuView>
-    </Grid>
+    <Grid x:Name="mainPageGrid"/>
 </ContentPage>

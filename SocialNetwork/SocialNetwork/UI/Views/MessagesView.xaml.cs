@@ -3,15 +3,12 @@ using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
-//TODO: Open selected conversation dialog
 
 namespace SocialNetwork.UI.Views
 {
@@ -19,7 +16,8 @@ namespace SocialNetwork.UI.Views
     public partial class MessagesView : ContentView, IColorable
     {
         private User user;
-        private List<string> conversationsHeaders;
+        //private List<string> conversationsHeaders;
+        private ObservableCollection<ImageCell> imageCells;
         private Dictionary<int, int> keyValues;
         public event Action<User, Conversation> OpenDialodRequest;
         public event Action<FriendsView.Mode> OpenFriendsViewRequest;
@@ -31,8 +29,19 @@ namespace SocialNetwork.UI.Views
 
             InitializeComponent();
 
-            NewConversationBt.Clicked += NewConversationBt_Clicked;
-            //listView.ItemSelected += ItemSelected;
+            menu.Update(_user.Name);
+
+            menu.SearchRequest += (string s) =>
+            {
+                Reload();
+                
+                int length = imageCells.Count;
+                for (int i = 0; i < length; i++)
+                    if(!imageCells[i].Text.Contains(s))
+                        imageCells.RemoveAt(i);
+            };
+
+            //NewConversationBt.Clicked += NewConversationBt_Clicked;
             listView.ItemTapped += ListView_ItemTapped;
 
             Update(_user, localData);
@@ -59,8 +68,10 @@ namespace SocialNetwork.UI.Views
             user = _user;
             _localData = localData;
             keyValues = new Dictionary<int, int>();
-            conversationsHeaders = new List<string>();
+            //conversationsHeaders = new List<string>();
+            imageCells = new ObservableCollection<ImageCell>();
 
+            imageCells.Clear();
             Reload();
         }
 
@@ -88,42 +99,54 @@ namespace SocialNetwork.UI.Views
             for (int i = 0; i < length; i++)
             {
                 Conversation c = filteredConversations[i];
-                string s = GetHeader(c);
-                conversationsHeaders.Add(s);
+                //string s = GetHeader(c);
+                var cell = CreateImageCell(c);
+                //conversationsHeaders.Add(s);
+                imageCells.Add(cell);
                 keyValues.Add(i, c.Id);
             }
 
-            listView.ItemsSource = conversationsHeaders;
-            BindingContext = this;
+            //listView.ItemsSource = conversationsHeaders;
+            listView.ItemsSource = imageCells;
+            //BindingContext = this;
         }
 
-        //private void ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        //private string GetHeader(Conversation conversation)
         //{
-        //    int index = e.SelectedItemIndex;
-        //    Conversation conversation =_localData.GetConversations().First(c => c.Id == keyValues[index]);
-        //    OpenDialodRequest(user, conversation);
+        //    Debug.WriteLine("[m] [MessagesView] GetHeader running");
+
+        //    //get last message
+        //    Message message = conversation.messages[conversation.messages.Count - 1];
+
+        //    //get author name
+        //    User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
+        //    string authorName = author == user ? "You" : author.Name;
+
+        //    string text = authorName + ": \t" + message.Text;
+        //    return text;
         //}
-
-        private string GetHeader(Conversation conversation)
-        {
-            Debug.WriteLine("[m] [MessagesView] GetHeader running");
-
-            //get last message
-            Message message = conversation.messages[conversation.messages.Count - 1];
-
-            //get author name
-            User author = message.IsFromMember1 ? conversation.member1 : conversation.member2;
-            string authorName = author == user ? "You" : author.Name;
-
-            string text = authorName + ": \t" + message.Text;
-            return text;
-        }
 
         public void SetTheme(Theme theme)
         {
             Debug.WriteLine("[m] [MessagesView] SetTheme running");
 
             (this as View).SetTheme(theme);
+        }
+
+        public ImageCell CreateImageCell(Conversation conversation)
+        {
+            //get last message
+            Message message = conversation.messages[conversation.messages.Count - 1];
+
+            //get another user
+            User another = conversation.member1.Id == user.Id ? conversation.member2 : conversation.member1;
+
+            return new ImageCell
+            {
+                ImageSource = another.AvatarLink,
+                Text = another.Name,
+                Detail = message.Text
+            };
         }
     }
 }

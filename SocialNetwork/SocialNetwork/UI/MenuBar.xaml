@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SocialNetwork.UI.MenuBar">
+  <ContentView.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="_menuButton"
+                    Text="="
+                    FontSize="Medium"
+                    Grid.Column="0"/>
+            
+            <Label x:Name="_name"
+                   FontSize="Large"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   Grid.Column="1"/>
+            
+            <Button x:Name="_searchButton"
+                    Text="?"
+                    FontSize="Medium"
+                    Grid.Column="2"/>
+
+            <Entry x:Name="_companionNameEntry"
+                   FontSize="Medium"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   IsVisible="False"/>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

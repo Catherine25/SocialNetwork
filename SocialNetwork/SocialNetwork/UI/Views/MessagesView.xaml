@@ -3,17 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:SocialNetwork.UI"
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.Views.MessagesView">
     <ContentView.Content>
         <Grid x:Name="messagesGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="9*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <ListView x:Name="listView" Grid.Row="0"/>
-            <Button x:Name="NoConversationsBt" Text="No Conversations" Grid.Row="0"/>
-            <Button x:Name="NewConversationBt" Text="Start new" Grid.Row="1"/>
+            <ui:MenuBar x:Name="menu"
+                        Grid.Row="0"/>
+            <ListView x:Name="listView" Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell 
+                            ImageSource="{Binding ImageSource}"
+                            Text="{Binding Text}"
+                            Detail="{Binding Detail}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="NoConversationsBt" Text="No Conversations" Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
