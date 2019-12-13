@@ -49,44 +49,33 @@ namespace SocialNetwork.Services
             }
         }
 
-        public ref DialogView GetDialogView(Conversation conversaton, User user, Theme newTheme, LocalData localData)
+        public ref DialogView GetDialogView(Conversation conversaton, User user, LocalData localData)
         {
             if (dialogView != null)
             {
-                dialogView.Update(conversaton, user, newTheme, localData);
+                dialogView.Update(conversaton, user, localData);
                 return ref dialogView;
             }
             else
             {
-                dialogView = new DialogView(conversaton, user, newTheme, localData);
+                dialogView = new DialogView(conversaton, user, localData);
                 return ref dialogView;
             }
         }
 
-        public ref FriendsView GetFriendsView(User user, FriendsView.Mode mode, LocalData localData)
+        public ref FriendsView GetFriendsView(User user, LocalData localData)
         {
             if (friendsView != null)
             {
-                friendsView.Update(user, mode, localData);
+                friendsView.Update(user, localData);
                 return ref friendsView;
             }
             else
             {
-                friendsView = new FriendsView(user, mode, localData);
+                friendsView = new FriendsView(user, localData);
                 return ref friendsView;
             }
         }
-
-        //public ref MenuView GetMenuView()
-        //{
-        //    if (menuView != null)
-        //        return ref menuView;
-        //    else
-        //    {
-        //        menuView = new MenuView();
-        //        return ref menuView;
-        //    }
-        //}
 
         public ref MessagesView GetMessagesView(User user, LocalData localData)
         {
@@ -102,16 +91,16 @@ namespace SocialNetwork.Services
             }
         }
 
-        public ref SettingsView GetSettingsView(User user, List<Theme> newThemes) 
+        public ref SettingsView GetSettingsView(User user) 
         {
             if (settingsView != null)
             {
-                settingsView.Update(user, newThemes);
+                settingsView.Update(user);
                 return ref settingsView;
             }
             else
             {
-                settingsView = new SettingsView(user, newThemes);
+                settingsView = new SettingsView(user);
                 return ref settingsView;
             }
         }
