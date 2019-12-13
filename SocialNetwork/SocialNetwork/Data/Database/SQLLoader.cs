@@ -1,14 +1,11 @@
-﻿//using MySql.Data.MySqlClient;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using SocialNetwork.Data.Database;
-using System.Threading;
-using System.Linq;
 
 namespace SocialNetwork.Data
 {
-	public class SQLLoader
+    public class SQLLoader
 	{
         public enum DataType { ConversationsData, Groups, MessagesData, UserFriends, UserGroups, Users, All }
 
