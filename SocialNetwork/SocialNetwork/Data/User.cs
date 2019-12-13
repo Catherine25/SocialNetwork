@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SocialNetwork.Services;
-using Xamarin.Forms;
+﻿using System.Collections.Generic;
 
 namespace SocialNetwork.Data
 {
@@ -37,15 +33,5 @@ namespace SocialNetwork.Data
 
         public List<User> Friends;
         public List<Group> Groups;
-
-        public override int GetHashCode() {
-            var hashCode = 1434431970;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AvatarLink);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Bio);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<User>>.Default.GetHashCode(Friends);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Group>>.Default.GetHashCode(Groups);
-            return hashCode;
-        }
     }
 }
