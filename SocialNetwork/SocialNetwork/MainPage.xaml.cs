@@ -192,7 +192,7 @@ namespace SocialNetwork
 
             if (!_definedEditors.Contains(EditorSet.UserEditor))
             {
-                editor.EditorResult += SetUserView;
+                editor.EditorResult += SetMessagesView;
                 _definedEditors.Add(EditorSet.UserEditor);
             }
         }
@@ -204,7 +204,7 @@ namespace SocialNetwork
 
             if (!_definedEditors.Contains(EditorSet.UserEditor))
             {
-                editor.EditorResult += SetUserView;
+                editor.EditorResult += SetMessagesView;
                 _definedEditors.Add(EditorSet.UserEditor);
             }
         }
