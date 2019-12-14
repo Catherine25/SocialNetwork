@@ -1,11 +1,8 @@
 ﻿using SocialNetwork.Data;
 using SocialNetwork.Data.Database;
-using SocialNetwork.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -13,32 +10,40 @@ using Xamarin.Forms.Xaml;
 namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DialogView : ContentView, IColorable {
-
-        private User User;
+    public partial class DialogView : ContentView
+    {
+        private User _user;
+        private User _anotherUser;
         private Conversation _conversation;
         private Dictionary<Guid, Message> messagesId;
-        private Theme theme;
         private LocalData _localData;
 
-        public DialogView(Conversation conversation, User user, Theme newTheme, LocalData localData)
+        public event Action OpenMessagesViewRequest;
+
+        public DialogView(Conversation conversation, User user, LocalData localData)
         {
             InitializeComponent();
 
+            _bar.ReturnRequest += () => OpenMessagesViewRequest();
+
             newMessageEntry.Completed += NewMessageEntry_Completed;
 
-            Update(conversation, user, newTheme, localData);
+            Update(conversation, user, localData);
         }
 
-        public void Update(Conversation conversation, User user, Theme newTheme, LocalData localData)
+        public void Update(Conversation conversation, User user, LocalData localData)
         {
-            User = user;
+            _user = user;
+            _anotherUser = (_user.Id == conversation.member1.Id) ? conversation.member2 : conversation.member1;
+
+            _bar.Update(_anotherUser.AvatarLink, _anotherUser.Name);
+
             int id1 = conversation.member1.Id;
             int id2 = conversation.member2.Id;
 
             _conversation = localData.GetConversations().First(c => (c.member1.Id == id1 && c.member2.Id == id2) || (c.member1.Id == id2 && c.member2.Id == id1));
             messagesId = new Dictionary<Guid, Message>();
-            theme = newTheme;
+
             _localData = localData;
 
             if (_conversation.messages == null)
@@ -53,11 +58,9 @@ namespace SocialNetwork.UI.Views
             for (int i = 0; i < length; i++)
             {
                 Message message = orderedEnumerable.ElementAt(i);
-                Button button = CreateButton(message, _conversation.member1 == user);
-                button.SetTheme(theme);
+                Button button = CreateButton(message, _conversation.member1 == _user);
                 stack.Children.Add(button);
             }
-
         }
 
         private void NewMessageEntry_Completed(object sender, EventArgs e)
@@ -65,7 +68,7 @@ namespace SocialNetwork.UI.Views
             string text = (sender as Entry).Text;
             (sender as Entry).Text = "";
             
-            Message message = new Message(0, text, DateTime.Now, _conversation.member1.Id == User.Id);
+            Message message = new Message(0, text, DateTime.Now, _conversation.member1.Id == _user.Id);
             _conversation.messages.Add(message);
 
             stack.Children.Add(CreateButton(message, message.IsFromMember1));
@@ -76,8 +79,7 @@ namespace SocialNetwork.UI.Views
         public Button CreateButton(Message message, bool currentUserIsMember1)
         {
             Button button = new Button
-            {
-                TextColor = theme.TextColor,
+            { 
                 Text = message.Text
             };
             messagesId.Add(button.Id, message);
@@ -97,7 +99,5 @@ namespace SocialNetwork.UI.Views
 
             button.Text = (button.Text == message.Text) ? message.DateTime.ToString() : message.Text;
         }
-
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
     }
 }
