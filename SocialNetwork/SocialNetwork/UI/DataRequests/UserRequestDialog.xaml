@@ -26,6 +26,7 @@
                    Grid.Column="1"
                    Grid.ColumnSpan="2"/>
             <Entry x:Name="textEntry"
+                   VerticalTextAlignment="End"
                    Grid.Row="2"
                    Grid.Column="1"
                    Grid.ColumnSpan="2"/>
