@@ -19,14 +19,12 @@ namespace SocialNetwork
         public enum EditorSet { UserEditor, SetGroupEditor }
 
         private User _user;
-        private Themes _themes;
         private LocalData _localData;
         private Renderer _renderer;
 
-        public List<Theme> themes = new List<Theme>();
-        public HashSet<ViewSet> _definedViews = new HashSet<ViewSet>();
-        public HashSet<DialogSet> _definedDialogs = new HashSet<DialogSet>();
-        public HashSet<EditorSet> _definedEditors = new HashSet<EditorSet>();
+        private HashSet<ViewSet> _definedViews = new HashSet<ViewSet>();
+        private HashSet<DialogSet> _definedDialogs = new HashSet<DialogSet>();
+        private HashSet<EditorSet> _definedEditors = new HashSet<EditorSet>();
 
         public event Action<User> UserChangeRequest;
 
@@ -37,16 +35,14 @@ namespace SocialNetwork
             InitializeComponent();
         }
 
-        public MainPage(Themes themes, LocalData localData)
+        public MainPage(LocalData localData)
 		{
             Debug.WriteLine("MainPage running");
 
             InitializeComponent();
 
-            _themes = themes;
             _localData = localData;
             _renderer = new Renderer();
-            _themes.ThemeLoaded += ThemeLoaded;
 
             if (_user == null)
                 RequestForUser(UserRequestDialog.RequestPurpose.currentName);
@@ -58,13 +54,19 @@ namespace SocialNetwork
 
         #region Views
 
-        private void SetDialogView(User user, Conversation conversation) =>
-            mainPageGrid.SetSingleChild(_renderer.GetDialogView(conversation, user, _themes.CurrentTheme, _localData));
-
-        private void SetFriendsView(UI.Views.FriendsView.Mode mode)
+        private void SetDialogView(User user, Conversation conversation)
         {
-            var view = _renderer.GetFriendsView(_user, mode, _localData);
-            view.SetTheme(_themes.CurrentTheme);
+            var view = _renderer.GetDialogView(conversation, user, _localData);
+
+            if (!_definedViews.Contains(ViewSet.DialogView))
+                view.OpenMessagesViewRequest += SetMessagesView;
+
+            mainPageGrid.SetSingleChild(view);
+        }
+
+        private void SetFriendsView()
+        {
+            var view = _renderer.GetFriendsView(_user, _localData);
 
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
@@ -78,10 +80,9 @@ namespace SocialNetwork
             mainPageGrid.SetSingleChild(view);
         }
 
-        private void SetFriendsView(UI.Views.FriendsView.Mode mode, User user)
+        private void SetFriendsView(User user)
         {
-            var view = _renderer.GetFriendsView(user, mode, _localData);
-            view.SetTheme(_themes.CurrentTheme);
+            var view = _renderer.GetFriendsView(user, _localData);
 
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
@@ -99,26 +100,26 @@ namespace SocialNetwork
         {
             var view = _renderer.GetMessagesView(_user, _localData);
             mainPageGrid.SetSingleChild(view);
-            view.SetTheme(_themes.CurrentTheme);
 
             if (!_definedViews.Contains(ViewSet.MessagesView))
             {
-                view.OpenDialodRequest += SetDialogView;
-                view.OpenFriendsViewRequest += SetFriendsView;
+                view.OpenDialogRequest += SetDialogView;
+                //view.OpenFriendsViewRequest += SetFriendsView;
+                view.OpenSettingsViewRequest += SetSettingsView;
                 _definedViews.Add(ViewSet.MessagesView);
             }
         }
 
         private void SetSettingsView()
         {
-            var view = _renderer.GetSettingsView(_user, themes);
-            view.SetTheme(_themes.CurrentTheme);
+            var view = _renderer.GetSettingsView(_user);
             mainPageGrid.SetSingleChild(view);
             
             if (!_definedViews.Contains(ViewSet.SettingsView))
             {
-                view.ChangeThemeRequest += ChangeTheme;
                 view.ReloginRequest += RequestForUser;
+                view.CreateDialogRequest += SetFriendsView;
+                view.EditUserRequest += SetUserEditor;
                 _definedViews.Add(ViewSet.SettingsView);
             }
         }
@@ -126,7 +127,6 @@ namespace SocialNetwork
         private void SetUserView()
         {
             var view = _renderer.GetUserView(_user, _user, _localData);
-            view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
 
             if (!_definedViews.Contains(ViewSet.UserView))
@@ -140,7 +140,6 @@ namespace SocialNetwork
         private void SetUserView(User user)
         {
             var view = _renderer.GetUserView(user, _user, _localData);
-            view.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(view);
         }
 
@@ -151,7 +150,6 @@ namespace SocialNetwork
         public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
         {
             UserRequestDialog dialog = _renderer.GetUserRequestDialog(purpose, _localData.GetUsers());
-            dialog.SetTheme(_themes.CurrentTheme);
             mainPageGrid.SetSingleChild(dialog);
 
             if (!_definedDialogs.Contains(DialogSet.UserRequestDialog))
@@ -178,7 +176,7 @@ namespace SocialNetwork
             {
                 _localData.AddNewFriend(_user, user);
                 _user.Friends.Add(user);
-                SetFriendsView(UI.Views.FriendsView.Mode.Editable);
+                SetFriendsView();
             }
         }
 
@@ -208,17 +206,6 @@ namespace SocialNetwork
                 editor.EditorResult += SetUserView;
                 _definedEditors.Add(EditorSet.UserEditor);
             }
-        }
-
-        #endregion
-
-        #region Themes
-
-        private void ThemeLoaded(Theme theme) => themes.Add(theme);
-
-        private void ChangeTheme(Theme theme)
-        {
-            _themes.CurrentTheme = theme;
         }
 
         #endregion
