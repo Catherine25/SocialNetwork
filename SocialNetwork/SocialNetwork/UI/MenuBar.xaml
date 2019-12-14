@@ -15,7 +15,7 @@
             
             <Button x:Name="_menuButton"
                     Text="="
-                    FontSize="Medium"
+                    FontSize="Large"
                     Grid.Column="0"/>
             
             <Label x:Name="_name"
@@ -26,11 +26,11 @@
             
             <Button x:Name="_searchButton"
                     Text="?"
-                    FontSize="Medium"
+                    FontSize="Large"
                     Grid.Column="2"/>
 
             <Entry x:Name="_companionNameEntry"
-                   FontSize="Medium"
+                   FontSize="Large"
                    Grid.Column="0"
                    Grid.ColumnSpan="3"
                    IsVisible="False"/>
