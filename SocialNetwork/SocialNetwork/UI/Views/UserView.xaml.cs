@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class UserView : ContentView, IColorable
+    public partial class UserView : ContentView
     {
         private const string AddString = "Add to friends list";
         private const string RemoveString = "Remove from friends list";
@@ -22,7 +22,7 @@ namespace SocialNetwork.UI.Views
         private LocalData _localData;
 
         public event Action<UserEditor.EditPurpose, User> EditUserRequest;
-        public event Action<FriendsView.Mode, User> ShowFriendsListRequest;
+        public event Action<User> ShowFriendsListRequest;
 
         public UserView(User user, User visitor, LocalData localData)
         {
@@ -32,7 +32,7 @@ namespace SocialNetwork.UI.Views
 
             _editBt.Clicked += (object o, EventArgs e) => EditUserRequest(UserEditor.EditPurpose.update, Visitor); ;
             _removeBt.Clicked += RemoveBt_Clicked;
-            _showFriendsBt.Clicked += (object o, EventArgs e) => ShowFriendsListRequest(FriendsView.Mode.ReadOnly, Visitee);
+            _showFriendsBt.Clicked += (object o, EventArgs e) => ShowFriendsListRequest(Visitee);
 
             #region Debug
             _editBt.Clicked += (object o, EventArgs e) => Debug.WriteLine("[m] [UserView] _editBt Clicked");
