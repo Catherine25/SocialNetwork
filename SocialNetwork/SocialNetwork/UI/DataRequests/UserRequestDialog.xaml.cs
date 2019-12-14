@@ -24,7 +24,7 @@ namespace SocialNetwork.UI.DataRequests
         public enum RequestPurpose { currentName, newFriendName }
         public event Action<User, RequestPurpose> RequestCompleted;
         public event Action<UserEditor.EditPurpose> ShowUserEditorRequest;
-        public event Action<FriendsView.Mode> ShowFriendsViewRequest;
+        public event Action ShowFriendsViewRequest;
 
         public UserRequestDialog(RequestPurpose purpose, List<User> users)
 		{
@@ -62,7 +62,7 @@ namespace SocialNetwork.UI.DataRequests
             if (_purpose == RequestPurpose.currentName)
                 ;
             else if (_purpose == RequestPurpose.newFriendName)
-                ShowFriendsViewRequest(FriendsView.Mode.Editable);
+                ShowFriendsViewRequest();
             //RequestCompleted(null, _purpose);
             else throw new NotImplementedException();
         }
