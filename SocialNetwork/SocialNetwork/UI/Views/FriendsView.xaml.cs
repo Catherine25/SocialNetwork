@@ -20,9 +20,7 @@ namespace SocialNetwork.UI.Views
         public List<User> Users;
         public List<string> UserNames;
 
-        public event Action<User> OpenUserViewRequest;
         public event Action<User, Conversation> SetNewConversationRequest;
-		public event Action<UserRequestDialog.RequestPurpose> ShowDialogRequest;
 
         public FriendsView(User user, LocalData localData)
         {
@@ -62,7 +60,7 @@ namespace SocialNetwork.UI.Views
 
             Conversation c = new Conversation(0, _user, friend);
             _localData.AddEmptyConversation(c);
-            SetNewConversationRequest(friend, c);
+            SetNewConversationRequest(_user, c);
 
             (sender as ListView).SelectedItem = null;
         }
