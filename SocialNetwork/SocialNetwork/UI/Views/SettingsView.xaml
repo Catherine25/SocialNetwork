@@ -11,36 +11,19 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
             </Grid.RowDefinitions>
-            
-            <Label x:Name="themeLabel"
-                   Text="Choose your theme"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   FontSize="Medium"
-                   Grid.Row="0"/>
-            <Picker x:Name="themePicker"
-                    Grid.Row="1"/> 
 
-            <BoxView x:Name="color1"
-                     Grid.Row="2"/>
-            <BoxView x:Name="color2"
-                     Grid.Row="3"/>
-            <BoxView x:Name="color3"
-                     Grid.Row="4"/>
-            <BoxView x:Name="color4"
-                     Grid.Row="5"/>
-            <BoxView x:Name="color5"
-                     Grid.Row="6"/>
+            <Button x:Name="_editProfile"
+                    Text="Edit Profile"
+                    Grid.Row="0"/>
 
-            <Button x:Name="ReloginBt"
+            <Button x:Name="_reloginBt"
                     Text="Change Account"
-                    Grid.Row="7"/>
+                    Grid.Row="1"/>
+
+            <Button x:Name="_createDialog"
+                    Text="Create new dialog"
+                    Grid.Row="2"/>
         </Grid>
     </ContentView.Content>
 </ContentView>

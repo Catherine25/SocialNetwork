@@ -1,65 +1,31 @@
 ﻿using SocialNetwork.Data;
-using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
+using SocialNetwork.UI.Editors;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
-//TODO: Add themes
 
 namespace SocialNetwork.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsView : ContentView, IColorable
+    public partial class SettingsView : ContentView
     {
-        List<Theme> themes;
-
-        public event Action<Theme> ChangeThemeRequest;
+        private User _user;
         public event Action<UserRequestDialog.RequestPurpose> ReloginRequest;
+        public event Action<User> CreateDialogRequest;
+        public event Action<UserEditor.EditPurpose> EditUserRequest;
         
-        public SettingsView(User user, List<Theme> newThemes)
+        public SettingsView(User user)
         {
             InitializeComponent();
 
-            themePicker.SelectedIndexChanged += ThemePicker_SelectedIndexChanged;
-            ReloginBt.Clicked += ReloginBt_Clicked;
+            _reloginBt.Clicked += (object sender, EventArgs e) => ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
+            _createDialog.Clicked += (object sender, EventArgs e) => CreateDialogRequest(_user);
+            _editProfile.Clicked += (object sender, EventArgs e) => EditUserRequest(UserEditor.EditPurpose.update);
 
-            Update(user, newThemes);
+            Update(user);
         }
 
-        public void Update(User user, List<Theme> newThemes)
-        {
-            themes = new List<Theme>();
-            ImportThemes(newThemes);
-        }
-
-        private void ReloginBt_Clicked(object sender, EventArgs e) =>
-            ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
-
-        public void SetTheme(Theme theme) => (this as View).SetTheme(theme);
-
-        private void ThemePicker_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string item = (string)themePicker.SelectedItem;
-            Theme theme = themes.Find(X=>X.Name == item);
-            color1.BackgroundColor = theme.TextColor;
-            color2.BackgroundColor = theme.BackgroundColor;
-            color3.BackgroundColor = theme.SeparatorColor;
-
-            ChangeThemeRequest(theme);
-        }
-
-        private void ImportThemes(List<Theme> newThemes)
-        {
-            foreach(var theme in newThemes)
-            {
-                themes.Add(theme);
-                themePicker.Items.Add(theme.Name);
-            }
-        }
+        public void Update(User user) => _user = user;
     }
 }
