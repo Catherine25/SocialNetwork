@@ -120,6 +120,7 @@ namespace SocialNetwork
                 view.ReloginRequest += RequestForUser;
                 view.CreateDialogRequest += SetFriendsView;
                 view.EditUserRequest += SetUserEditor;
+                view.OpenMessagesView += SetMessagesView;
                 _definedViews.Add(ViewSet.SettingsView);
             }
         }
