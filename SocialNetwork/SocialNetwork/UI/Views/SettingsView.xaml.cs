@@ -13,7 +13,7 @@ namespace SocialNetwork.UI.Views
         private User _user;
 
         public event Action<UserRequestDialog.RequestPurpose> ReloginRequest;
-        public event Action<User> CreateDialogRequest;
+        public event Action CreateDialogRequest;
         public event Action<UserEditor.EditPurpose, User> EditUserRequest;
         public event Action OpenMessagesView;
 
@@ -26,7 +26,7 @@ namespace SocialNetwork.UI.Views
             _menu.OpenSettingsViewRequest += () => OpenMessagesView();
 
             _reloginBt.Clicked += (object sender, EventArgs e) => ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
-            _createDialog.Clicked += (object sender, EventArgs e) => CreateDialogRequest(_user);
+            _createDialog.Clicked += (object sender, EventArgs e) => CreateDialogRequest();
             _editProfile.Clicked += (object sender, EventArgs e) => EditUserRequest(UserEditor.EditPurpose.update, _user);
 
             Update(user);
