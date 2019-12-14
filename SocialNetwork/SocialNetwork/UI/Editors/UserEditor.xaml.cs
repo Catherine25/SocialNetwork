@@ -78,6 +78,8 @@ namespace SocialNetwork.UI.Editors
                 }
                 else if(_purpose == EditPurpose.update)
                 {
+                    if (oldUser == null)
+                        oldUser = user;
                     _localData.UpdateUser(oldUser, user);
                     user = _localData.GetUsers().Find(u => u.Id == oldUser.Id);
                 }
