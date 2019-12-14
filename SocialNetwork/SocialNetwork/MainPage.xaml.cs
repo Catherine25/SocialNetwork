@@ -71,9 +71,6 @@ namespace SocialNetwork
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
                 view.SetNewConversationRequest += SetDialogView;
-                view.OpenUserViewRequest += SetUserView;
-                view.ShowDialogRequest += RequestForUser;
-                
                 _definedViews.Add(ViewSet.FriendsView);
             }
 
@@ -87,9 +84,6 @@ namespace SocialNetwork
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
                 view.SetNewConversationRequest += SetDialogView;
-                view.OpenUserViewRequest += SetUserView;
-                view.ShowDialogRequest += RequestForUser;
-
                 _definedViews.Add(ViewSet.FriendsView);
             }
 
