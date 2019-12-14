@@ -13,16 +13,9 @@
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
+
             <ListView x:Name="_listView"
                       Grid.Row="0"/>
-            <Label x:Name="_noFriendsLabel"
-                   Text="No Friends"
-                   FontSize="Medium"
-                   Grid.Row="0"/>
-            <Button x:Name="_newFriendBt"
-                    Text="Add new"
-                    Grid.Row="1"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
