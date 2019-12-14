@@ -13,6 +13,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition Height="11*"/>
             </Grid.RowDefinitions>
 
             <ui:MenuBar x:Name="_menu"
