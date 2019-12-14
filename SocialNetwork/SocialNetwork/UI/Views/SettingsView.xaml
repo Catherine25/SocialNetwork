@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:SocialNetwork.UI"
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.Views.SettingsView">
     <ContentView.Content>
@@ -11,19 +12,23 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
+
+            <ui:MenuBar x:Name="_menu"
+                        Grid.Row="0"/>
 
             <Button x:Name="_editProfile"
                     Text="Edit Profile"
-                    Grid.Row="0"/>
+                    Grid.Row="1"/>
 
             <Button x:Name="_reloginBt"
                     Text="Change Account"
-                    Grid.Row="1"/>
+                    Grid.Row="2"/>
 
             <Button x:Name="_createDialog"
                     Text="Create new dialog"
-                    Grid.Row="2"/>
+                    Grid.Row="3"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
