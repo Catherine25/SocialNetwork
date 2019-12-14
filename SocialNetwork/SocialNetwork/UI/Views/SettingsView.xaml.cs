@@ -11,13 +11,20 @@ namespace SocialNetwork.UI.Views
     public partial class SettingsView : ContentView
     {
         private User _user;
+
         public event Action<UserRequestDialog.RequestPurpose> ReloginRequest;
         public event Action<User> CreateDialogRequest;
         public event Action<UserEditor.EditPurpose> EditUserRequest;
-        
+        public event Action OpenMessagesView;
+
         public SettingsView(User user)
         {
             InitializeComponent();
+
+            _user = user;
+
+            _menu.OpenSettingsViewRequest += () => OpenMessagesView();
+            _menu.Update(_user.Name);
 
             _reloginBt.Clicked += (object sender, EventArgs e) => ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
             _createDialog.Clicked += (object sender, EventArgs e) => CreateDialogRequest(_user);
