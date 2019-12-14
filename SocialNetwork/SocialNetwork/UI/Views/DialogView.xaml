@@ -3,18 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:SocialNetwork.UI"
              mc:Ignorable="d"
              x:Class="SocialNetwork.UI.Views.DialogView">
   <ContentView.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <ScrollView Grid.Row="0">
+
+            <ui:DialogBar x:Name="_bar"
+                          Grid.Row="0"/>
+
+            <ScrollView Grid.Row="1">
                 <StackLayout x:Name="stack"/>
             </ScrollView>
-            <Entry x:Name="newMessageEntry" Grid.Row="1"/>
+            
+            <Entry x:Name="newMessageEntry"
+                   Grid.Row="2"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
