@@ -15,7 +15,7 @@ namespace SocialNetwork.UI.Editors
 
         private string NoUserAvatarLink = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
         private LocalData _localData;
-        private string link;
+        private string _link;
         private EditPurpose _purpose;
         private User oldUser;
 
@@ -40,6 +40,7 @@ namespace SocialNetwork.UI.Editors
             {
                 oldUser = user;
 
+                _link = oldUser.AvatarLink;
                 TrySetImage(oldUser.AvatarLink);
                 NameEntry.Text = oldUser.Name;
                 BioEntry.Text = oldUser.Bio;
@@ -69,7 +70,7 @@ namespace SocialNetwork.UI.Editors
                 NameEntry.TextColor = Color.DarkCyan;
                 BioEntry.TextColor = Color.DarkCyan;
 
-                User user = new User(0, link, name, bio);
+                User user = new User(0, _link, name, bio);
 
                 if (_purpose == EditPurpose.createNew)
                 {
@@ -91,9 +92,9 @@ namespace SocialNetwork.UI.Editors
 
         private async void Image_Clicked(object sender, EventArgs e)
         {
-            link = await Clipboard.GetTextAsync();
+            _link = await Clipboard.GetTextAsync();
 
-            TrySetImage(link);
+            TrySetImage(_link);
         }
 
         private void TrySetImage(string link)
