@@ -10,7 +10,7 @@
         <Grid x:Name="messagesGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="9*"/>
+                <RowDefinition Height="14*"/>
             </Grid.RowDefinitions>
             <ui:MenuBar x:Name="menu"
                         Grid.Row="0"/>
