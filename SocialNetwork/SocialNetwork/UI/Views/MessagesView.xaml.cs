@@ -76,6 +76,8 @@ namespace SocialNetwork.UI.Views
             keyValues = new Dictionary<int, int>();
             imageCells = new ObservableCollection<ImageCell>();
 
+            menu.Update(_user.Name);
+
             Reload();
         }
 
