@@ -10,14 +10,16 @@ namespace SocialNetwork.UI
         private string NoUserAvatarLink = "https://www.indiannaturaloils.com/categories-images/no-photo.jpg";
         public event Action ReturnRequest;
 
-        public DialogBar() => InitializeComponent();
+        public DialogBar()
+        {
+            InitializeComponent();
+            _backButton.Clicked += (object o, EventArgs e) => ReturnRequest();
+        }
 
         public void Update(string link, string name)
         {
             _name.Text = name;
             TrySetImage(link);
-
-            _backButton.Clicked += (object o, EventArgs e) => ReturnRequest();
         }
 
         private void TrySetImage(string link)
