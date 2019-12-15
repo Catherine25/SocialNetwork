@@ -51,9 +51,9 @@ namespace SocialNetwork.UI.Views
             
             List<Message> orderedEnumerable = _conversation.messages.OrderBy(x => x.DateTime).ToList();
 
-            int length = orderedEnumerable.Count();
-
             stack.Children.Clear();
+
+            int length = orderedEnumerable.Count();
 
             for (int i = 0; i < length; i++)
             {
@@ -85,8 +85,8 @@ namespace SocialNetwork.UI.Views
             messagesId.Add(button.Id, message);
 
             button.Margin = (currentUserIsMember1 && message.IsFromMember1) || (!currentUserIsMember1 && !message.IsFromMember1)
-                ? new Thickness { Left = 100 }
-                : new Thickness { Right = 100 };
+                ? new Thickness { Right = 100 }
+                : new Thickness { Left = 100 };
 
             button.Clicked += messageClicked;
             return button;

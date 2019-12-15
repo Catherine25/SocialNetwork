@@ -3,7 +3,6 @@ using SocialNetwork.Data.Database;
 using SocialNetwork.Services;
 using SocialNetwork.UI.DataRequests;
 using SocialNetwork.UI.Editors;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -26,8 +25,6 @@ namespace SocialNetwork
         private HashSet<DialogSet> _definedDialogs = new HashSet<DialogSet>();
         private HashSet<EditorSet> _definedEditors = new HashSet<EditorSet>();
 
-        public event Action<User> UserChangeRequest;
-
         public MainPage()
         {
             Debug.WriteLine("MainPage empty constructor running");
@@ -45,9 +42,7 @@ namespace SocialNetwork
             _renderer = new Renderer();
 
             if (_user == null)
-                RequestForUser(UserRequestDialog.RequestPurpose.currentName);
-            else
-                SetUserView();
+                RequestForUser();
             
             Debug.WriteLine("MainPage end");
         }
@@ -67,19 +62,6 @@ namespace SocialNetwork
         private void SetFriendsView()
         {
             var view = _renderer.GetFriendsView(_user, _localData);
-
-            if (!_definedViews.Contains(ViewSet.FriendsView))
-            {
-                view.SetNewConversationRequest += SetDialogView;
-                _definedViews.Add(ViewSet.FriendsView);
-            }
-
-            mainPageGrid.SetSingleChild(view);
-        }
-
-        private void SetFriendsView(User user)
-        {
-            var view = _renderer.GetFriendsView(user, _localData);
 
             if (!_definedViews.Contains(ViewSet.FriendsView))
             {
@@ -119,32 +101,13 @@ namespace SocialNetwork
             }
         }
 
-        private void SetUserView()
-        {
-            var view = _renderer.GetUserView(_user, _user, _localData);
-            mainPageGrid.SetSingleChild(view);
-
-            if (!_definedViews.Contains(ViewSet.UserView))
-            {
-                view.EditUserRequest += SetUserEditor;
-                view.ShowFriendsListRequest += SetFriendsView;
-                _definedViews.Add(ViewSet.UserView);
-            }
-        }
-
-        private void SetUserView(User user)
-        {
-            var view = _renderer.GetUserView(user, _user, _localData);
-            mainPageGrid.SetSingleChild(view);
-        }
-
         #endregion
 
         #region Request Dialogs
 
-        public void RequestForUser(UserRequestDialog.RequestPurpose purpose)
+        public void RequestForUser()
         {
-            UserRequestDialog dialog = _renderer.GetUserRequestDialog(purpose, _localData.GetUsers());
+            UserRequestDialog dialog = _renderer.GetUserRequestDialog(_localData.GetUsers());
             mainPageGrid.SetSingleChild(dialog);
 
             if (!_definedDialogs.Contains(DialogSet.UserRequestDialog))
@@ -157,22 +120,10 @@ namespace SocialNetwork
             }
         }
 
-        private void UserRequestCompleted(User user, UserRequestDialog.RequestPurpose purpose)
+        private void UserRequestCompleted(User user)
         {
-            if (purpose == UserRequestDialog.RequestPurpose.currentName)
-            {
-                _user = user;
-                _localData.ChangeUser(user);
-                user.Friends = _localData.FindFriendsOfUser(user);
-                user.Groups = _localData.FindGroupsOfUser(user);
-                SetMessagesView();
-            }
-            else if (purpose == UserRequestDialog.RequestPurpose.newFriendName)
-            {
-                _localData.AddNewFriend(_user, user);
-                _user.Friends.Add(user);
-                SetFriendsView();
-            }
+            _user = user;
+            SetMessagesView();
         }
 
         #endregion

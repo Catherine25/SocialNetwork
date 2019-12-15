@@ -1,5 +1,4 @@
 ﻿using SocialNetwork.Data;
-using SocialNetwork.UI.DataRequests;
 using SocialNetwork.UI.Editors;
 using System;
 using Xamarin.Forms;
@@ -12,7 +11,7 @@ namespace SocialNetwork.UI.Views
     {
         private User _user;
 
-        public event Action<UserRequestDialog.RequestPurpose> ReloginRequest;
+        public event Action ReloginRequest;
         public event Action CreateDialogRequest;
         public event Action<UserEditor.EditPurpose, User> EditUserRequest;
         public event Action OpenMessagesView;
@@ -25,7 +24,7 @@ namespace SocialNetwork.UI.Views
 
             _menu.OpenSettingsViewRequest += () => OpenMessagesView();
 
-            _reloginBt.Clicked += (object sender, EventArgs e) => ReloginRequest(UserRequestDialog.RequestPurpose.currentName);
+            _reloginBt.Clicked += (object sender, EventArgs e) => ReloginRequest();
             _createDialog.Clicked += (object sender, EventArgs e) => CreateDialogRequest();
             _editProfile.Clicked += (object sender, EventArgs e) => EditUserRequest(UserEditor.EditPurpose.update, _user);
 

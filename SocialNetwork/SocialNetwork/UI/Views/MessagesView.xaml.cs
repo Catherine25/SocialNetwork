@@ -17,9 +17,10 @@ namespace SocialNetwork.UI.Views
         private User user;
         private ObservableCollection<ImageCell> imageCells;
         private Dictionary<int, int> keyValues;
+
         public event Action<User, Conversation> OpenDialogRequest;
-        //public event Action<FriendsView.Mode> OpenFriendsViewRequest;
         public event Action OpenSettingsViewRequest;
+        
         private LocalData _localData;
 
         public MessagesView(User _user, LocalData localData)

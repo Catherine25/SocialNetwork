@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SocialNetwork.Data.Database
+﻿namespace SocialNetwork.Data.Database
 {
     public class ConversationData
     {

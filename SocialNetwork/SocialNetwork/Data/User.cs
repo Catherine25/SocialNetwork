@@ -15,23 +15,9 @@ namespace SocialNetwork.Data
                 AvatarLink = "";
         }
 
-        public User(string id, string name, string bio, string image)
-        {
-            AvatarLink = image;
-            Name = name;
-            Bio = bio;
-            Id = int.Parse(id);
-
-            if (AvatarLink == null)
-                AvatarLink = "";
-        }
-
         public string AvatarLink;
         public string Name;
         public string Bio;
         public int Id;
-
-        public List<User> Friends;
-        public List<Group> Groups;
     }
 }

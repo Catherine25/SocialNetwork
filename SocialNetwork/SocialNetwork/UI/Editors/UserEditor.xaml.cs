@@ -40,6 +40,8 @@ namespace SocialNetwork.UI.Editors
             {
                 oldUser = user;
 
+                NameEntry.IsEnabled = false;
+
                 _link = oldUser.AvatarLink;
                 TrySetImage(oldUser.AvatarLink);
                 NameEntry.Text = oldUser.Name;
