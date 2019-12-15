@@ -15,12 +15,7 @@ namespace SocialNetwork.UI
         {
             InitializeComponent();
             IncludeDebug();
-        }
 
-        public void Update(string name)
-        {
-            _name.Text = name;
-            
             _menuButton.Clicked += (object o, EventArgs e) => OpenSettingsViewRequest();
 
             _searchButton.Clicked += (object o, EventArgs e) =>
@@ -39,6 +34,8 @@ namespace SocialNetwork.UI
                 _companionNameEntry.Text = "";
             };
         }
+
+        public void Update(string name) => _name.Text = name;
 
         private void IncludeDebug()
         {
